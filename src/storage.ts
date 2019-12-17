@@ -40,6 +40,19 @@ export class CookieStorage implements WebStorage {
 
 export class NullStorage implements WebStorage {
     getItem(key: string): string | null { return null; }
-    removeItem(key: string) {/**/}
-    setItem(key: string, data: string): void {/**/}
+    removeItem(key: string) {/**/ }
+    setItem(key: string, data: string): void {/**/ }
+}
+
+export class TestMemoryStorage implements WebStorage {
+    private store: Record<string, string> = {};
+    getItem(key: string): string | null {
+        return this.store[key];
+    }
+    removeItem(key: string) {
+        delete this.store[key];
+    }
+    setItem(key: string, data: string) {
+        this.store[key] = data;
+    }
 }

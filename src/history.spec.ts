@@ -1,8 +1,8 @@
 import * as history from './history';
 import * as sinon from 'sinon';
 import test from 'ava';
-import { MAX_NUMBER_OF_HISTORY_ELEMENTS } from './history';
-import { NullStorage, WebStorage } from './storage';
+import { MAX_NUMBER_OF_HISTORY_ELEMENTS, STORE_KEY } from './history';
+import { NullStorage, WebStorage, TestMemoryStorage } from './storage';
 
 let storage: WebStorage;
 let storageMock: sinon.SinonMock;
@@ -13,6 +13,7 @@ test.beforeEach(t => {
     storage = new NullStorage();
     storageMock = sinon.mock(storage);
     historyStore = new history.HistoryStore(storage);
+
     data = {
         name: 'name',
         value: 'value',
@@ -27,10 +28,50 @@ test.afterEach(t => {
     data = null;
 });
 
+
 test('HistoryStore should be able to add an element in the history', t => {
     storageMock.expects('setItem').once().withArgs(history.STORE_KEY, sinon.match(/"value":"value"/).and(sinon.match(/"time"/)).and(sinon.match(/"internalTime"/)));
     historyStore.addElement(data);
     storageMock.verify();
+});
+
+test('HistoryStore should be able to retrieve most recent element in the history', t => {
+    const storageInMemory = new TestMemoryStorage()
+    historyStore = new history.HistoryStore(storageInMemory)
+    historyStore.addElement(data);
+    const mostRecent = historyStore.getMostRecentElement();
+    t.true(mostRecent.name == 'name')
+});
+
+test('HistoryStore should be able to retrieve most recent element in the history even if encoded multiple time', t => {
+    const storageInMemory = new TestMemoryStorage()
+    historyStore = new history.HistoryStore(storageInMemory)
+
+    const doubleEncoded = JSON.stringify(JSON.stringify([{
+        name: 'name',
+        value: 'value',
+        time: JSON.stringify(new Date())
+    }]))
+    storageInMemory.setItem(STORE_KEY, doubleEncoded)
+
+    const mostRecent = historyStore.getMostRecentElement();
+    t.true(mostRecent.name == 'name')
+});
+
+test('HistoryStore should bail out on an object that has been encoded more than 10 times', t => {
+    const storageInMemory = new TestMemoryStorage();
+    const spyOnClear = sinon.spy(storageInMemory, 'removeItem');
+    historyStore = new history.HistoryStore(storageInMemory);
+
+    let multiEncoded = JSON.stringify([data])
+    for(let i = 0; i < 11; i ++) {
+        multiEncoded = JSON.stringify(multiEncoded)
+    }
+
+    storageInMemory.setItem(STORE_KEY, multiEncoded)
+    const mostRecent = historyStore.getMostRecentElement();
+    t.true(mostRecent === undefined)
+    t.true(spyOnClear.called)
 });
 
 test('History store should trim query over > 75 char', t => {

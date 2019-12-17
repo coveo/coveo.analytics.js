@@ -39,7 +39,7 @@ export class HistoryStore {
         try {
             const elements = this.store.getItem(STORE_KEY);
             if (elements) {
-                return JSON.parse(elements) as HistoryElement[];
+                return this.tryJSONParseBackToObject(elements);
             } else {
                 return [];
             }
@@ -49,6 +49,28 @@ export class HistoryStore {
             // a call to them.
             return [];
         }
+    }
+
+    private tryJSONParseBackToObject(elements: string) {
+        // Between this current version and previous one, "something" was changed in how we encode the data in the local storage
+        // We can end up with double (or more) encoded version of the store if it's being interacted with different version of coveoua inside the same website, which means a single JSON.parse is not enough.
+        // This code tries to call JSON.parse until we end back up with an object, with a limit of 10 iteration.
+        let parsed = JSON.parse(elements);
+        let i = 0;
+
+        while (typeof parsed !== 'object' && i < 10) {
+            parsed = JSON.parse(parsed);
+            i++;
+        }
+
+        if (typeof parsed === 'object') {
+            return parsed as HistoryElement[];
+        }
+        // If we end up here, it means something is terribly wrong in the local storage,
+        // and we are unable to recover and return a valid object upstream.
+        // Bail, delete and return an empty history
+        this.clear();
+        return [];
     }
 
     setHistory(history: HistoryElement[]) {

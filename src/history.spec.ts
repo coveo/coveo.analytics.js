@@ -47,11 +47,7 @@ test('HistoryStore should be able to retrieve most recent element in the history
     const storageInMemory = new TestMemoryStorage()
     historyStore = new history.HistoryStore(storageInMemory)
 
-    const doubleEncoded = JSON.stringify(JSON.stringify([{
-        name: 'name',
-        value: 'value',
-        time: JSON.stringify(new Date())
-    }]))
+    const doubleEncoded = JSON.stringify(JSON.stringify([data]))
     storageInMemory.setItem(STORE_KEY, doubleEncoded)
 
     const mostRecent = historyStore.getMostRecentElement();

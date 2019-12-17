@@ -47,10 +47,13 @@ test('HistoryStore should be able to retrieve most recent element in the history
     const storageInMemory = new TestMemoryStorage()
     historyStore = new history.HistoryStore(storageInMemory)
 
+    let mostRecent = historyStore.getMostRecentElement();
+    t.true(mostRecent === undefined)
+
     const doubleEncoded = JSON.stringify(JSON.stringify([data]))
     storageInMemory.setItem(STORE_KEY, doubleEncoded)
 
-    const mostRecent = historyStore.getMostRecentElement();
+    mostRecent = historyStore.getMostRecentElement();
     t.true(mostRecent.name == 'name')
 });
 
@@ -59,13 +62,16 @@ test('HistoryStore should bail out on an object that has been encoded more than 
     const spyOnClear = sinon.spy(storageInMemory, 'removeItem');
     historyStore = new history.HistoryStore(storageInMemory);
 
+    let mostRecent = historyStore.getMostRecentElement();
+    t.true(mostRecent === undefined)
+
     let multiEncoded = JSON.stringify([data])
-    for(let i = 0; i < 11; i ++) {
+    for (let i = 0; i < 11; i++) {
         multiEncoded = JSON.stringify(multiEncoded)
     }
 
     storageInMemory.setItem(STORE_KEY, multiEncoded)
-    const mostRecent = historyStore.getMostRecentElement();
+    mostRecent = historyStore.getMostRecentElement();
     t.true(mostRecent === undefined)
     t.true(spyOnClear.called)
 });

@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: {
         coveoua: "./src/coveoua/browser.ts",
-        index: "./src/coveoua/library.ts"
+        library: "./src/coveoua/library.ts"
     },
     mode: "production",
     output: {

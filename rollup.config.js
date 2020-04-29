@@ -4,6 +4,17 @@ import { uglify } from 'rollup-plugin-uglify'
 import { terser } from "rollup-plugin-terser";
 import serve from 'rollup-plugin-serve'
 
+const tsPlugin = () => typescript({
+    useTsconfigDeclarationDir: true
+})
+
+const umdConfig = (file) => ({
+    file,
+    format: 'umd',
+    name: 'coveoua',
+    sourcemap: true,
+})
+
 const browser = {
     input: './src/coveoua/browser.ts',
     output: umdConfig(resolve(__dirname, './dist/coveoua.js')),
@@ -40,15 +51,5 @@ const libraryEsm = {
     ]
 }
 
-const tsPlugin = () => typescript({
-    useTsconfigDeclarationDir: true
-})
-
-const umdConfig = (file) => ({
-    file,
-    format: 'umd',
-    name: 'coveoua',
-    sourcemap: true,
-})
 
 export default [browser, libraryUmd, libraryEsm];

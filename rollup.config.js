@@ -20,6 +20,7 @@ const browser = {
     output: umdConfig(resolve(__dirname, './dist/coveoua.js')),
     plugins: [
         tsPlugin(),
+        uglify(),
         process.env.SERVE ? serve({
             contentBase: ['dist', 'public'],
             port: 9001,

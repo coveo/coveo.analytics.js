@@ -7,7 +7,7 @@
     "browser": "dist/coveoua.js",
     "scripts": {
         "lint": "prettier **/*.* --write",
-        "build": "webpack",
+        "build": "rollup",
         "start": "webpack-dev-server --port 9001 --mode development --watch --inline --hot",
         "test": "jest --clearCache && jest --coverage",
         "clean": "rm -rf dist/* && rm -rf dist_test/* && rm -rf coverage/*"
@@ -40,10 +40,7 @@
         "ts-jest": "^25.2.0",
         "ts-loader": "^4.5.0",
         "tsjs": "^1.0.3",
-        "typescript": "^3.7.5",
-        "webpack": "^4.41.5",
-        "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.10.2"
+        "typescript": "^3.7.5"
     },
     "files": [
         "dist/**/*.d.ts",
@@ -52,6 +49,8 @@
         "src/**/*.ts",
         "LICENSE"
     ],
-    "dependencies": {},
+    "dependencies": {
+        "rollup": "^2.7.3"
+    },
     "prettier": "tsjs/prettier-config"
 }

@@ -3,7 +3,7 @@
     "version": "2.0.1",
     "description": "📈 Coveo analytics client (node and browser compatible) ",
     "main": "dist/library.js",
-    "module": "dist/library.esm/js",
+    "module": "dist/library.es.js",
     "browser": "dist/coveoua.js",
     "types": "dist/definitions/coveoua/library.d.ts",
     "scripts": {

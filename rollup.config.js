@@ -1,30 +1,58 @@
 import typescript from 'rollup-plugin-typescript2';
+import { resolve } from 'path'
+import { uglify } from 'rollup-plugin-uglify'
+import { terser } from "rollup-plugin-terser";
+import serve from 'rollup-plugin-serve'
 
 const browser = {
     input: './src/coveoua/browser.ts',
     output: {
-        file: path.resolve(__dirname, './dist/coveoua.js')
-    }
+        file: resolve(__dirname, './dist/coveoua.js'),
+        format: 'umd',
+        name: 'coveoua',
+        sourcemap: true,
+    },
+    plugins: [
+        typescript({
+            useTsconfigDeclarationDir: true
+        }),
+        process.env.SERVE ? serve({
+            contentBase: ['dist', 'public'],
+            port: 9001,
+            open: true,
+        }) : null
+    ]
 }
 
-export default [{
-
-}];
-
-function tsPlugin() {
-    return typescript({
-        transformers: [
-            (service) => ({
-                before: [keysTransformer(service.getProgram())],
-                after: [],
-            }),
-        ],
-    });
+const libraryEsm = {
+    input: './src/coveoua/library.ts',
+    output: {
+        file: resolve(__dirname, './dist/library.es.js'),
+        format: 'es',
+        sourcemap: true
+    },
+    plugins: [
+        typescript({
+            useTsconfigDeclarationDir: true
+        }),
+        terser()
+    ]
 }
 
-function replacePlugin() {
-    return replace({
-        'process.env.NODE_ENV': JSON.stringify('production'),
-        'process.env.REACT_VAPOR_VERSION': JSON.stringify(require('./package.json').version),
-    });
+const libraryUmd = {
+    input: './src/coveoua/library.ts',
+    output: {
+        file: resolve(__dirname, './dist/library.js'),
+        format: 'umd',
+        name: 'coveoua',
+        sourcemap: true,
+    },
+    plugins: [
+        typescript({
+            useTsconfigDeclarationDir: true
+        }),
+        uglify()
+    ]
 }
+
+export default [browser, libraryEsm, libraryUmd];

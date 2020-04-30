@@ -1,5 +1,4 @@
 import typescript from 'rollup-plugin-typescript2';
-import { resolve } from 'path'
 import { uglify } from 'rollup-plugin-uglify'
 import { terser } from "rollup-plugin-terser";
 import serve from 'rollup-plugin-serve'
@@ -15,9 +14,12 @@ const umdConfig = (file) => ({
     sourcemap: true,
 })
 
-const browser = {
+const umd = {
     input: './src/coveoua/browser.ts',
-    output: umdConfig(resolve(__dirname, './dist/coveoua.js')),
+    output: [
+        umdConfig('./dist/coveoua.js'),
+        umdConfig('./dist/library.js'),
+    ],
     plugins: [
         tsPlugin(),
         uglify(),
@@ -30,19 +32,10 @@ const browser = {
 }
 
 
-const libraryUmd = {
-    input: './src/coveoua/library.ts',
-    output: umdConfig(resolve(__dirname, './dist/library.js')),
-    plugins: [
-        tsPlugin(),
-        uglify()
-    ]
-}
-
 const libraryEsm = {
     input: './src/coveoua/library.ts',
     output: {
-        file: resolve(__dirname, './dist/library.es.js'),
+        file: './dist/library.es.js',
         format: 'es',
         sourcemap: true
     },
@@ -53,4 +46,4 @@ const libraryEsm = {
 }
 
 
-export default [browser, libraryUmd, libraryEsm];
+export default [umd, libraryEsm];

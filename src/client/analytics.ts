@@ -22,7 +22,7 @@ import { hasLocalStorage, hasCookieStorage } from '../detector';
 import { addDefaultValues } from '../hook/addDefaultValues';
 import { enhanceViewEvent } from '../hook/enhanceViewEvent';
 import { uuidv4 } from './crypto';
-import { convertKeysToMeasurementProtocol, isMeasurementProtocolKey, convertCustomMeasurementProtocolKeys, keysOf } from './measurementProtocolMapper';
+import { convertKeysToMeasurementProtocol, isMeasurementProtocolKey, convertCustomMeasurementProtocolKeys } from './measurementProtocolMapper';
 
 export const Version = 'v15';
 

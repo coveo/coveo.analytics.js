@@ -1,5 +1,5 @@
-import { AnalyticsBeaconClient } from './analyticsBeaconClient';
-import { AnalyticsFetchClient } from './analyticsFetchClient';
+import {AnalyticsBeaconClient} from './analyticsBeaconClient';
+import {AnalyticsFetchClient} from './analyticsFetchClient';
 import {
     AnyEventResponse,
     ClickEventRequest,
@@ -16,13 +16,13 @@ import {
     IRequestPayload,
     VariableArgumentsPayload,
 } from '../events';
-import { VisitorIdProvider } from './analyticsRequestClient';
-import { WebStorage, CookieStorage } from '../storage';
-import { hasLocalStorage, hasCookieStorage } from '../detector';
-import { addDefaultValues } from '../hook/addDefaultValues';
-import { enhanceViewEvent } from '../hook/enhanceViewEvent';
-import { uuidv4 } from './crypto';
-import { convertKeysToMeasurementProtocol, isMeasurementProtocolKey, convertCustomMeasurementProtocolKeys } from './measurementProtocolMapper';
+import {VisitorIdProvider} from './analyticsRequestClient';
+import {WebStorage, CookieStorage} from '../storage';
+import {hasLocalStorage, hasCookieStorage} from '../detector';
+import {addDefaultValues} from '../hook/addDefaultValues';
+import {enhanceViewEvent} from '../hook/enhanceViewEvent';
+import {uuidv4} from './crypto';
+import {convertKeysToMeasurementProtocol, isMeasurementProtocolKey, convertCustomMeasurementProtocolKeys} from './measurementProtocolMapper';
 
 export const Version = 'v15';
 
@@ -79,7 +79,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private analyticsFetchClient: AnalyticsFetchClient;
     private bufferedRequests: BufferedRequest[];
     private beforeSendHooks: AnalyticsClientSendEventHook[];
-    private eventTypeMapping: { [name: string]: EventTypeConfig };
+    private eventTypeMapping: {[name: string]: EventTypeConfig};
     private options: ClientOptions;
 
     constructor(opts: Partial<ClientOptions>) {
@@ -92,7 +92,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             ...opts,
         };
 
-        const { token } = this.options;
+        const {token} = this.options;
 
         this.cookieStorage = new CookieStorage();
         this.visitorId = '';
@@ -193,7 +193,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     private flushBufferWithBeacon(): void {
         while (this.hasPendingRequests()) {
-            const { eventType, payload } = this.bufferedRequests.pop() as BufferedRequest;
+            const {eventType, payload} = this.bufferedRequests.pop() as BufferedRequest;
             this.analyticsBeaconClient.sendEvent(eventType, payload);
         }
     }
@@ -201,7 +201,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private async sendFromBufferWithFetch(): Promise<AnyEventResponse | void> {
         const popped = this.bufferedRequests.shift();
         if (popped) {
-            const { eventType, payload } = popped;
+            const {eventType, payload} = popped;
             return this.analyticsFetchClient.sendEvent(eventType, payload);
         }
     }
@@ -247,7 +247,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private parseVariableArgumentsPayload(fieldsOrder: string[], payload: VariableArgumentsPayload) {
-        const parsedArguments: { [name: string]: any } = {};
+        const parsedArguments: {[name: string]: any} = {};
         for (let i = 0, length = payload.length; i < length; i++) {
             const currentArgument = payload[i];
             if (typeof currentArgument === 'string') {
@@ -307,7 +307,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private processCustomParameters(payload: IRequestPayload): IRequestPayload {
-        const { custom, ...rest } = payload;
+        const {custom, ...rest} = payload;
 
         const newPayload = convertCustomMeasurementProtocolKeys(rest);
 
@@ -318,7 +318,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private validateParams(payload: IRequestPayload): IRequestPayload {
-        const { anonymizeIp, ...rest } = payload;
+        const {anonymizeIp, ...rest} = payload;
         if (anonymizeIp !== undefined) {
             if (['0', 'false', 'undefined', 'null', '{}', '[]', ''].indexOf(`${anonymizeIp}`.toLowerCase()) == -1) {
                 rest['anonymizeIp'] = 1;
@@ -328,7 +328,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private get baseUrl(): string {
-        const { version, endpoint } = this.options;
+        const {version, endpoint} = this.options;
         return `${endpoint}/rest/${version}`;
     }
 }

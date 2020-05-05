@@ -263,21 +263,19 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         return parsedArguments;
     }
 
-    private getValidEmptyValuesForEvent(evtType: EventType | string): string[] {
-        switch (evtType) {
-            case 'search':
-                return ['queryText'] as (keyof Pick<SearchEventRequest, 'queryText'>)[]
-        }
-        return []
+    private isKeyAllowedEmpty(evtType: EventType | string, key: string) {
+        const keysThatCanBeEmpty: Partial<Record<EventType | string, string[]>> = {
+            [EventType.search]: ['queryText'],
+        };
+        const match = keysThatCanBeEmpty[evtType] || [];
+
+        return match.indexOf(key) !== -1
     }
 
     private removeEmptyPayloadValues(payload: IRequestPayload, eventType: EventType | string): IRequestPayload {
-        const keysThatCanBeEmpty = this.getValidEmptyValuesForEvent(eventType)
-
         const isNotEmptyValue = (value: any) => typeof value !== 'undefined' && value !== null && value !== '';
         return Object.keys(payload)
-            .filter((key) => isNotEmptyValue(payload[key]))
-            .concat(keysThatCanBeEmpty)
+            .filter((key) => this.isKeyAllowedEmpty(eventType, key) || isNotEmptyValue(payload[key]))
             .reduce(
                 (newPayload, key) => ({
                     ...newPayload,

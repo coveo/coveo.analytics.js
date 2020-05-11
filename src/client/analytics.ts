@@ -17,8 +17,8 @@ import {
     VariableArgumentsPayload,
 } from '../events';
 import {VisitorIdProvider} from './analyticsRequestClient';
-import {WebStorage, CookieStorage} from '../storage';
-import {hasLocalStorage, hasCookieStorage} from '../detector';
+import {WebStorage, CookieStorage, NullStorage} from '../storage';
+import {hasCookieStorage, hasWindow, hasDocument} from '../detector';
 import {addDefaultValues} from '../hook/addDefaultValues';
 import {enhanceViewEvent} from '../hook/enhanceViewEvent';
 import {uuidv4} from './crypto';
@@ -32,10 +32,13 @@ export const Endpoints = {
     hipaa: 'https://usageanalyticshipaa.coveo.com',
 };
 
+export type SupportedClientEnvironment = 'node' | 'browser'
+
 export interface ClientOptions {
     token?: string;
     endpoint: string;
     version: string;
+    env: SupportedClientEnvironment
 }
 
 export type AnalyticsClientSendEventHook = <TResult>(eventType: string, payload: any) => TResult;
@@ -70,12 +73,13 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             endpoint: Endpoints.default,
             token: '',
             version: Version,
+            env: hasWindow() && hasDocument() ? 'browser' : 'node'
         };
     }
 
+    private storage: WebStorage;
     private visitorId: string;
-    private cookieStorage: WebStorage;
-    private analyticsBeaconClient: AnalyticsBeaconClient;
+    private analyticsBeaconClient: AnalyticsBeaconClient | null;
     private analyticsFetchClient: AnalyticsFetchClient;
     private bufferedRequests: BufferedRequest[];
     private beforeSendHooks: AnalyticsClientSendEventHook[];
@@ -92,9 +96,10 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             ...opts,
         };
 
+        this.storage = this.initStorage()
+
         const {token} = this.options;
 
-        this.cookieStorage = new CookieStorage();
         this.visitorId = '';
         this.bufferedRequests = [];
         this.beforeSendHooks = [enhanceViewEvent, addDefaultValues];
@@ -107,17 +112,27 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             token,
             visitorIdProvider: this,
         };
-        this.analyticsBeaconClient = new AnalyticsBeaconClient(clientsOptions);
+        this.analyticsBeaconClient = this.options.env == 'browser' ? new AnalyticsBeaconClient(clientsOptions) : null;
         this.analyticsFetchClient = new AnalyticsFetchClient(clientsOptions);
-        window.addEventListener('beforeunload', () => this.flushBufferWithBeacon());
+        this.options.env == 'browser' && hasWindow() ? window.addEventListener('beforeunload', () => this.flushBufferWithBeacon()) : null;
+    }
+
+    private initStorage(): WebStorage {
+
+        if (this.options.env === 'node') {
+            console.log('Storage not implemented for nodejs environments')
+            return new NullStorage()
+        }
+
+        if (hasCookieStorage()) {
+            return new CookieStorage()
+        }
+
+        return localStorage
     }
 
     private initVisitorId() {
-        const existingVisitorId =
-            this.visitorId ||
-            (hasCookieStorage() && this.cookieStorage.getItem('visitorId')) ||
-            (hasLocalStorage() && localStorage.getItem('visitorId')) ||
-            '';
+        const existingVisitorId = this.visitorId || this.storage.getItem('visitorId') || '';
         this.currentVisitorId = existingVisitorId || uuidv4();
     }
 
@@ -127,12 +142,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     set currentVisitorId(visitorId: string) {
         this.visitorId = visitorId;
-        if (hasCookieStorage()) {
-            this.cookieStorage.setItem('visitorId', visitorId);
-        }
-        if (hasLocalStorage()) {
-            localStorage.setItem('visitorId', visitorId);
-        }
+        this.storage.setItem('visitorId', visitorId);
     }
 
     async sendEvent(
@@ -194,7 +204,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private flushBufferWithBeacon(): void {
         while (this.hasPendingRequests()) {
             const {eventType, payload} = this.bufferedRequests.pop() as BufferedRequest;
-            this.analyticsBeaconClient.sendEvent(eventType, payload);
+            this.analyticsBeaconClient?.sendEvent(eventType, payload);
         }
     }
 

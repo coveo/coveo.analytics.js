@@ -49,3 +49,4 @@ export class NullStorage implements WebStorage {
         /**/
     }
 }
+

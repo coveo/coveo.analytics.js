@@ -96,9 +96,9 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             ...opts,
         };
 
-        this.storage = this.initStorage()
-
         const {token} = this.options;
+
+        this.storage = this.initStorage();
 
         this.visitorId = '';
         this.bufferedRequests = [];

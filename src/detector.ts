@@ -19,7 +19,7 @@ export function hasSessionStorage(): boolean {
 }
 
 export function hasCookieStorage(): boolean {
-    return hasNavigator() ? navigator.cookieEnabled : false;
+    return hasNavigator() && navigator.cookieEnabled;
 }
 
 export function hasCrypto(): boolean {

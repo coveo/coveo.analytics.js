@@ -198,7 +198,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private flushBufferWithBeacon(): void {
         while (this.hasPendingRequests()) {
             const {eventType, payload} = this.bufferedRequests.pop() as BufferedRequest;
-            this.analyticsBeaconClient?.sendEvent(eventType, payload);
+            this.analyticsBeaconClient.sendEvent(eventType, payload);
         }
     }
 

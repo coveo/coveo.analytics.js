@@ -22,15 +22,14 @@ describe('CookieAndLocalStorage', () => {
     const key = 'hello';
     const someData = 'world';
     let storage: CookieAndLocalStorage;
-    let cookie: CookieStorage
+    let cookie: CookieStorage;
 
     beforeEach(() => {
-        storage = new CookieAndLocalStorage()
-        cookie = new CookieStorage()
-    })
+        storage = new CookieAndLocalStorage();
+        cookie = new CookieStorage();
+    });
 
     it('setItem writes data to a cookie and local storage', () => {
-
         storage.setItem(key, someData);
         expect(cookie.getItem(key)).toBe(someData);
         expect(localStorage.getItem(key)).toBe(someData);
@@ -41,25 +40,23 @@ describe('CookieAndLocalStorage', () => {
         storage.removeItem(key);
 
         expect(storage.getItem(key)).toBe(null);
-        expect(cookie.getItem(key)).toBe(null)
-        expect(localStorage.getItem(key)).toBe(null)
+        expect(cookie.getItem(key)).toBe(null);
+        expect(localStorage.getItem(key)).toBe(null);
     });
 
     it('get item uses local storage first', () => {
-        cookie.setItem(key, "fail")
-        localStorage.setItem(key, someData)
+        cookie.setItem(key, 'fail');
+        localStorage.setItem(key, someData);
 
         storage.getItem(key);
         expect(storage.getItem(key)).toBe(someData);
     });
 
     it('get item fallback on cookie storage if absent from local storage', () => {
-        localStorage.setItem(key, "")
-        cookie.setItem(key, someData)
+        localStorage.setItem(key, '');
+        cookie.setItem(key, someData);
 
         storage.getItem(key);
         expect(storage.getItem(key)).toBe(someData);
     });
-
-
-})
+});

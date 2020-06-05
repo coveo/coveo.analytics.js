@@ -7,7 +7,7 @@ export function hasNavigator(): boolean {
 }
 
 export function hasDocument(): boolean {
-    return typeof document !== 'undefined'
+    return typeof document !== 'undefined';
 }
 
 export function hasLocalStorage(): boolean {
@@ -19,11 +19,11 @@ export function hasSessionStorage(): boolean {
 }
 
 export function hasCookieStorage(): boolean {
-    return hasNavigator() ? navigator.cookieEnabled : false
+    return hasNavigator() ? navigator.cookieEnabled : false;
 }
 
 export function hasCrypto(): boolean {
-    return typeof crypto !== 'undefined'
+    return typeof crypto !== 'undefined';
 }
 
 export function hasCryptoRandomValues(): boolean {
@@ -31,5 +31,5 @@ export function hasCryptoRandomValues(): boolean {
 }
 
 export function hasLocation(): boolean {
-    return typeof location !== 'undefined'
+    return typeof location !== 'undefined';
 }

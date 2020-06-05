@@ -1,4 +1,4 @@
-import {AnalyticsBeaconClient} from './analyticsBeaconClient';
+import {IAnalyticsBeaconClientOptions} from './analyticsBeaconClient';
 import {AnalyticsFetchClient} from './analyticsFetchClient';
 import {
     AnyEventResponse,
@@ -16,13 +16,13 @@ import {
     IRequestPayload,
     VariableArgumentsPayload,
 } from '../events';
-import {VisitorIdProvider} from './analyticsRequestClient';
-import {WebStorage, CookieStorage, NullStorage} from '../storage';
-import {hasCookieStorage, hasWindow, hasDocument} from '../detector';
+import {VisitorIdProvider, AnalyticsRequestClient} from './analyticsRequestClient';
+import {hasWindow, hasDocument} from '../detector';
 import {addDefaultValues} from '../hook/addDefaultValues';
 import {enhanceViewEvent} from '../hook/enhanceViewEvent';
 import {uuidv4} from './crypto';
 import {convertKeysToMeasurementProtocol, isMeasurementProtocolKey, convertCustomMeasurementProtocolKeys} from './measurementProtocolMapper';
+import {IRuntimeEnvironment, BrowserRuntime, NodeJSRuntime} from './runtimeEnvironment';
 
 export const Version = 'v15';
 
@@ -32,13 +32,10 @@ export const Endpoints = {
     hipaa: 'https://usageanalyticshipaa.coveo.com',
 };
 
-export type SupportedClientEnvironment = 'node' | 'browser'
-
 export interface ClientOptions {
     token?: string;
     endpoint: string;
     version: string;
-    env: SupportedClientEnvironment
 }
 
 export type AnalyticsClientSendEventHook = <TResult>(eventType: string, payload: any) => TResult;
@@ -59,6 +56,7 @@ export interface AnalyticsClient {
     getHealth(): Promise<HealthResponse>;
     registerBeforeSendEventHook(hook: AnalyticsClientSendEventHook): void;
     addEventTypeMapping(eventType: string, eventConfig: EventTypeConfig): void;
+    runtime: IRuntimeEnvironment
 }
 
 interface BufferedRequest {
@@ -73,13 +71,11 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             endpoint: Endpoints.default,
             token: '',
             version: Version,
-            env: hasWindow() && hasDocument() ? 'browser' : 'node'
         };
     }
 
-    private storage: WebStorage;
+    public runtime: IRuntimeEnvironment;
     private visitorId: string;
-    private analyticsBeaconClient: AnalyticsBeaconClient | null;
     private analyticsFetchClient: AnalyticsFetchClient;
     private bufferedRequests: BufferedRequest[];
     private beforeSendHooks: AnalyticsClientSendEventHook[];
@@ -96,39 +92,37 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             ...opts,
         };
 
-        const {token} = this.options;
-
-        this.storage = this.initStorage();
-
         this.visitorId = '';
         this.bufferedRequests = [];
         this.beforeSendHooks = [enhanceViewEvent, addDefaultValues];
         this.eventTypeMapping = {};
-
-        this.initVisitorId();
-
+        
         const clientsOptions = {
             baseUrl: this.baseUrl,
-            token,
+            token: this.options.token,
             visitorIdProvider: this,
         };
-        this.analyticsBeaconClient = this.options.env == 'browser' ? new AnalyticsBeaconClient(clientsOptions) : null;
+
+        this.runtime = this.initRuntime(clientsOptions)
         this.analyticsFetchClient = new AnalyticsFetchClient(clientsOptions);
-        this.options.env == 'browser' && hasWindow() ? window.addEventListener('beforeunload', () => this.flushBufferWithBeacon()) : null;
+
+        this.initVisitorId();
     }
 
-    private initStorage(): WebStorage {
-
-        if (this.options.env === 'node') {
-            console.log('Storage not implemented for nodejs environments')
-            return new NullStorage()
+    private initRuntime(clientsOptions: IAnalyticsBeaconClientOptions) {
+        if (hasWindow() && hasDocument()) {
+            return new BrowserRuntime(clientsOptions, () => this.flushBufferWithBeacon())
         }
 
-        if (hasCookieStorage()) {
-            return new CookieStorage()
-        }
+        return new NodeJSRuntime()
+    }
 
-        return localStorage
+    private get analyticsBeaconClient() {
+        return this.runtime.beaconClient
+    }
+
+    private get storage() {
+        return this.runtime.storage
     }
 
     private initVisitorId() {

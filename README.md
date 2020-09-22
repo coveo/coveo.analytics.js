@@ -8,14 +8,14 @@
 
 ## Coveo Usage Analytic JavaScript client
 
-This project provides 2 ways to interact with the the Coveo Usage Analytics service.
+This project provides 2 ways to interact with the Coveo Usage Analytics service.
 
--   A JavaScript browser client
--   A code snippet to add in websites pages
+- A JavaScript browser client
+- A code snippet to add in website pages
 
 ## Usage (Web analytics)
 
-This JavaScript client project provides a code snippet that website administrators can easily add to website pages to track `pageview` events. The `pageview` events are stored in a Coveo Usage Analytics table which content currently cannot be viewed in Usage Analytics reports and the visit browser to prevent performance degradation.
+This JavaScript client provides a code snippet that can easily be added to website pages to track events. The `pageview` events are stored in a Coveo Usage Analytics table which content currently cannot be viewed in Usage Analytics reports and the visit browser to prevent performance degradation.
 
 Initially, the `pageview` events data will be used exclusively by the Coveo Reveal Recommendations feature (see [Recommendations Feature](https://onlinehelp.coveo.com/en/cloud/coveo_reveal_features.htm#Recommendations)). It is recommended that you start pushing `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
@@ -27,13 +27,13 @@ Initially, the `pageview` events data will be used exclusively by the Coveo Reve
 
 You need a Coveo Cloud API key that has the permission to write to the Usage Analytics service.
 
--   For [Coveo Cloud V1](https://cloud.coveo.com/), contact [Coveo Support](https://coveocommunity.force.com/) and ask to create an API key with the **Write UA** scope.
+- For [Coveo Cloud V1](https://cloud.coveo.com/), contact [Coveo Support](https://coveocommunity.force.com/) and ask to create an API key with the **Write UA** scope.
 
--   For [Coveo Cloud V2](https://platform.cloud.coveo.com/), create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Edit** check box for the **Analytics data** privilege (see [API Access - Page](http://www.coveo.com/go?dest=ccv2ac&context=27)).
+- For [Coveo Cloud V2](https://platform.cloud.coveo.com/), create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Edit** check box for the **Analytics data** privilege (see [API Access - Page](https://www.coveo.com/go?dest=ccv2ac&context=27)).
 
 2. Add the code snippet to all your website pages.
 
-Ask an administrator to add a code snippet like the following to all pages of your websites:
+Add a code snippet like the following to all pages of your websites:
 
 ```html
 <script>
@@ -65,7 +65,7 @@ The code snippet must contain `contentIdKey` and `contentIdValue` in order to id
 
 **Note: Do not copy the\_ `coveoua.js` \_file as it can be updated anytime and you could experience compatibility issues.**
 
-3. Validate pageview events are pushed to the Coveo Usage Analytics service
+3. Validate `pageview` events are pushed to the Coveo Usage Analytics service
 
 a. In a web browser such as Chrome, navigate to a website page to which you added the code snippet.
 
@@ -91,7 +91,7 @@ Add the code snippet to all your website pages.
 
 You can now call the script using the following line:
 
-```html
+```js
 coveoua('send', 'click', { ... });
 ```
 
@@ -99,7 +99,7 @@ Refer to the [Usage Analytics Write API](https://docs.coveo.com/en/1430/cloud-v2
 
 ### Usage (for developers)
 
-You have to provide your own `fetch` API compatible libraries in the global environment (see [Isomorphic TypeScript, fetch, promises, ava and coverage](http://source.coveo.com/2016/05/11/isomorphic-typescript-ava-w-coverage/)).
+You need to provide your own `fetch` API compatible libraries in the global environment (see [Isomorphic TypeScript, fetch, promises, ava and coverage](https://source.coveo.com/2016/05/11/isomorphic-typescript-ava-w-coverage/)).
 
 ```bash
 npm install coveo.analytics isomorphic-fetch
@@ -122,36 +122,47 @@ client.sendCustomEvent({
 
 There are 3 available storage you can use to store view events client side.
 
--   Cookie storage, which supports top level domain storage. This means that events from a.foo.com will be available from b.foo.com.
+- Cookie storage, which supports top level domain storage. This means that events from a.foo.com will be available from b.foo.com.
     Cookies have the limitation of not being able to store a lot of data, especially if your page view that are stored are long.
 
--   Local storage, which allows to store much more information client side, but has the drawback of not being able to acess data
+- Local storage, which allows to store much more information client side, but has the drawback of not being able to acess data
     across multiple top level domain.
 
--   Session storage, which has roughly the same limitation and capability as Local storage, except that it is cleared when the web browser tab is closed.
+- Session storage, which has roughly the same limitation and capability as Local storage, except that it is cleared when the web browser tab is closed.
 
 By default, the local storage option will automatically be chosen as the default storage, unless specified manually.
 
 ### Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+#### Setup
+
 ```bash
 git clone
 npm install
 npm run build
-# code code code
-npm run test
-# open pull request
 ```
 
-There are two ways to run your code locally: 
-1.  run `npm start` and open your browser on http://localhost:9001
-2.  run through VSCode debugger with the `Debug: Start Debugging` command, using the `Launch Chrome` configuration.
+#### Running the project
 
-To test out your changes, add a new function calls in the `public/index.html` file and check the payload in `Developer Console` of your browser
+There are two ways to run your code locally:
+
+1. run `npm start` and open your browser on http://localhost:9001
+
+2. run through VSCode debugger with the `Debug: Start Debugging` command, using the `Launch Chrome` configuration.
+
+To test out your changes, add `coveoua` function calls in the `public/index.html` file and check the payload in the `Developer Console` section of your browser.
+
+#### Running tests
+
+```
+npm run test
+```
 
 ### License
 
 MIT license (see [LICENSE](LICENSE)).
 
-[![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
-[![coveo](./assets/by-coveo.png)](http://www.coveo.com)
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+[![coveo](./assets/by-coveo.png)](https://www.coveo.com)

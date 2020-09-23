@@ -17,17 +17,17 @@ This project provides 2 ways to interact with the Coveo Usage Analytics service.
 
 This JavaScript client provides a code snippet that can easily be added to website pages to track events. The `pageview` events are stored in a Coveo Usage Analytics table which content currently cannot be viewed in Usage Analytics reports and the visit browser to prevent performance degradation.
 
-Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start pushing `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
+Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start sending `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
 **Note: This Coveo code snippet is similar to the Google analytics one (analytics.js).**
 
-### Pushing Coveo Analytics Pageview Events for Recommendations
+### Sending Coveo Analytics Page View Events for Recommendations
 
 1. Get an API key.
 
-You need a Coveo Cloud API key which has the permission to write to the Usage Analytics service.
+You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events.
 
-Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Edit** check box for the **Analytics data** privilege (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
+Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
 2. Add the code snippet to all your website pages.
 
@@ -35,13 +35,13 @@ Add a code snippet like the following to all pages of your websites:
 
 ```html
 <script>
-  (function(c,o,v,e,O,u,a){
-  a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
-  c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
-  O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
-  })(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/1.0/coveoua.js')
+    (function(c,o,v,e,O,u,a){
+    a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
+    c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
+    O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
+    })(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js') // Replace "2" in the script url with the latest release
 
-    coveoua('init', 'YOUR_API_KEY'); // Replace YOUR_API_KEY with your real key
+    coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
     coveoua('send', 'view', {
         contentIdKey: '@permanentid',
         contentIdValue: 'PERMANENT_ID_VALUE', // Replace PERMANENT_ID_VALUE with a unique value from your page.
@@ -50,8 +50,6 @@ Add a code snippet like the following to all pages of your websites:
     });
 </script>
 ```
-
-Make sure you replace `YOUR_API_KEY` by the API key you got in the previous step and `1.0` in the script url by the most recently released version.
 
 The code snippet must contain `contentIdKey` and `contentIdValue` in order to identify items in the Coveo index. When you want to recommend specific types of content, you also need to add a `contentType` parameter value.
 
@@ -63,7 +61,7 @@ The code snippet must contain `contentIdKey` and `contentIdValue` in order to id
 
 **Note: Do not copy the `coveoua.js` file as it can be updated anytime and you could experience compatibility issues.**
 
-3. Validate `pageview` events are pushed to the Coveo Usage Analytics service
+3. Validate `pageview` events are sent to the Coveo Usage Analytics service
 
 a. In a web browser such as Chrome, navigate to a website page to which you added the code snippet.
 
@@ -71,19 +69,18 @@ b. In the browser developer tool, go the the **Network** tab.
 
 c. Reload the page, in the **Name** panel, ensure that you see a **view** event sent to Coveo analytics.
 
-### Pushing Any Coveo Analytics Event
+### Sending Any Coveo Analytics Event
 
 Add the code snippet to all your website pages.
 
 ```html
 <script>
-  (function(c,o,v,e,O,u,a){
-  a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
-  c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
-  O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
-  })(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/1.0/coveoua.js') // Replace 1.0 with the latest release
-
-  coveoua('init', 'YOUR_API_KEY'); // Replace YOUR_API_KEY with your real key
+(function(c,o,v,e,O,u,a){
+a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
+c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
+O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
+})(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js') // Replace "2" in the script url with the latest release
+coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
 </script>
 ```
 

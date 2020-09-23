@@ -17,7 +17,7 @@ This project provides 2 ways to interact with the Coveo Usage Analytics service.
 
 This JavaScript client provides a code snippet that can easily be added to website pages to track events. The `pageview` events are stored in a Coveo Usage Analytics table which content currently cannot be viewed in Usage Analytics reports and the visit browser to prevent performance degradation.
 
-Initially, the `pageview` events data will be used exclusively by the Coveo Reveal Recommendations feature (see [Recommendations Feature](https://onlinehelp.coveo.com/en/cloud/coveo_reveal_features.htm#Recommendations)). It is recommended that you start pushing `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
+Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start pushing `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
 **Note: This Coveo code snippet is similar to the Google analytics one (analytics.js).**
 
@@ -25,11 +25,9 @@ Initially, the `pageview` events data will be used exclusively by the Coveo Reve
 
 1. Get an API key.
 
-You need a Coveo Cloud API key that has the permission to write to the Usage Analytics service.
+You need a Coveo Cloud API key which has the permission to write to the Usage Analytics service.
 
-- For [Coveo Cloud V1](https://cloud.coveo.com/), contact [Coveo Support](https://coveocommunity.force.com/) and ask to create an API key with the **Write UA** scope.
-
-- For [Coveo Cloud V2](https://platform.cloud.coveo.com/), create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Edit** check box for the **Analytics data** privilege (see [API Access - Page](https://www.coveo.com/go?dest=ccv2ac&context=27)).
+Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Edit** check box for the **Analytics data** privilege (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
 2. Add the code snippet to all your website pages.
 

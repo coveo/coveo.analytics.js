@@ -19,13 +19,15 @@ This JavaScript client provides a code snippet that can easily be added to websi
 
 Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start sending `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
+On top of `pageview` events, generic and commerce (see [Tracking Commerce Events](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events)) events can also be tracked.
+
 **Note: This Coveo code snippet is similar to the Google analytics one (analytics.js).**
 
 ### Sending Coveo Analytics Page View Events for Recommendations
 
 1. Get an API key.
 
-You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events.
+You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events (see [User Authentication](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#user-authentication)).
 
 Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
@@ -44,7 +46,7 @@ Add a code snippet like the following to all pages of your websites:
     coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
     coveoua('send', 'view', {
         contentIdKey: '@permanentid',
-        contentIdValue: 'PERMANENT_ID_VALUE', // Replace PERMANENT_ID_VALUE with a unique value from your page.
+        contentIdValue: <PERMANENT_ID_VALUE>, // Replace <PERMANENT_ID_VALUE> with a unique value from your page.
         contentType: 'product', // Optional
         // ... more information ...
     });
@@ -117,11 +119,9 @@ client.sendCustomEvent({
 
 There are 3 available storage types you can use to store view events client side.
 
-- Cookie storage, which supports top level domain storage. This means that events from a.foo.com will be available from b.foo.com.
-    Cookies have the limitation of not being able to store a lot of data, especially if your stored page views are long.
+- Cookie storage, which supports top level domain storage. This means that events from a.foo.com will be available from b.foo.com. Cookies have the limitation of not being able to store a lot of data, especially if your stored page views are long.
 
-- Local storage, which allows to store much more information client side, but has the drawback of not being able to access data
-    across multiple top level domains.
+- Local storage, which allows to store much more information client side, but has the drawback of not being able to access data across multiple top level domains.
 
 - Session storage, which has roughly the same limitation and capability as Local storage, except that it is cleared when the web browser tab is closed.
 

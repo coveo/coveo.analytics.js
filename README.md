@@ -65,11 +65,11 @@ The code snippet must contain `contentIdKey` and `contentIdValue` in order to id
 
 3. Validate `pageview` events are sent to the Coveo Usage Analytics service
 
-a. In a web browser such as Chrome, navigate to a website page to which you added the code snippet.
+    a. In a web browser such as Chrome, navigate to a website page to which you added the code snippet.
 
-b. In the browser developer tool, go the the **Network** tab.
+    b. In the browser developer tool, go the the **Network** tab.
 
-c. Reload the page, in the **Name** panel, ensure that you see a **view** event sent to Coveo analytics.
+    c. Reload the page, in the **Name** panel, ensure that you see a **view** event sent to Coveo analytics.
 
 ### Sending Any Coveo Analytics Event
 

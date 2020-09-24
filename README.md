@@ -27,13 +27,13 @@ On top of `pageview` events, generic and commerce (see [Tracking Commerce Events
 
 1. Get an API key.
 
-You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events (see [User Authentication](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#user-authentication)).
+    You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events (see [User Authentication](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#user-authentication)).
 
-Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
+    Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
 2. Add the code snippet to all your website pages.
 
-Add a code snippet like the following to all pages of your websites:
+    Add a code snippet like the following to all pages of your websites:
 
 ```html
 <script>

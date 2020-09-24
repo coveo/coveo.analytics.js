@@ -71,7 +71,7 @@ On top of `pageview` events, generic and commerce events can also be tracked. Se
 
     c. Reload the page, in the **Name** panel, ensure that you see a **view** event sent to Coveo analytics.
 
-### Sending Any Coveo Analytics Event
+### Sending Any Coveo Analytics Events
 
 Add the code snippet to all your website pages.
 
@@ -93,6 +93,40 @@ coveoua('send', 'click', { ... });
 ```
 
 Refer to the [Usage Analytics Write API](https://docs.coveo.com/en/1430/cloud-v2-developers/usage-analytics-write-api) section to see what types of events are supported and what payload you need to send.
+
+### Sending Commerce Events
+
+Add the code snippet to all your website pages.
+
+```html
+<script>
+(function(c,o,v,e,O,u,a){
+a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
+c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
+O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
+})(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js') // Replace "2" in the script url with the latest release
+coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
+</script>
+```
+
+To send commerce events, call `coveoua` with the event name. Here is how an [addition to the cart interaction](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart) is measured:
+
+1. First use the `ec:addProduct` command to include the relevant product data in the event you’re about to send
+    ```js
+    coveoua('ec:addProduct', <PRODUCT_DATA>);
+    ```
+2. Then use the `ec:setAction` command to specify that the action done on this data is an addition to the cart:
+    ```js
+    coveoua('ec:setAction', 'add');   
+    ```
+3. Finally, use the `send` command to send the event to Coveo Usage Analytics.
+    ```js
+    coveoua('send', 'event');
+    ```
+
+Refer to the [**Tracking Commerce Events** page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events) to see how to measure [a product details view](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-product-details-view), [an addition to the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart), [a removal from the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-removal-from-the-cart), [a purchase](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-purchases) or [an event on a search-driven listing-page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-events-on-a-search-driven-listing-page) in more details.
+
+All supported actions are also listed in the [**Possible Actions** section of the **Tracking Commerce Events** page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#possible-actions).
 
 ### Usage (for developers)
 

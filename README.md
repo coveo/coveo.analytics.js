@@ -151,7 +151,7 @@ To test out your changes, add `coveoua` function calls in the `public/index.html
 
 #### Running tests
 
-```
+```bash
 npm run test
 ```
 

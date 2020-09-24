@@ -35,33 +35,33 @@ On top of `pageview` events, generic and commerce (see [Tracking Commerce Events
 
     Add a code snippet like the following to all pages of your websites:
 
-```html
-<script>
-    (function(c,o,v,e,O,u,a){
-    a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
-    c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
-    O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
-    })(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js') // Replace "2" in the script url with the latest release
+    ```html
+    <script>
+        (function(c,o,v,e,O,u,a){
+        a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)};
+        c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e;
+        O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O)
+        })(window,document,'script','https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js') 
+        // Replace "2" in the script url with the latest release
+    
+        coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
+        coveoua('send', 'view', {
+            contentIdKey: '@permanentid',
+            contentIdValue: <PERMANENT_ID_VALUE>, // Replace <PERMANENT_ID_VALUE> with a unique value from your page.
+            contentType: 'product', // Optional
+            // ... more information ...
+        });
+    </script>
+    ```
+    The code snippet must contain `contentIdKey` and `contentIdValue` in order to identify items in the Coveo index. When you want to recommend specific types of content, you also need to add a `contentType` parameter value.
 
-    coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your real key
-    coveoua('send', 'view', {
-        contentIdKey: '@permanentid',
-        contentIdValue: <PERMANENT_ID_VALUE>, // Replace <PERMANENT_ID_VALUE> with a unique value from your page.
-        contentType: 'product', // Optional
-        // ... more information ...
-    });
-</script>
-```
+    | Key            | Value                                                               |
+    | -------------- | ------------------------------------------------------------------- |
+    | contentIdKey   | The Coveo index field name that will be used to identify the item.  |
+    | contentIdValue | The Coveo index field value that will be used to identify the item. |
+    | contentType    | [Optional] The type of the item to be tracked (e.g., 'Article').    |
 
-The code snippet must contain `contentIdKey` and `contentIdValue` in order to identify items in the Coveo index. When you want to recommend specific types of content, you also need to add a `contentType` parameter value.
-
-| Key            | Value                                                               |
-| -------------- | ------------------------------------------------------------------- |
-| contentIdKey   | The Coveo index field name that will be used to identify the item.  |
-| contentIdValue | The Coveo index field value that will be used to identify the item. |
-| contentType    | [Optional] The type of the item to be tracked (e.g., 'Article').    |
-
-**Note: Do not copy the `coveoua.js` file as it can be updated anytime and you could experience compatibility issues.**
+    **Note: Do not copy the `coveoua.js` file as it can be updated anytime and you could experience compatibility issues.**
 
 3. Validate `pageview` events are sent to the Coveo Usage Analytics service
 

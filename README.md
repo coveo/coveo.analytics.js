@@ -19,7 +19,7 @@ This JavaScript client provides a code snippet that can easily be added to websi
 
 Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start sending `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
-On top of `pageview` events, generic and commerce (see [Tracking Commerce Events](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events)) events can also be tracked.
+On top of `pageview` events, generic and commerce events can also be tracked. See [Tracking Commerce Events](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events).
 
 **Note: This Coveo code snippet is similar to the Google analytics one (analytics.js).**
 

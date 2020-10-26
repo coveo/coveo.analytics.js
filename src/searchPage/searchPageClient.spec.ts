@@ -371,7 +371,7 @@ describe('SearchPageClient', () => {
 
     it('should send proper payload for #logRecommendation', async () => {
         await client.logRecommendation();
-        expectMatchPayload(SearchPageEvents.recommendation);
+        expectMatchCustomEventPayload(SearchPageEvents.recommendation);
     });
 
     it('should enable analytics tracking by default', () => {

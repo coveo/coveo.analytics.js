@@ -1,3 +1,3 @@
 module.exports = {
-    ...require('tsjs/prettier-config'),
-};
+    ...require("tsjs/prettier-config")
+}

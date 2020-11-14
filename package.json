@@ -53,5 +53,5 @@
         "dist/**/*.js.map",
         "src/**/*.ts",
         "LICENSE"
-    ],
+    ]
 }

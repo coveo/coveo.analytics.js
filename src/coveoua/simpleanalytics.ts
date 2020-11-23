@@ -2,6 +2,7 @@ import {AnyEventResponse, SendEventArguments, VariableArgumentsPayload} from '..
 import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analytics';
 import {Plugins} from './plugins';
 import {EC} from '../plugins/ec';
+import {SV} from '../plugins/sv';
 
 export type AvailableActions = keyof CoveoUA;
 
@@ -32,6 +33,7 @@ export class CoveoUA {
 
         if (this.client) {
             this.plugins.register('ec', new EC({client: this.client}));
+            this.plugins.register('sv', new SV({client: this.client}));
             this.client.registerBeforeSendEventHook((eventType, payload) => ({
                 ...payload,
                 ...this.params,

@@ -3,67 +3,53 @@ import {EventType} from '../events';
 import {uuidv4} from '../client/crypto';
 import {getFormattedLocation} from '../client/location';
 import {
-    convertProductToMeasurementProtocol,
     convertImpressionListToMeasurementProtocol,
+    convertTicketToMeasurementProtocol,
 } from '../client/measurementProtocolMapper';
 
-export const ECPluginEventTypes = {
+export const SVPluginEventTypes = {
     pageview: 'pageview',
     event: 'event',
 };
 
-const allECEventTypes = Object.keys(ECPluginEventTypes).map(
-    (key) => ECPluginEventTypes[key as keyof typeof ECPluginEventTypes]
+const allSVEventTypes = Object.keys(SVPluginEventTypes).map(
+    (key) => SVPluginEventTypes[key as keyof typeof SVPluginEventTypes]
 );
-
-// From https://stackoverflow.com/a/49725198/497731
-type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
-    {
-        [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
-    }[Keys];
 
 export type CustomValues = {
     [key: string]: string | number | boolean;
 };
 
-export interface ProductProperties {
+export interface TicketProperties {
     id?: string;
-    name?: string;
-    brand?: string;
+    subject?: string;
+    description?: string;
     category?: string;
-    variant?: string;
-    price?: number;
-    quantity?: number;
-    coupon?: string;
-    position?: number;
+    productId?: string;
     custom?: CustomValues;
 }
 
-export type Product = RequireAtLeastOne<ProductProperties, 'id' | 'name'>;
+export type Ticket = TicketProperties;
 
 export interface ImpressionProperties {
     id?: string;
     name?: string;
-    list?: string;
-    brand?: string;
-    category?: string;
-    variant?: string;
     position?: number;
-    price?: number;
+    list?: string;
     custom?: CustomValues;
 }
 
-export type Impression = RequireAtLeastOne<ImpressionProperties, 'id' | 'name'>;
+export type Impression = ImpressionProperties;
 export type BaseImpression = Omit<Impression, 'list'>;
 export interface ImpressionList {
     listName?: string;
     impressions: BaseImpression[];
 }
 
-export class EC {
+export class SV {
     private client: AnalyticsClient;
     private uuidGenerator: typeof uuidv4;
-    private products: Product[] = [];
+    private ticket: Ticket = {};
     private impressions: Impression[] = [];
     private action?: string;
     private actionData: {[name: string]: string} = {};
@@ -81,11 +67,11 @@ export class EC {
 
         this.addHooksForPageView();
         this.addHooksForEvent();
-        this.addHooksForECEvents();
+        this.addHooksForSVEvents();
     }
 
-    addProduct(product: Product) {
-        this.products.push(product);
+    setTicket(ticket: Ticket) {
+        this.ticket = ticket;
     }
 
     addImpression(impression: Impression) {
@@ -98,20 +84,24 @@ export class EC {
     }
 
     clearData() {
-        this.products = [];
+        this.ticket = {};
         this.impressions = [];
         this.action = undefined;
         this.actionData = {};
     }
 
-    private addHooksForECEvents() {
+    clearTicket() {
+        this.ticket = {};
+    }
+
+    private addHooksForSVEvents() {
         this.client.registerBeforeSendEventHook((eventType, ...[payload]) => {
-            return allECEventTypes.indexOf(eventType) !== -1 ? this.addECDataToPayload(eventType, payload) : payload;
+            return allSVEventTypes.indexOf(eventType) !== -1 ? this.addSVDataToPayload(eventType, payload) : payload;
         });
     }
 
     private addHooksForPageView() {
-        this.client.addEventTypeMapping(ECPluginEventTypes.pageview, {
+        this.client.addEventTypeMapping(SVPluginEventTypes.pageview, {
             newEventType: EventType.collect,
             variableLengthArgumentsNames: ['page'],
             addVisitorIdParameter: true,
@@ -120,7 +110,7 @@ export class EC {
     }
 
     private addHooksForEvent() {
-        this.client.addEventTypeMapping(ECPluginEventTypes.event, {
+        this.client.addEventTypeMapping(SVPluginEventTypes.event, {
             newEventType: EventType.collect,
             variableLengthArgumentsNames: ['eventCategory', 'eventAction', 'eventLabel', 'eventValue'],
             addVisitorIdParameter: true,
@@ -128,36 +118,28 @@ export class EC {
         });
     }
 
-    private addECDataToPayload(eventType: string, payload: any) {
-        const ecPayload = {
+    private addSVDataToPayload(eventType: string, payload: any) {
+        const svPayload = {
             ...this.getLocationInformation(eventType, payload),
             ...this.getDefaultContextInformation(eventType),
-            ...(this.action ? {action: this.action} : {}),
-            ...(this.actionData || {}),
+            ...(this.action ? {svcAction: this.action} : {}),
+            ...(Object.keys(this.actionData ?? {}).length > 0 ? {svcActionData: this.actionData} : {}),
         };
 
-        const productPayload = this.getProductPayload();
+        const ticketPayload = this.getTicketPayload();
         const impressionPayload = this.getImpressionPayload();
-
         this.clearData();
 
         return {
             ...impressionPayload,
-            ...productPayload,
-            ...ecPayload,
+            ...ticketPayload,
+            ...svPayload,
             ...payload,
         };
     }
 
-    private getProductPayload() {
-        return this.products
-            .map((product) => this.assureProductValidity(product))
-            .reduce((newPayload, product, index) => {
-                return {
-                    ...newPayload,
-                    ...convertProductToMeasurementProtocol(product, index),
-                };
-            }, {});
+    private getTicketPayload() {
+        return convertTicketToMeasurementProtocol(this.ticket);
     }
 
     private getImpressionPayload() {
@@ -175,22 +157,9 @@ export class EC {
             .reduce((newPayload, impressionList, index) => {
                 return {
                     ...newPayload,
-                    ...convertImpressionListToMeasurementProtocol(impressionList, index, 'pi'),
+                    ...convertImpressionListToMeasurementProtocol(impressionList, index, 'ii'),
                 };
             }, {});
-    }
-
-    private assureProductValidity(product: Product) {
-        const {position, ...productRest} = product;
-        if (position !== undefined && position < 1) {
-            console.warn(
-                `The position for product '${product.name || product.id}' must be greater ` + `than 0 when provided.`
-            );
-
-            return productRest;
-        }
-
-        return product;
     }
 
     private assureBaseImpressionValidity(baseImpression: BaseImpression) {
@@ -238,7 +207,7 @@ export class EC {
     }
 
     getLocationInformation(eventType: string, payload: any) {
-        eventType === ECPluginEventTypes.pageview && this.updateStateForNewPageView(payload);
+        eventType === SVPluginEventTypes.pageview && this.updateStateForNewPageView(payload);
         return {
             referrer: this.lastReferrer,
             location: this.lastLocation,

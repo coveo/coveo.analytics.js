@@ -1,40 +1,30 @@
 <html>
     <header></header>
     <script>
-        // #region CA.js initialization
-        (function (c, o, v, e, O, u, a) {
-            a = 'coveoua';
-            c[a] =
-                c[a] ||
-                function () {
-                    (c[a].q = c[a].q || []).push(arguments);
-                };
-            c[a].t = Date.now();
-            u = o.createElement(v);
-            u.async = 1;
-            u.src = e;
-            O = o.getElementsByTagName(v)[0];
-            O.parentNode.insertBefore(u, O);
-        })(window, document, 'script', 'coveoua.js');
-        // #endregion // #region CA.js initialization
+        // prettier-ignore
+        (function(c,o,v,e,O,u,a){ 
+        a='coveoua';c[a]=c[a]||function(){(c[a].q=c[a].q|| []).push(arguments)}; 
+        c[a].t=Date.now();u=o.createElement(v);u.async=1;u.src=e; 
+        O=o.getElementsByTagName(v)[0];O.parentNode.insertBefore(u,O) 
+        })(window,document,'script','coveoua.js')
 
         // Replace YOUR-TOKEN with your real token
         // (eg: an API key which has the rights to write into Coveo UsageAnalytics)
         coveoua('init', 'YOUR-TOKEN');
 
         // Optional: If there's any data already available for the ticket, set it.
-        coveoua('sv:setTicket', {
+        coveoua('svc:setTicket', {
             category: 'some category',
             custom: {verycustom: 'value'},
         });
         // 'Stamp' the interaction as ticket_create_start and send the data.
-        coveoua('sv:setAction', 'ticket_create_start');
+        coveoua('svc:setAction', 'ticket_create_start');
         coveoua('send', 'pageview');
 
         // When an user quit the process (close window, navigate away, click on quit...) and that you're not unable to detect it (hardware failure, BSOD...), send all you can with ticket_cancel and 'clear' the ticket.
         // the ticket status should be empty (no ticket actually started)
-        coveoua('sv:setAction', 'ticket_cancel');
-        coveoua('sv:setTicket', {
+        coveoua('svc:setAction', 'ticket_cancel');
+        coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some category',
@@ -44,8 +34,8 @@
         coveoua('send', 'event');
 
         // When an user filled a field using some Coveo driven suggestion, tag the action as a ticket_classification_click and send the updated ticket data (so how the ticket data is after the modification made by the classification click)
-        coveoua('sv:setAction', 'ticket_classification_click', {classificationId: 'someId', requestID: 'someReqId'});
-        coveoua('sv:setTicket', {
+        coveoua('svc:setAction', 'ticket_classification_click', {classificationId: 'someId', requestID: 'someReqId'});
+        coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some smort category',
@@ -54,8 +44,8 @@
         coveoua('send', 'event');
 
         // When an user actually create a ticket in the system, send all you can and tag the action as ticket_create. Do not clean the ticket data if this is not the end of your tracking (e.g.: You're showing the user some suggestions aftewards).
-        coveoua('sv:setAction', 'ticket_create');
-        coveoua('sv:setTicket', {
+        coveoua('svc:setAction', 'ticket_create');
+        coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some category',
@@ -64,8 +54,8 @@
         coveoua('send', 'event');
 
         // When an user fixed a problem by himself before creating a ticket, send the updated ticket information, with status='Solved' (but still no ID, because no ticket has actually been created). Clear ticket data afterward
-        coveoua('sv:setAction', 'ticket_cancel');
-        coveoua('sv:setTicket', {
+        coveoua('svc:setAction', 'ticket_cancel');
+        coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some smort category',
@@ -75,21 +65,21 @@
         coveoua('send', 'event');
 
         setTimeout(function () {
-            coveoua('sv:setAction', 'login', {hashedEmail: 'aasd90asd98asd'});
+            coveoua('svc:setAction', 'login', {hashedEmail: 'aasd90asd98asd'});
             coveoua('send', 'event');
             coveoua('send', 'pageview', '/secondpage');
         }, 1000);
 
         function testBeacon() {
-            coveoua('sv:setAction', 'ticket_create_start');
+            coveoua('svc:setAction', 'ticket_create_start');
             coveoua('send', 'event');
-            coveoua('sv:setTicket', {
+            coveoua('svc:setTicket', {
                 subject: 'super subject',
                 description: 'some description',
                 category: 'some category',
                 custom: {verycustom: 'value'},
             });
-            coveoua('sv:setAction', 'ticket_field_updated');
+            coveoua('svc:setAction', 'ticket_field_updated');
             coveoua('send', 'event');
             window.location = 'service.html?added=' + new Date().valueOf();
         }

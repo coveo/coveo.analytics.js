@@ -1,8 +1,8 @@
-import {SV, SVPluginEventTypes} from './sv';
+import {SVC, SVCPluginEventTypes} from './svc';
 import {createAnalyticsClientMock} from '../../tests/analyticsClientMock';
 
-describe('SV plugin', () => {
-    let sv: SV;
+describe('SVC plugin', () => {
+    let svc: SVC;
     let client: ReturnType<typeof createAnalyticsClientMock>;
 
     const someUUIDGenerator = jest.fn(() => someUUID);
@@ -18,27 +18,27 @@ describe('SV plugin', () => {
         time: expect.any(String),
         userAgent: navigator.userAgent,
         language: 'en-US',
-        hitType: SVPluginEventTypes.event,
+        hitType: SVCPluginEventTypes.event,
         eventId: someUUID,
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
         client = createAnalyticsClientMock();
-        sv = new SV({client, uuidGenerator: someUUIDGenerator});
+        svc = new SVC({client, uuidGenerator: someUUIDGenerator});
     });
 
     it('should register a hook in the client', () => {
         expect(client.registerBeforeSendEventHook).toHaveBeenCalledTimes(1);
     });
 
-    it('should register a mapping for each SV type', () => {
-        expect(client.addEventTypeMapping).toHaveBeenCalledTimes(Object.keys(SVPluginEventTypes).length);
+    it('should register a mapping for each SVC type', () => {
+        expect(client.addEventTypeMapping).toHaveBeenCalledTimes(Object.keys(SVCPluginEventTypes).length);
     });
 
     describe('tickets', () => {
         it('should set the ticket with the specific format and convert known ticket keys into the measurement protocol format when the hook is called', () => {
-            sv.setTicket({
+            svc.setTicket({
                 id: 'Some ID',
                 subject: 'Some Subject',
                 description: 'Some Description',
@@ -47,7 +47,7 @@ describe('SV plugin', () => {
                 custom: {someCustomProp: 'some custom prop value'},
             });
 
-            const result = executeRegisteredHook(SVPluginEventTypes.event, {});
+            const result = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
             expect(result).toEqual({
                 ...defaultResult,
@@ -61,19 +61,19 @@ describe('SV plugin', () => {
         });
 
         it('should append the ticket with the pageview event', () => {
-            sv.setTicket({subject: 'Some Subject'});
+            svc.setTicket({subject: 'Some Subject'});
 
-            const result = executeRegisteredHook(SVPluginEventTypes.pageview, {});
+            const result = executeRegisteredHook(SVCPluginEventTypes.pageview, {});
 
             expect(result).toEqual({
                 ...defaultResult,
-                hitType: SVPluginEventTypes.pageview,
+                hitType: SVCPluginEventTypes.pageview,
                 svc_ticket_subject: 'Some Subject',
             });
         });
 
         it('should not append the product with a random event type', () => {
-            sv.setTicket({subject: 'Some Subject'});
+            svc.setTicket({subject: 'Some Subject'});
 
             const result = executeRegisteredHook('🎲', {});
 
@@ -81,20 +81,20 @@ describe('SV plugin', () => {
         });
 
         it('should keep the ticket until a valid event type is used', () => {
-            sv.setTicket({subject: 'Some Subject'});
+            svc.setTicket({subject: 'Some Subject'});
 
             executeRegisteredHook('🎲', {});
             executeRegisteredHook('🐟', {});
             executeRegisteredHook('💀', {});
-            const result = executeRegisteredHook(SVPluginEventTypes.event, {});
+            const result = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
             expect(result).toEqual({...defaultResult, svc_ticket_subject: 'Some Subject'});
         });
 
         it('should keep custom metadata in the ticket', () => {
-            sv.setTicket({subject: '🧀', custom: {verycustom: 'value'}});
+            svc.setTicket({subject: '🧀', custom: {verycustom: 'value'}});
 
-            const result = executeRegisteredHook(SVPluginEventTypes.event, {});
+            const result = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
             expect(result).toEqual({
                 ...defaultResult,
@@ -104,10 +104,10 @@ describe('SV plugin', () => {
         });
 
         it('should flush the ticket once they are sent', () => {
-            sv.setTicket({subject: '🍟', description: 'description'});
+            svc.setTicket({subject: '🍟', description: 'description'});
 
-            const firstResult = executeRegisteredHook(SVPluginEventTypes.event, {});
-            const secondResult = executeRegisteredHook(SVPluginEventTypes.event, {});
+            const firstResult = executeRegisteredHook(SVCPluginEventTypes.event, {});
+            const secondResult = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
             expect(firstResult).not.toEqual({});
             expect(secondResult).toEqual({...defaultResult});
@@ -115,9 +115,9 @@ describe('SV plugin', () => {
     });
 
     it('should be able to set an action', () => {
-        sv.setAction('ok');
+        svc.setAction('ok');
 
-        const result = executeRegisteredHook(SVPluginEventTypes.event, {});
+        const result = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
         expect(result).toEqual({
             ...defaultResult,
@@ -126,29 +126,29 @@ describe('SV plugin', () => {
     });
 
     it('should flush the action once it is sent', () => {
-        sv.setAction('ok');
+        svc.setAction('ok');
 
-        const firstResult = executeRegisteredHook(SVPluginEventTypes.event, {});
-        const secondResult = executeRegisteredHook(SVPluginEventTypes.event, {});
+        const firstResult = executeRegisteredHook(SVCPluginEventTypes.event, {});
+        const secondResult = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
         expect(firstResult).not.toEqual({});
         expect(secondResult).toEqual({...defaultResult});
     });
 
     it('should be able to clear all the data', () => {
-        sv.setTicket({subject: '🍨', description: 'Some desc'});
-        sv.addImpression({id: '🍦', name: 'impression'});
-        sv.clearData();
+        svc.setTicket({subject: '🍨', description: 'Some desc'});
+        svc.addImpression({id: '🍦', name: 'impression'});
+        svc.clearData();
 
-        const result = executeRegisteredHook(SVPluginEventTypes.event, {});
+        const result = executeRegisteredHook(SVCPluginEventTypes.event, {});
 
         expect(result).toEqual({...defaultResult});
     });
 
     it('should call the uuidv4 method', async () => {
-        await executeRegisteredHook(SVPluginEventTypes.event, {});
-        await executeRegisteredHook(SVPluginEventTypes.event, {});
-        await executeRegisteredHook(SVPluginEventTypes.event, {});
+        await executeRegisteredHook(SVCPluginEventTypes.event, {});
+        await executeRegisteredHook(SVCPluginEventTypes.event, {});
+        await executeRegisteredHook(SVCPluginEventTypes.event, {});
 
         // One for generating pageViewId, one for each individual event.
         expect(someUUIDGenerator).toHaveBeenCalledTimes(1 + 3);
@@ -159,18 +159,18 @@ describe('SV plugin', () => {
             page: '/somepage',
         };
 
-        const pageview = await executeRegisteredHook(SVPluginEventTypes.pageview, payload);
-        const event = await executeRegisteredHook(SVPluginEventTypes.event, {});
+        const pageview = await executeRegisteredHook(SVCPluginEventTypes.pageview, payload);
+        const event = await executeRegisteredHook(SVCPluginEventTypes.event, {});
 
         expect(pageview).toEqual({
             ...defaultResult,
-            hitType: SVPluginEventTypes.pageview,
+            hitType: SVCPluginEventTypes.pageview,
             page: payload.page,
             location: `${defaultResult.location}${payload.page.substring(1)}`,
         });
         expect(event).toEqual({
             ...defaultResult,
-            hitType: SVPluginEventTypes.event,
+            hitType: SVCPluginEventTypes.event,
             location: `${defaultResult.location}${payload.page.substring(1)}`,
         });
     });

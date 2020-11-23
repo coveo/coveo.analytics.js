@@ -3,7 +3,7 @@ import * as fetchMock from 'fetch-mock';
 import {DefaultEventResponse} from '../src/events';
 import coveoua from '../src/coveoua/browser';
 
-describe('sv events', () => {
+describe('svc events', () => {
     const initialLocation = `${window.location}`;
     const aToken = 'token';
     const anEndpoint = 'http://bloup';
@@ -45,7 +45,7 @@ describe('sv events', () => {
     });
 
     it('can send a pageview with a simple action and without ticket data', async () => {
-        coveoua('sv:setAction', 'ticket_create_start');
+        coveoua('svc:setAction', 'ticket_create_start');
 
         await coveoua('send', 'pageview');
 
@@ -58,8 +58,8 @@ describe('sv events', () => {
     });
 
     it('can send an event with a complex action and ticket data', async () => {
-        coveoua('sv:setAction', 'ticket_classification_click', {classificationId: 'someId', requestID: 'someReqId'});
-        coveoua('sv:setTicket', {
+        coveoua('svc:setAction', 'ticket_classification_click', {classificationId: 'someId', requestID: 'someReqId'});
+        coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some smort category',
@@ -82,7 +82,7 @@ describe('sv events', () => {
     });
 
     it('should remove unknown measurement protocol ticket keys', async () => {
-        await coveoua('sv:setTicket', {
+        await coveoua('svc:setTicket', {
             subject: 'super subject',
             description: 'some description',
             category: 'some smort category',

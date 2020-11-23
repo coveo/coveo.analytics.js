@@ -1,5 +1,5 @@
 import {EC, Product, ImpressionList, BaseImpression} from '../plugins/ec';
-import {Ticket} from '../plugins/sv';
+import {Ticket} from '../plugins/svc';
 
 const globalParamKeysMapping: {[name: string]: string} = {
     anonymizeIp: 'aip',

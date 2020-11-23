@@ -7,13 +7,13 @@ import {
     convertTicketToMeasurementProtocol,
 } from '../client/measurementProtocolMapper';
 
-export const SVPluginEventTypes = {
+export const SVCPluginEventTypes = {
     pageview: 'pageview',
     event: 'event',
 };
 
-const allSVEventTypes = Object.keys(SVPluginEventTypes).map(
-    (key) => SVPluginEventTypes[key as keyof typeof SVPluginEventTypes]
+const allSVCEventTypes = Object.keys(SVCPluginEventTypes).map(
+    (key) => SVCPluginEventTypes[key as keyof typeof SVCPluginEventTypes]
 );
 
 export type CustomValues = {
@@ -46,7 +46,7 @@ export interface ImpressionList {
     impressions: BaseImpression[];
 }
 
-export class SV {
+export class SVC {
     private client: AnalyticsClient;
     private uuidGenerator: typeof uuidv4;
     private ticket: Ticket = {};
@@ -96,12 +96,12 @@ export class SV {
 
     private addHooksForSVEvents() {
         this.client.registerBeforeSendEventHook((eventType, ...[payload]) => {
-            return allSVEventTypes.indexOf(eventType) !== -1 ? this.addSVDataToPayload(eventType, payload) : payload;
+            return allSVCEventTypes.indexOf(eventType) !== -1 ? this.addSVDataToPayload(eventType, payload) : payload;
         });
     }
 
     private addHooksForPageView() {
-        this.client.addEventTypeMapping(SVPluginEventTypes.pageview, {
+        this.client.addEventTypeMapping(SVCPluginEventTypes.pageview, {
             newEventType: EventType.collect,
             variableLengthArgumentsNames: ['page'],
             addVisitorIdParameter: true,
@@ -110,7 +110,7 @@ export class SV {
     }
 
     private addHooksForEvent() {
-        this.client.addEventTypeMapping(SVPluginEventTypes.event, {
+        this.client.addEventTypeMapping(SVCPluginEventTypes.event, {
             newEventType: EventType.collect,
             variableLengthArgumentsNames: ['eventCategory', 'eventAction', 'eventLabel', 'eventValue'],
             addVisitorIdParameter: true,
@@ -119,7 +119,7 @@ export class SV {
     }
 
     private addSVDataToPayload(eventType: string, payload: any) {
-        const svPayload = {
+        const svcPayload = {
             ...this.getLocationInformation(eventType, payload),
             ...this.getDefaultContextInformation(eventType),
             ...(this.action ? {svcAction: this.action} : {}),
@@ -133,7 +133,7 @@ export class SV {
         return {
             ...impressionPayload,
             ...ticketPayload,
-            ...svPayload,
+            ...svcPayload,
             ...payload,
         };
     }
@@ -207,7 +207,7 @@ export class SV {
     }
 
     getLocationInformation(eventType: string, payload: any) {
-        eventType === SVPluginEventTypes.pageview && this.updateStateForNewPageView(payload);
+        eventType === SVCPluginEventTypes.pageview && this.updateStateForNewPageView(payload);
         return {
             referrer: this.lastReferrer,
             location: this.lastLocation,

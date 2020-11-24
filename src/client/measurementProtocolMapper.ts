@@ -191,7 +191,6 @@ const customImpressionKeyRegex = new RegExp(`^${impressionPrefixMatchGroup}custo
 const isTicketKey = (key: string) => ticketKeyRegex.test(key);
 const isProductKey = (key: string) => productKeyRegex.test(key);
 const isImpressionKey = (key: string) => impressionKeyRegex.test(key);
-const is = (key: string) => productKeyRegex.test(key);
 const isKnownMeasurementProtocolKey = (key: string) => measurementProtocolKeysMappingValues.indexOf(key) !== -1;
 const isCustomKey = (key: string) => key === 'custom';
 

@@ -67,7 +67,7 @@ export class SVC {
 
         this.addHooksForPageView();
         this.addHooksForEvent();
-        this.addHooksForSVEvents();
+        this.addHooksForSVCEvents();
     }
 
     setTicket(ticket: Ticket) {
@@ -94,9 +94,9 @@ export class SVC {
         this.ticket = {};
     }
 
-    private addHooksForSVEvents() {
+    private addHooksForSVCEvents() {
         this.client.registerBeforeSendEventHook((eventType, ...[payload]) => {
-            return allSVCEventTypes.indexOf(eventType) !== -1 ? this.addSVDataToPayload(eventType, payload) : payload;
+            return allSVCEventTypes.indexOf(eventType) !== -1 ? this.addSVCDataToPayload(eventType, payload) : payload;
         });
     }
 
@@ -118,7 +118,7 @@ export class SVC {
         });
     }
 
-    private addSVDataToPayload(eventType: string, payload: any) {
+    private addSVCDataToPayload(eventType: string, payload: any) {
         const svcPayload = {
             ...this.getLocationInformation(eventType, payload),
             ...this.getDefaultContextInformation(eventType),
@@ -166,8 +166,9 @@ export class SVC {
         const {position, ...baseImpressionRest} = baseImpression;
         if (position !== undefined && position < 1) {
             console.warn(
-                `The position for impression '${baseImpression.name || baseImpression.id}'` +
-                    ` must be greater than 0 when provided.`
+                `The position for impression '${
+                    baseImpression.name || baseImpression.id
+                }' must be greater than 0 when provided.`
             );
 
             return baseImpressionRest;

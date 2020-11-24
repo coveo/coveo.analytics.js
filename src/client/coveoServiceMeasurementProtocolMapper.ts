@@ -1,5 +1,5 @@
 import {Ticket} from '../plugins/svc';
-import {keysOf} from './measurementProtocolMapper';
+import {keysOf} from './utils';
 
 const ticketKeysMapping: {[key in keyof Ticket]: string} = {
     id: 'svc_ticket_id',

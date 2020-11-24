@@ -1,5 +1,6 @@
 import {EC, Product, ImpressionList, BaseImpression} from '../plugins/ec';
 import {isTicketKey, svcActionsKeysMapping} from './coveoServiceMeasurementProtocolMapper';
+import {keysOf} from './utils';
 
 const globalParamKeysMapping: {[name: string]: string} = {
     anonymizeIp: 'aip',
@@ -83,9 +84,7 @@ const measurementProtocolKeysMapping: {[name: string]: string} = {
     ...svcActionsKeysMapping,
 };
 
-// Object.keys returns `string[]` this adds types
-// see https://github.com/microsoft/TypeScript/pull/12253#issuecomment-393954723
-export const keysOf = Object.keys as <T>(o: T) => Extract<keyof T, string>[];
+
 
 export const convertKeysToMeasurementProtocol = (params: any) => {
     return keysOf(params).reduce((mappedKeys, key) => {

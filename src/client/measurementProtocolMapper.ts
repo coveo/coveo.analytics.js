@@ -1,5 +1,5 @@
 import {EC, Product, ImpressionList, BaseImpression} from '../plugins/ec';
-import {Ticket} from '../plugins/svc';
+import {isTicketKey, svcActionsKeysMapping} from './coveoServiceMeasurementProtocolMapper';
 
 const globalParamKeysMapping: {[name: string]: string} = {
     anonymizeIp: 'aip',
@@ -16,20 +16,6 @@ const productKeysMapping: {[key in keyof Product]: string} = {
     quantity: 'qt',
     coupon: 'cc',
     position: 'ps',
-};
-
-const ticketKeysMapping: {[key in keyof Ticket]: string} = {
-    id: 'svc_ticket_id',
-    subject: 'svc_ticket_subject',
-    description: 'svc_ticket_description',
-    category: 'svc_ticket_category',
-    productId: 'svc_ticket_product_id',
-    custom: 'svc_ticket_custom',
-};
-
-const svcActionsKeysMapping: {[name: string]: string} = {
-    svcAction: 'svc_action',
-    svcActionData: 'svc_action_data',
 };
 
 const impressionKeysMapping: {[key in keyof BaseImpression]: string} = {
@@ -111,18 +97,6 @@ export const convertKeysToMeasurementProtocol = (params: any) => {
     }, {});
 };
 
-export const convertTicketToMeasurementProtocol = (ticket: Ticket) => {
-    return keysOf(ticket)
-        .filter((key) => ticket[key] !== undefined)
-        .reduce((mappedTicket, key) => {
-            const newKey = ticketKeysMapping[key] || key;
-            return {
-                ...mappedTicket,
-                [newKey]: ticket[key],
-            };
-        }, {});
-};
-
 export const convertProductToMeasurementProtocol = (product: Product, index: number) => {
     return keysOf(product).reduce((mappedProduct, key) => {
         const newKey = `pr${index + 1}${productKeysMapping[key] || key}`;
@@ -173,22 +147,18 @@ const convertImpressionToMeasurementProtocol = (
 const measurementProtocolKeysMappingValues = keysOf(measurementProtocolKeysMapping).map(
     (key) => measurementProtocolKeysMapping[key]
 );
-const ticketKeysMappingValues = keysOf(ticketKeysMapping).map((key) => ticketKeysMapping[key]);
 const productKeysMappingValues = keysOf(productKeysMapping).map((key) => productKeysMapping[key]);
 const impressionKeysMappingValues = keysOf(impressionKeysMapping).map((key) => impressionKeysMapping[key]);
 
-const ticketSubKeysMatchGroup = [...ticketKeysMappingValues].join('|');
 const productSubKeysMatchGroup = [...productKeysMappingValues, 'custom'].join('|');
 const impressionSubKeysMatchGroup = [...impressionKeysMappingValues, 'custom'].join('|');
 const productPrefixMatchGroup = '(pr[0-9]+)';
 const impressionPrefixMatchGroup = '(il[0-9]+pi[0-9]+)';
-const ticketKeyRegex = new RegExp(`^(${ticketSubKeysMatchGroup}$)`);
 const productKeyRegex = new RegExp(`^${productPrefixMatchGroup}(${productSubKeysMatchGroup})$`);
 const impressionKeyRegex = new RegExp(`^(${impressionPrefixMatchGroup}(${impressionSubKeysMatchGroup}))|(il[0-9]+nm)$`);
 const customProductKeyRegex = new RegExp(`^${productPrefixMatchGroup}custom$`);
 const customImpressionKeyRegex = new RegExp(`^${impressionPrefixMatchGroup}custom$`);
 
-const isTicketKey = (key: string) => ticketKeyRegex.test(key);
 const isProductKey = (key: string) => productKeyRegex.test(key);
 const isImpressionKey = (key: string) => impressionKeyRegex.test(key);
 const isKnownMeasurementProtocolKey = (key: string) => measurementProtocolKeysMappingValues.indexOf(key) !== -1;

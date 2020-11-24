@@ -2,10 +2,7 @@ import {AnalyticsClient} from '../client/analytics';
 import {EventType} from '../events';
 import {uuidv4} from '../client/crypto';
 import {getFormattedLocation} from '../client/location';
-import {
-    convertImpressionListToMeasurementProtocol,
-    convertTicketToMeasurementProtocol,
-} from '../client/measurementProtocolMapper';
+import {convertTicketToMeasurementProtocol} from '../client/coveoServiceMeasurementProtocolMapper';
 
 export const SVCPluginEventTypes = {
     pageview: 'pageview',
@@ -127,11 +124,9 @@ export class SVC {
         };
 
         const ticketPayload = this.getTicketPayload();
-        const impressionPayload = this.getImpressionPayload();
         this.clearData();
 
         return {
-            ...impressionPayload,
             ...ticketPayload,
             ...svcPayload,
             ...payload,
@@ -140,54 +135,6 @@ export class SVC {
 
     private getTicketPayload() {
         return convertTicketToMeasurementProtocol(this.ticket);
-    }
-
-    private getImpressionPayload() {
-        const impressionsByList = this.getImpressionsByList();
-        return impressionsByList
-            .map(
-                ({impressions, ...rest}) =>
-                    ({
-                        ...rest,
-                        impressions: impressions.map((baseImpression) =>
-                            this.assureBaseImpressionValidity(baseImpression)
-                        ),
-                    } as ImpressionList)
-            )
-            .reduce((newPayload, impressionList, index) => {
-                return {
-                    ...newPayload,
-                    ...convertImpressionListToMeasurementProtocol(impressionList, index, 'ii'),
-                };
-            }, {});
-    }
-
-    private assureBaseImpressionValidity(baseImpression: BaseImpression) {
-        const {position, ...baseImpressionRest} = baseImpression;
-        if (position !== undefined && position < 1) {
-            console.warn(
-                `The position for impression '${
-                    baseImpression.name || baseImpression.id
-                }' must be greater than 0 when provided.`
-            );
-
-            return baseImpressionRest;
-        }
-
-        return baseImpression;
-    }
-
-    private getImpressionsByList() {
-        return this.impressions.reduce((lists, impression) => {
-            const {list: listName, ...baseImpression} = impression;
-            const list = lists.find((list) => list.listName === listName);
-            if (list) {
-                list.impressions.push(baseImpression);
-            } else {
-                lists.push({listName: listName, impressions: [baseImpression]});
-            }
-            return lists;
-        }, [] as ImpressionList[]);
     }
 
     private updateStateForNewPageView(payload: any) {

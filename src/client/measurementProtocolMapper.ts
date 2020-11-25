@@ -84,8 +84,6 @@ const measurementProtocolKeysMapping: {[name: string]: string} = {
     ...svcActionsKeysMapping,
 };
 
-
-
 export const convertKeysToMeasurementProtocol = (params: any) => {
     return keysOf(params).reduce((mappedKeys, key) => {
         const newKey = measurementProtocolKeysMapping[key] || key;

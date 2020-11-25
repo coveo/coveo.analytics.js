@@ -87,10 +87,6 @@ export class SVC {
         this.actionData = {};
     }
 
-    clearTicket() {
-        this.ticket = {};
-    }
-
     private addHooksForSVCEvents() {
         this.client.registerBeforeSendEventHook((eventType, ...[payload]) => {
             return allSVCEventTypes.indexOf(eventType) !== -1 ? this.addSVCDataToPayload(eventType, payload) : payload;

@@ -37,6 +37,18 @@ export interface EventBaseRequest {
     originLevel3?: string;
 }
 
+export interface FacetStateRequest {
+    field: string;
+    id: string;
+    value: string;
+    valuePosition: number;
+    displayValue: string;
+    facetType: 'specific' | 'dateRange' | 'numericalRange' | 'hierarchical';
+    state: 'idle' | 'selected';
+    facetPosition: number;
+    title: string;
+}
+
 export interface SearchEventRequest extends EventBaseRequest {
     searchQueryUid: string;
     queryText: string;
@@ -48,6 +60,7 @@ export interface SearchEventRequest extends EventBaseRequest {
     results?: SearchDocument[];
     queryPipeline?: string;
     userGroups?: string[];
+    facetState?: FacetStateRequest[];
 }
 
 export interface DocumentInformation {

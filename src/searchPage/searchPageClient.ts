@@ -293,7 +293,7 @@ export class CoveoSearchPageClient {
         return this.coveoAnalyticsClient.sendSearchEvent(payload);
     }
 
-    private getBaseSearchEventRequest(event: SearchPageEvents, metadata?: Record<string, any>) {
+    private getBaseSearchEventRequest(event: SearchPageEvents, metadata?: Record<string, any>): SearchEventRequest {
         const customData = {...this.provider.getBaseMetadata(), ...metadata};
 
         return {

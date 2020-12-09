@@ -44,9 +44,12 @@ export interface FacetStateRequest {
     valuePosition: number;
     displayValue: string;
     facetType: 'specific' | 'dateRange' | 'numericalRange' | 'hierarchical';
-    state: 'selected';
+    state: 'selected' | 'idle';
     facetPosition: number;
     title: string;
+    start?: string;
+    end?: string;
+    endInclusive?: boolean;
 }
 
 export interface SearchEventRequest extends EventBaseRequest {

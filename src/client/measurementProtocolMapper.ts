@@ -1,5 +1,9 @@
 import {isServiceKey, serviceActionsKeysMapping} from './measurementProtocolMapping/serviceMeasurementProtocolMapper';
-import {commerceActionKeysMapping, isCommerceKey, isCustomCommerceKey} from './measurementProtocolMapping/commerceMeasurementProtocolMapper';
+import {
+    commerceActionKeysMapping,
+    isCommerceKey,
+    isCustomCommerceKey,
+} from './measurementProtocolMapping/commerceMeasurementProtocolMapper';
 import {keysOf} from './utils';
 import {baseMeasurementProtocolKeysMapping} from './measurementProtocolMapping/baseMeasurementProtocolMapper';
 

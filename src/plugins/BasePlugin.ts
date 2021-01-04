@@ -28,6 +28,7 @@ export abstract class BasePlugin {
     }
 
     protected abstract addHooks(): void;
+    protected abstract clearPluginData(): void;
 
     public setAction(action: string, options?: any) {
         this.action = action;
@@ -35,6 +36,7 @@ export abstract class BasePlugin {
     }
 
     public clearData() {
+        this.clearPluginData();
         this.action = undefined;
         this.actionData = {};
     }

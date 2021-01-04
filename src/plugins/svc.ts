@@ -44,8 +44,7 @@ export class SVC extends BasePlugin {
         this.ticket = ticket;
     }
 
-    clearData() {
-        super.clearData();
+    protected clearPluginData() {
         this.ticket = {};
     }
 

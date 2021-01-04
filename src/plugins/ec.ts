@@ -81,8 +81,7 @@ export class EC extends BasePlugin {
         this.impressions.push(impression);
     }
 
-    clearData() {
-        super.clearData();
+    protected clearPluginData() {
         this.products = [];
         this.impressions = [];
     }

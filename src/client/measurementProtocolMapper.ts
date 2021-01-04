@@ -51,14 +51,13 @@ export const convertCustomMeasurementProtocolKeys = (data: {[name: string]: stri
     }, {});
 };
 
-const getFirstCustomMeasurementProtocolKeyMatch = (key: string): string | undefined => {
-    const customKeyRegExps: RegExp[] = [...isCustomCommerceKey];
-    for (let index = 0; index < customKeyRegExps.length; index++) {
-        const match = customKeyRegExps[index].exec(key);
-        if (match) {
-            return match[1];
-        }
-    }
+const getFirstCustomMeasurementProtocolKeyMatch = (key: string): string | null => {
+    let match = null;
+    [...isCustomCommerceKey].every((regex) => {
+        match = regex.exec(key);
+        return !Boolean(match);
+    });
+    return match;
 };
 
 const convertCustomObject = (prefix: string, customData: {[name: string]: string}) => {

@@ -1,10 +1,14 @@
 import {AnyEventResponse, SendEventArguments, VariableArgumentsPayload} from '../events';
 import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analytics';
-import {Plugins} from './plugins';
-import {EC} from '../plugins/ec';
-import {SVC} from '../plugins/svc';
+import {AvailablePluginsNames as AvailablePluginsName, Plugins} from './plugins';
+import {PluginOption} from '../plugins/BasePlugin';
 
 export type AvailableActions = keyof CoveoUA;
+
+export interface CoveoUAOptions {
+    endpoint?: string;
+    plugins?: AvailablePluginsName[];
+}
 
 // CoveoUA mimics the GoogleAnalytics API.
 export class CoveoUA {
@@ -16,24 +20,25 @@ export class CoveoUA {
     // @param token is your coveo access_token / api_key / ...
     // @param endpoint is the endpoint you want to target defaults to the
     //        usage analytics production endpoint
-    init(token: string | AnalyticsClient, endpoint: string): void {
+    init(token: string | AnalyticsClient, optionsOrEndpoint: string | CoveoUAOptions): void {
         if (!token) {
             throw new Error(`You must pass your token when you call 'init'`);
         }
 
         if (typeof token === 'string') {
-            endpoint = endpoint || Endpoints.default;
             this.client = new CoveoAnalyticsClient({
                 token: token,
-                endpoint: endpoint,
+                endpoint: this.getEndpoint(optionsOrEndpoint),
             });
-        } else if (typeof token === 'object' && typeof token.sendEvent !== 'undefined') {
+        } else if (this.isAnalyticsClient(token)) {
             this.client = token;
         }
 
         if (this.client) {
-            this.plugins.register('ec', new EC({client: this.client}));
-            this.plugins.register('svc', new SVC({client: this.client}));
+            const pluginOptions: PluginOption = {client: this.client};
+            this.getPluginKeys(optionsOrEndpoint).forEach((pluginKey) =>
+                this.plugins.register(pluginKey, pluginOptions)
+            );
             this.client.registerBeforeSendEventHook((eventType, payload) => ({
                 ...payload,
                 ...this.params,
@@ -41,6 +46,26 @@ export class CoveoUA {
         } else {
             throw new Error(`You must pass either your token or a valid object when you call 'init'`);
         }
+    }
+
+    private isAnalyticsClient(token: AnalyticsClient): token is AnalyticsClient {
+        return typeof token === 'object' && typeof token.sendEvent !== 'undefined';
+    }
+
+    private getPluginKeys(optionsOrEndpoint: string | CoveoUAOptions): AvailablePluginsName[] {
+        if (typeof optionsOrEndpoint === 'string') {
+            return Plugins.DefaultPlugins;
+        }
+        return Array.isArray(optionsOrEndpoint?.plugins) ? optionsOrEndpoint.plugins : Plugins.DefaultPlugins;
+    }
+
+    private getEndpoint(optionsOrEndpoint: string | CoveoUAOptions) {
+        if (typeof optionsOrEndpoint === 'string') {
+            return optionsOrEndpoint || Endpoints.default;
+        } else if (optionsOrEndpoint?.endpoint) {
+            return optionsOrEndpoint.endpoint;
+        }
+        return Endpoints.default;
     }
 
     // init initializes a new client intended to be used with a proxy that injects the access token.
@@ -89,7 +114,7 @@ export class CoveoUA {
         callback();
     }
 
-    callPlugin(pluginName: string, fn: string, ...args: any): void {
+    callPlugin(pluginName: AvailablePluginsName, fn: string, ...args: any): void {
         this.plugins.execute(pluginName, fn, ...args);
     }
 
@@ -107,7 +132,7 @@ export const handleOneAnalyticsEvent = (command: string, ...params: any[]) => {
 
     const actionFunction = (<any>coveoua)[fn];
     if (pluginName && fn) {
-        return coveoua.callPlugin(pluginName, fn, ...params);
+        return coveoua.callPlugin(pluginName as AvailablePluginsName, fn, ...params);
     } else if (actionFunction) {
         return actionFunction.apply(coveoua, params);
     } else {

@@ -4,10 +4,11 @@ import {SVC} from '../plugins/svc';
 
 export type UAPluginOptions = any[];
 export type AvailablePluginsNames = keyof typeof Plugins.pluginMap;
+
 type GenericPlugin = {[fnName: string]: (...any: UAPluginOptions) => any} & BasePlugin;
 
 export class Plugins {
-    public static readonly DefaultPlugins: AvailablePluginsNames[] = ['ec', 'svc'];
+    public static readonly DefaultPlugins: AvailablePluginsNames[] = [EC.Id, SVC.Id];
     public static readonly pluginMap = {
         [EC.Id]: EC,
         [SVC.Id]: SVC,

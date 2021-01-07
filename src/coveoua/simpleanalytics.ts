@@ -1,6 +1,6 @@
 import {AnyEventResponse, SendEventArguments, VariableArgumentsPayload} from '../events';
 import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analytics';
-import {AvailablePluginsNames as AvailablePluginsName, Plugins} from './plugins';
+import {AvailablePluginsNames, Plugins} from './plugins';
 import {PluginOption} from '../plugins/BasePlugin';
 
 export type AvailableActions = keyof CoveoUA;
@@ -52,7 +52,7 @@ export class CoveoUA {
         return typeof token === 'object' && typeof token.sendEvent !== 'undefined';
     }
 
-    private getPluginKeys(optionsOrEndpoint: string | CoveoUAOptions): AvailablePluginsName[] {
+    private getPluginKeys(optionsOrEndpoint: string | CoveoUAOptions): AvailablePluginsNames[] {
         if (typeof optionsOrEndpoint === 'string') {
             return Plugins.DefaultPlugins;
         }
@@ -114,7 +114,7 @@ export class CoveoUA {
         callback();
     }
 
-    callPlugin(pluginName: AvailablePluginsName, fn: string, ...args: any): void {
+    callPlugin(pluginName: AvailablePluginsNames, fn: string, ...args: any): void {
         this.plugins.execute(pluginName, fn, ...args);
     }
 
@@ -132,7 +132,7 @@ export const handleOneAnalyticsEvent = (command: string, ...params: any[]) => {
 
     const actionFunction = (<any>coveoua)[fn];
     if (pluginName && fn) {
-        return coveoua.callPlugin(pluginName as AvailablePluginsName, fn, ...params);
+        return coveoua.callPlugin(pluginName as AvailablePluginsNames, fn, ...params);
     } else if (actionFunction) {
         return actionFunction.apply(coveoua, params);
     } else {

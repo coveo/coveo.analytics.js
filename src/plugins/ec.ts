@@ -4,7 +4,7 @@ import {
     convertProductToMeasurementProtocol,
     convertImpressionListToMeasurementProtocol,
 } from '../client/measurementProtocolMapping/commerceMeasurementProtocolMapper';
-import {BasePlugin, BasePluginEventTypes, CoveoUAPlugin, PluginOption} from './BasePlugin';
+import {BasePlugin, BasePluginEventTypes, CoveoUAPlugin, PluginOptions} from './BasePlugin';
 
 export const ECPluginEventTypes = {
     ...BasePluginEventTypes,
@@ -63,7 +63,7 @@ export class ECPlugin extends BasePlugin {
     private products: Product[] = [];
     private impressions: Impression[] = [];
 
-    constructor({client, uuidGenerator = uuidv4}: PluginOption) {
+    constructor({client, uuidGenerator = uuidv4}: PluginOptions) {
         super({client, uuidGenerator});
     }
 

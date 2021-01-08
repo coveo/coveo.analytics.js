@@ -12,7 +12,7 @@ export const BasePluginEventTypes = {
     event: 'event',
 };
 
-export type PluginOption = {client: AnalyticsClient; uuidGenerator?: typeof uuidv4};
+export type PluginOptions = {client: AnalyticsClient; uuidGenerator?: typeof uuidv4};
 
 export abstract class BasePlugin {
     protected client: AnalyticsClient;
@@ -24,7 +24,7 @@ export abstract class BasePlugin {
     private lastLocation: string;
     private lastReferrer: string;
 
-    constructor({client, uuidGenerator = uuidv4}: PluginOption) {
+    constructor({client, uuidGenerator = uuidv4}: PluginOptions) {
         this.client = client;
         this.uuidGenerator = uuidGenerator;
         this.pageViewId = uuidGenerator();

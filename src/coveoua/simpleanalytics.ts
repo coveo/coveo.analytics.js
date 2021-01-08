@@ -1,13 +1,13 @@
 import {AnyEventResponse, SendEventArguments, VariableArgumentsPayload} from '../events';
 import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analytics';
-import {AvailablePluginsNames, Plugins} from './plugins';
-import {PluginOption} from '../plugins/BasePlugin';
+import {Plugins, Plugin} from './plugins';
+import {PluginOptions} from '../plugins/BasePlugin';
 
 export type AvailableActions = keyof CoveoUA;
 
 export interface CoveoUAOptions {
     endpoint?: string;
-    plugins?: AvailablePluginsNames[];
+    plugins?: string[];
 }
 
 // CoveoUA mimics the GoogleAnalytics API.
@@ -35,9 +35,10 @@ export class CoveoUA {
         }
 
         if (this.client) {
-            const pluginOptions: PluginOption = {client: this.client};
+            const pluginOptions: PluginOptions = {client: this.client};
+            this.plugins.unrequire();
             this.getPluginKeys(optionsOrEndpoint).forEach((pluginKey) =>
-                this.plugins.register(pluginKey, pluginOptions)
+                this.plugins.require(pluginKey, pluginOptions)
             );
             this.client.registerBeforeSendEventHook((eventType, payload) => ({
                 ...payload,
@@ -52,7 +53,7 @@ export class CoveoUA {
         return typeof token === 'object' && typeof token.sendEvent !== 'undefined';
     }
 
-    private getPluginKeys(optionsOrEndpoint: string | CoveoUAOptions): AvailablePluginsNames[] {
+    private getPluginKeys(optionsOrEndpoint: string | CoveoUAOptions): string[] {
         if (typeof optionsOrEndpoint === 'string') {
             return Plugins.DefaultPlugins;
         }
@@ -114,7 +115,18 @@ export class CoveoUA {
         callback();
     }
 
-    callPlugin(pluginName: AvailablePluginsNames, fn: string, ...args: any): void {
+    registerPlugin(name: string, plugin: Plugin) {
+        this.plugins.register(name, plugin);
+    }
+
+    require(name: string, options: Omit<PluginOptions, 'client'>) {
+        if (!this.client) {
+            throw new Error(`You must call init before requiring a plugin`);
+        }
+        this.plugins.require(name, {...options, client: this.client});
+    }
+
+    callPlugin(pluginName: string, fn: string, ...args: any): void {
         this.plugins.execute(pluginName, fn, ...args);
     }
 
@@ -132,11 +144,20 @@ export const handleOneAnalyticsEvent = (command: string, ...params: any[]) => {
 
     const actionFunction = (<any>coveoua)[fn];
     if (pluginName && fn) {
-        return coveoua.callPlugin(pluginName as AvailablePluginsNames, fn, ...params);
+        return coveoua.callPlugin(pluginName as string, fn, ...params);
     } else if (actionFunction) {
         return actionFunction.apply(coveoua, params);
     } else {
-        const actions: AvailableActions[] = ['init', 'set', 'send', 'onLoad', 'callPlugin'];
+        const actions: AvailableActions[] = [
+            'init',
+            'set',
+            'send',
+            'onLoad',
+            'callPlugin',
+            'reset',
+            'require',
+            'registerPlugin',
+        ];
         throw new Error(`The action "${command}" does not exist. Available actions: ${actions.join(', ')}.`);
     }
 };

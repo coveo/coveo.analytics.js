@@ -7,7 +7,7 @@ export type AvailableActions = keyof CoveoUA;
 
 export interface CoveoUAOptions {
     endpoint?: string;
-    plugins?: AvailablePluginsName[];
+    plugins?: AvailablePluginsNames[];
 }
 
 // CoveoUA mimics the GoogleAnalytics API.

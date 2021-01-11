@@ -1,6 +1,6 @@
 {
     "name": "coveo.analytics",
-    "version": "2.16.1",
+    "version": "2.16.4",
     "description": "📈 Coveo analytics client (node and browser compatible) ",
     "main": "dist/library.js",
     "module": "dist/library.es.js",
@@ -21,8 +21,12 @@
         "url": "https://github.com/coveo/coveo.analytics.js.git"
     },
     "license": "MIT",
+    "dependencies": {
+        "@react-native-async-storage/async-storage": "^1.13.2"
+    },
     "devDependencies": {
-        "@react-native-async-storage/async-storage": "^1.13.2",
+        "react": "^17.0.1",
+        "react-native": "^0.63.3",
         "@types/fetch-mock": "^7.3.2",
         "@types/jest": "^25.1.1",
         "@types/jsdom": "^12.2.4",

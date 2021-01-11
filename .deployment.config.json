@@ -22,7 +22,6 @@
     "snyk": {
         "org": "coveo-commerce",
         "no_container_images": true,
-        "no_dependencies": true,
         "configurations": [
             {
                 "project_name": "coveo.analytics.js"
@@ -37,54 +36,14 @@
                 "directory": "coveo.analytics.js/$[PACKAGE_JSON_MAJOR_MINOR_PATCH_VERSION]",
                 "parameters": {
                     "include": ".*",
-                    "metadata": "X-Frame-Options=deny,X-Content-Type-Options=nosniff",
-                    "content-encoding": "gzip"
+                    "metadata": "X-Frame-Options=deny,X-Content-Type-Options=nosniff"
                 },
                 "source": "deploy",
                 "prd": {
                     "bucket": "coveo-public-content",
                     "parameters": {
                         "include": ".*",
-                        "acl": "public-read"
-                    }
-                }
-            }
-        },
-        {
-            "id": "deploy-major-minor",
-            "s3": {
-                "bucket": "coveo-ndev-coveoanalytics",
-                "directory": "coveo.analytics.js/$[PACKAGE_JSON_MAJOR_MINOR_VERSION]",
-                "parameters": {
-                    "include": ".*",
-                    "metadata": "X-Frame-Options=deny,X-Content-Type-Options=nosniff",
-                    "content-encoding": "gzip"
-                },
-                "source": "deploy",
-                "prd": {
-                    "bucket": "coveo-public-content",
-                    "parameters": {
-                        "include": ".*",
-                        "acl": "public-read"
-                    }
-                }
-            }
-        },
-        {
-            "id": "deploy-major",
-            "s3": {
-                "bucket": "coveo-ndev-coveoanalytics",
-                "directory": "coveo.analytics.js/$[PACKAGE_JSON_MAJOR_VERSION]",
-                "parameters": {
-                    "include": ".*",
-                    "metadata": "X-Frame-Options=deny,X-Content-Type-Options=nosniff",
-                    "content-encoding": "gzip"
-                },
-                "source": "deploy",
-                "prd": {
-                    "bucket": "coveo-public-content",
-                    "parameters": {
-                        "include": ".*",
+                        "metadata": "X-Frame-Options=deny,X-Content-Type-Options=nosniff",
                         "acl": "public-read"
                     }
                 }

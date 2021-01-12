@@ -4,7 +4,7 @@ import {
     convertProductToMeasurementProtocol,
     convertImpressionListToMeasurementProtocol,
 } from '../client/measurementProtocolMapping/commerceMeasurementProtocolMapper';
-import {BasePlugin, BasePluginEventTypes, CoveoUAPlugin, PluginOptions} from './BasePlugin';
+import {BasePlugin, BasePluginEventTypes, PluginClass, PluginOptions} from './BasePlugin';
 
 export const ECPluginEventTypes = {
     ...BasePluginEventTypes,
@@ -203,4 +203,4 @@ export class ECPlugin extends BasePlugin {
     }
 }
 
-export const EC: CoveoUAPlugin<typeof ECPlugin> = ECPlugin;
+export const EC: PluginClass = ECPlugin;

@@ -1,7 +1,8 @@
 import {AnyEventResponse, SendEventArguments, VariableArgumentsPayload} from '../events';
 import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analytics';
-import {Plugins, Plugin} from './plugins';
+import {Plugins} from './plugins';
 import {PluginOptions} from '../plugins/BasePlugin';
+import {PluginClass} from '../plugins/BasePlugin';
 
 export type AvailableActions = keyof CoveoUA;
 
@@ -36,7 +37,7 @@ export class CoveoUA {
 
         if (this.client) {
             const pluginOptions: PluginOptions = {client: this.client};
-            this.plugins.unrequire();
+            this.plugins.clearRequired();
             this.getPluginKeys(optionsOrEndpoint).forEach((pluginKey) =>
                 this.plugins.require(pluginKey, pluginOptions)
             );
@@ -115,8 +116,8 @@ export class CoveoUA {
         callback();
     }
 
-    registerPlugin(name: string, plugin: Plugin) {
-        this.plugins.register(name, plugin);
+    provide(name: string, plugin: PluginClass) {
+        this.plugins.provide(name, plugin);
     }
 
     require(name: string, options: Omit<PluginOptions, 'client'>) {
@@ -156,7 +157,7 @@ export const handleOneAnalyticsEvent = (command: string, ...params: any[]) => {
             'callPlugin',
             'reset',
             'require',
-            'registerPlugin',
+            'provide',
         ];
         throw new Error(`The action "${command}" does not exist. Available actions: ${actions.join(', ')}.`);
     }

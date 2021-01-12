@@ -24,6 +24,7 @@ jest.mock('../plugins/ec', () => {
 });
 
 class TestPluginWithSpy extends TestPlugin {
+    public static readonly Id: 'test';
     public static spy: jest.Mock;
     constructor({client, uuidGenerator = uuidv4}: PluginOptions) {
         super({client, uuidGenerator});
@@ -32,6 +33,7 @@ class TestPluginWithSpy extends TestPlugin {
     testMethod(...args: any[]) {
         TestPluginWithSpy.spy(args);
     }
+    someProperty: 'foo';
 }
 
 describe('simpleanalytics', () => {
@@ -87,7 +89,6 @@ describe('simpleanalytics', () => {
 
             expect(fetchMock.calls().length).toBe(1);
             const foo = fetchMock.lastUrl();
-            console.log(JSON.stringify(foo));
             expect(fetchMock.lastUrl()).toMatch(/^https:\/\/platform\.cloud\.coveo\.com\/rest\/ua/);
         });
 
@@ -253,9 +254,9 @@ describe('simpleanalytics', () => {
         });
     });
 
-    describe('registerPlugin', () => {
+    describe('provide', () => {
         it('register properly', () => {
-            handleOneAnalyticsEvent('registerPlugin', 'test', TestPlugin);
+            handleOneAnalyticsEvent('provide', 'test', TestPlugin);
 
             handleOneAnalyticsEvent('init', 'MYTOKEN');
 
@@ -265,7 +266,7 @@ describe('simpleanalytics', () => {
 
     describe('callPlugin', () => {
         it('resolves properly plugin actions', () => {
-            handleOneAnalyticsEvent('registerPlugin', 'test', TestPluginWithSpy);
+            handleOneAnalyticsEvent('provide', 'test', TestPluginWithSpy);
             handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: ['test']});
 
             handleOneAnalyticsEvent('callPlugin', 'test', 'testMethod', 'foo', 'bar');
@@ -282,18 +283,28 @@ describe('simpleanalytics', () => {
             );
         });
 
-        it('throws when a namespaced action is called and that the this action does not exists on the plugin', () => {
+        it('throws when a namespaced action is called and that this action does not exists on the plugin', () => {
             handleOneAnalyticsEvent('init', 'SOME TOKEN', {plugins: ['svc']});
 
             expect(() => handleOneAnalyticsEvent('callPlugin', 'svc', 'fooBarBaz')).toThrow(
                 `The function "fooBarBaz" does not exists on the plugin "svc".`
             );
         });
+
+        it('throws when a namespaced action is called and that this action is not a function on the plugin', () => {
+            handleOneAnalyticsEvent('provide', 'test', TestPluginWithSpy);
+
+            handleOneAnalyticsEvent('init', 'SOME TOKEN', {plugins: ['test']});
+
+            expect(() => handleOneAnalyticsEvent('callPlugin', 'test', 'someProperty')).toThrow(
+                `The function "someProperty" does not exists on the plugin "test".`
+            );
+        });
     });
 
     describe('require', () => {
         it('can require a plugin', () => {
-            handleOneAnalyticsEvent('registerPlugin', 'test', TestPlugin);
+            handleOneAnalyticsEvent('provide', 'test', TestPlugin);
             handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: []});
 
             expect(() => handleOneAnalyticsEvent('require', 'test')).not.toThrow();
@@ -309,7 +320,7 @@ describe('simpleanalytics', () => {
             handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: []});
 
             expect(() => handleOneAnalyticsEvent('require', 'test')).toThrow(
-                `No plugin named "test" is currently registered. If you use a custom plugin, use 'registerPlugin' first.`
+                `No plugin named "test" is currently registered. If you use a custom plugin, use 'provide' first.`
             );
         });
     });
@@ -325,13 +336,13 @@ describe('simpleanalytics', () => {
 
         it('reset the plugins', () => {
             const fakePlugin = TestPlugin;
-            handleOneAnalyticsEvent('registerPlugin', 'test', fakePlugin);
+            handleOneAnalyticsEvent('provide', 'test', fakePlugin);
             handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: ['test']});
 
             handleOneAnalyticsEvent('reset');
 
             expect(() => handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: ['test']})).toThrow(
-                `No plugin named "test" is currently registered. If you use a custom plugin, use 'registerPlugin' first.`
+                `No plugin named "test" is currently registered. If you use a custom plugin, use 'provide' first.`
             );
         });
 
@@ -354,12 +365,12 @@ describe('simpleanalytics', () => {
         handleOneAnalyticsEvent('init', 'SOME TOKEN', {plugins: ['svc']});
 
         expect(() => handleOneAnalyticsEvent('potato')).toThrow(
-            `The action "potato" does not exist. Available actions: init, set, send, onLoad, callPlugin, reset, require, registerPlugin.`
+            `The action "potato" does not exist. Available actions: init, set, send, onLoad, callPlugin, reset, require, provide.`
         );
     });
 
     it('resolves properly plugin actions', () => {
-        handleOneAnalyticsEvent('registerPlugin', 'test', TestPluginWithSpy);
+        handleOneAnalyticsEvent('provide', 'test', TestPluginWithSpy);
         handleOneAnalyticsEvent('init', 'MYTOKEN', {plugins: ['test']});
 
         handleOneAnalyticsEvent('test:testMethod', 'foo', 'bar');

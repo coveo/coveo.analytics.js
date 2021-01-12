@@ -1,7 +1,7 @@
 import {EventType} from '../events';
 import {uuidv4} from '../client/crypto';
 import {convertTicketToMeasurementProtocol} from '../client/measurementProtocolMapping/serviceMeasurementProtocolMapper';
-import {BasePlugin, BasePluginEventTypes, CoveoUAPlugin, PluginOptions} from './BasePlugin';
+import {BasePlugin, BasePluginEventTypes, PluginClass, PluginOptions} from './BasePlugin';
 
 export const SVCPluginEventTypes = {
     ...BasePluginEventTypes,
@@ -95,4 +95,4 @@ export class SVCPlugin extends BasePlugin {
     }
 }
 
-export const SVC: CoveoUAPlugin<typeof SVCPlugin> = SVCPlugin;
+export const SVC: PluginClass = SVCPlugin;

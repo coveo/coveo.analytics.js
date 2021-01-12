@@ -1,11 +1,13 @@
 import {AnalyticsClient} from '../client/analytics';
 import {uuidv4} from '../client/crypto';
 import {getFormattedLocation} from '../client/location';
+import {UAPluginOptions} from '../coveoua/plugins';
 
 type PluginWithId = {
     readonly Id: string;
 };
-export type CoveoUAPlugin<T = typeof BasePlugin> = T & PluginWithId;
+
+export type PluginClass = typeof BasePlugin & PluginWithId
 
 export const BasePluginEventTypes = {
     pageview: 'pageview',

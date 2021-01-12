@@ -1,42 +1,37 @@
-import {BasePlugin, PluginOptions} from '../plugins/BasePlugin';
+import {PluginClass, PluginOptions, BasePlugin} from '../plugins/BasePlugin';
 import {EC} from '../plugins/ec';
 import {SVC} from '../plugins/svc';
 
 export type UAPluginOptions = any[];
-
-export type Plugin = {[fnName: string]: (...any: UAPluginOptions) => any} & BasePlugin & {
-        new (options: PluginOptions): Plugin;
-    };
+export type Plugin = BasePlugin & {[propName: string]: unknown};
 
 export class Plugins {
     public static readonly DefaultPlugins: string[] = [EC.Id, SVC.Id];
-    private registeredPluginsMap: Map<string, Plugin> = (() => {
-        const map = new Map();
-        map.set(EC.Id, EC);
-        map.set(SVC.Id, SVC);
-        return map;
-    })();
-    private requiredPlugins: Partial<Record<string, Plugin>> = {};
+    private registeredPluginsMap: Record<string, PluginClass> = {
+        [EC.Id]: EC,
+        [SVC.Id]: SVC,
+    };
+    private requiredPlugins: Record<string, BasePlugin> = {};
 
     require(name: string, option: PluginOptions): void {
-        const pluginClass = this.registeredPluginsMap.get(name);
+        const pluginClass = this.registeredPluginsMap[name];
         if (!pluginClass) {
             throw new Error(
-                `No plugin named "${name}" is currently registered. If you use a custom plugin, use 'registerPlugin' first.`
+                `No plugin named "${name}" is currently registered. If you use a custom plugin, use 'provide' first.`
             );
         }
         this.requiredPlugins[name] = new pluginClass(option);
     }
 
-    register(name: string, plugin: Plugin) {
-        this.registeredPluginsMap.set(name, plugin);
+    provide(name: string, plugin: PluginClass) {
+        this.registeredPluginsMap[name] = plugin;
     }
 
-    unrequire(): void {
+    clearRequired(): void {
         this.requiredPlugins = {};
     }
 
-    execute(name: string, fn: string, ...pluginOptions: UAPluginOptions[]) {
+    execute(name: string, fn: string, ...pluginOptions: UAPluginOptions) {
         const plugin = this.requiredPlugins[name] as Plugin;
         if (!plugin) {
             throw new Error(`The plugin "${name}" is not required. Check that you required it on initialization.`);
@@ -44,6 +39,9 @@ export class Plugins {
         const actionFunction = plugin[fn];
         if (!actionFunction) {
             throw new Error(`The function "${fn}" does not exists on the plugin "${name}".`);
+        }
+        if (typeof actionFunction !== 'function') {
+            throw new Error(`"${fn}" of the plugin "${name}" is not a function.`);
         }
         return actionFunction.apply(plugin, pluginOptions);
     }

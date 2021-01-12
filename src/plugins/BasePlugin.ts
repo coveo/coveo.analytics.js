@@ -7,7 +7,7 @@ type PluginWithId = {
     readonly Id: string;
 };
 
-export type PluginClass = typeof BasePlugin & PluginWithId
+export type PluginClass = typeof BasePlugin & PluginWithId;
 
 export const BasePluginEventTypes = {
     pageview: 'pageview',

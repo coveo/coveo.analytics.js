@@ -13,14 +13,14 @@ export class Plugins {
     };
     private requiredPlugins: Record<string, BasePlugin> = {};
 
-    require(name: string, option: PluginOptions): void {
+    require(name: string, options: PluginOptions): void {
         const pluginClass = this.registeredPluginsMap[name];
         if (!pluginClass) {
             throw new Error(
                 `No plugin named "${name}" is currently registered. If you use a custom plugin, use 'provide' first.`
             );
         }
-        this.requiredPlugins[name] = new pluginClass(option);
+        this.requiredPlugins[name] = new pluginClass(options);
     }
 
     provide(name: string, plugin: PluginClass) {

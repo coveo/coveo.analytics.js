@@ -262,7 +262,6 @@ export class CoveoSearchPageClient {
         const payload: ClickEventRequest = {
             ...info,
             ...this.getBaseEventRequest({...identifier, ...metadata}),
-            ...this.getOrigins(),
             searchQueryUid: this.provider.getSearchUID(),
             queryPipeline: this.provider.getPipeline(),
             actionCause: event,

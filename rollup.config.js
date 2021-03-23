@@ -1,6 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
 import {uglify} from 'rollup-plugin-uglify';
-import {terser} from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 
 const tsPlugin = () =>

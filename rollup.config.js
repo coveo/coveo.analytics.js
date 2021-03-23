@@ -8,16 +8,20 @@ const tsPlugin = () =>
         useTsconfigDeclarationDir: true,
     });
 
-const umdConfig = (file) => ({
-    file,
+const umdConfig = {
     format: 'umd',
     name: 'coveoua',
-    sourcemap: true,
-});
+};
 
 const browser = {
     input: './src/coveoua/browser.ts',
-    output: [umdConfig('./dist/coveoua.js')],
+    output: [
+        {
+            ...umdConfig,
+            file: './dist/coveoua.js',
+            sourcemap: true,
+        },
+    ],
     plugins: [
         tsPlugin(),
         uglify(),
@@ -36,8 +40,13 @@ const browser = {
 
 const libUMD = {
     input: './src/coveoua/library.ts',
-    output: [umdConfig('./dist/library.js')],
-    plugins: [tsPlugin(), uglify()],
+    output: [
+        {
+            ...umdConfig,
+            file: './dist/library.js',
+        },
+    ],
+    plugins: [tsPlugin()],
 };
 
 const libESM = {
@@ -45,7 +54,6 @@ const libESM = {
     output: {
         file: './dist/library.es.js',
         format: 'es',
-        sourcemap: true,
     },
     plugins: [
         typescript({
@@ -60,7 +68,6 @@ const libRN = {
     output: {
         file: './dist/react-native.es.js',
         format: 'es',
-        sourcemap: true,
     },
     plugins: [
         typescript({

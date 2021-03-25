@@ -1,7 +1,7 @@
 <head>
     <script>
         var queryParams = new URLSearchParams(document.location.search);
-        const keepQueryParamIfDefined = (key) => {
+        var keepQueryParamIfDefined = (key) => {
             if (queryParams.has(key)) {
                 localStorage.setItem(key, queryParams.get(key));
             }
@@ -11,6 +11,8 @@
         var scriptVersion = keepQueryParamIfDefined('version') || '2';
         var scriptUrl =
             keepQueryParamIfDefined('staticurl') ||
+            (keepQueryParamIfDefined('s3Path') &&
+                'https://' + keepQueryParamIfDefined('s3Path') + '/' + scriptVersion + '/coveoua.js') ||
             'https://static.cloud.coveo.com/coveo.analytics.js/' + scriptVersion + '/coveoua.js';
         var analyticsToken = keepQueryParamIfDefined('token');
         var endpoint = keepQueryParamIfDefined('endpoint');

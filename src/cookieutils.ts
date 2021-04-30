@@ -1,4 +1,4 @@
-interface ICookieDetails {
+interface CookieDetails {
     name: string;
     value: string;
     expires: string;
@@ -67,7 +67,7 @@ export class Cookie {
     }
 }
 
-function writeCookie(details: ICookieDetails) {
+function writeCookie(details: CookieDetails) {
     const {name, value, expires, domain} = details;
     document.cookie = `${name}=${value}${expires}; path=/; domain=${domain}; SameSite=Lax`;
 }

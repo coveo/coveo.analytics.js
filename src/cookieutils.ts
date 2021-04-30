@@ -69,5 +69,5 @@ export class Cookie {
 
 function writeCookie(details: ICookieDetails) {
     const {name, value, expires, domain} = details;
-    document.cookie = `${name}=${value}${expires}; path=/; domain=${domain}; SameSite=None; Secure`;
+    document.cookie = `${name}=${value}${expires}; path=/; domain=${domain}; SameSite=Lax`;
 }

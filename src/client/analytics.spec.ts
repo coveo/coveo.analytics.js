@@ -1,9 +1,10 @@
-import * as fetchMock from 'fetch-mock';
+import {sandbox} from 'fetch-mock';
 import {EventType, ViewEventRequest, DefaultEventResponse} from '../events';
 import {CoveoAnalyticsClient} from './analytics';
 import {IAnalyticsRequestOptions} from './analyticsRequestClient';
 import {CookieStorage} from '../storage';
 import HistoryStore from '../history';
+import * as CrossFetch from 'cross-fetch';
 
 const aVisitorId = '123';
 
@@ -11,6 +12,8 @@ const uuidv4Mock = jest.fn();
 jest.mock('./crypto', () => ({
     uuidv4: () => uuidv4Mock(),
 }));
+
+const fetchMock = sandbox();
 
 describe('Analytics', () => {
     const aToken = 'token';
@@ -39,6 +42,8 @@ describe('Analytics', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        jest.spyOn(CrossFetch, 'fetch').mockImplementation(fetchMock);
+
         new CookieStorage().removeItem('visitorId');
         localStorage.clear();
         fetchMock.reset();

@@ -1,7 +1,10 @@
 import 'isomorphic-fetch';
-import * as fetchMock from 'fetch-mock';
+import {sandbox} from 'fetch-mock';
 import {DefaultEventResponse} from '../src/events';
 import coveoua from '../src/coveoua/browser';
+import * as CrossFetch from 'cross-fetch';
+
+const fetchMock = sandbox();
 
 describe('svc events', () => {
     const initialLocation = `${window.location}`;
@@ -29,6 +32,8 @@ describe('svc events', () => {
     };
 
     beforeEach(() => {
+        jest.spyOn(CrossFetch, 'fetch').mockImplementation(fetchMock);
+
         changeDocumentLocation(initialLocation);
         const address = `${anEndpoint}/rest/v15/analytics/collect`;
         fetchMock.reset();

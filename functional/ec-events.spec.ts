@@ -1,11 +1,13 @@
 import 'isomorphic-fetch';
-import * as fetchMock from 'fetch-mock';
+import {sandbox} from 'fetch-mock';
 import {DefaultEventResponse} from '../src/events';
 import type {getCurrentClient} from '../src/coveoua/library';
 import coveoua from '../src/coveoua/browser';
+import * as CrossFetch from 'cross-fetch';
 
 declare const self: any;
 const getClient: typeof getCurrentClient = (self.coveoanalytics as any).getCurrentClient;
+const fetchMock = sandbox();
 
 describe('ec events', () => {
     const initialLocation = `${window.location}`;
@@ -35,6 +37,8 @@ describe('ec events', () => {
     let client: ReturnType<typeof getClient>;
 
     beforeEach(() => {
+        jest.spyOn(CrossFetch, 'fetch').mockImplementation(fetchMock);
+
         changeDocumentLocation(initialLocation);
         const address = `${anEndpoint}/rest/v15/analytics/collect`;
         fetchMock.reset();

@@ -84,4 +84,4 @@ const libRN = {
     ],
 };
 
-export default [nodeCJS, browserESM, browserUMD, libRN];
+export default [browserUMD, nodeCJS, browserESM, libRN];

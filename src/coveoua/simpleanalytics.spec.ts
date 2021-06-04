@@ -2,7 +2,6 @@ import {handleOneAnalyticsEvent} from './simpleanalytics';
 import {createAnalyticsClientMock} from '../../tests/analyticsClientMock';
 import {EC} from '../plugins/ec';
 import {SVC} from '../plugins/svc';
-import 'isomorphic-fetch';
 import {sandbox} from 'fetch-mock';
 import {TestPlugin} from '../../tests/pluginMock';
 import {uuidv4} from '../client/crypto';

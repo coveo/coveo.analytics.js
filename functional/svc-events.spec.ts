@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import {sandbox} from 'fetch-mock';
 import {DefaultEventResponse} from '../src/events';
 import coveoua from '../src/coveoua/browser';

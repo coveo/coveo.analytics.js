@@ -2,11 +2,10 @@ import {handleOneAnalyticsEvent} from './simpleanalytics';
 import {createAnalyticsClientMock} from '../../tests/analyticsClientMock';
 import {EC} from '../plugins/ec';
 import {SVC} from '../plugins/svc';
-import {sandbox} from 'fetch-mock';
 import {TestPlugin} from '../../tests/pluginMock';
 import {uuidv4} from '../client/crypto';
 import {PluginOptions} from '../plugins/BasePlugin';
-import * as CrossFetch from 'cross-fetch';
+import {mockFetch} from '../../tests/fetchMock';
 
 jest.mock('../plugins/svc', () => {
     const SVC = jest.fn().mockImplementation(() => {});
@@ -23,7 +22,7 @@ jest.mock('../plugins/ec', () => {
     };
 });
 
-const fetchMock = sandbox();
+const {fetchMock, fetchMockBeforeEach} = mockFetch();
 
 class TestPluginWithSpy extends TestPlugin {
     public static readonly Id: 'test';
@@ -45,7 +44,7 @@ describe('simpleanalytics', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.spyOn(CrossFetch, 'fetch').mockImplementation(fetchMock);
+        fetchMockBeforeEach();
 
         fetchMock.mock('*', {});
         handleOneAnalyticsEvent('reset');

@@ -1,11 +1,10 @@
-import {sandbox} from 'fetch-mock';
 import {CoveoSearchPageClient, SearchPageClientProvider} from './searchPageClient';
 import {SearchPageEvents, PartialDocumentInformation, CustomEventsTypes} from './searchPageEvents';
 import CoveoAnalyticsClient from '../client/analytics';
 import {NoopAnalytics} from '../client/noopAnalytics';
-import * as CrossFetch from 'cross-fetch';
+import {mockFetch} from '../../tests/fetchMock';
 
-const fetchMock = sandbox();
+const {fetchMock, fetchMockBeforeEach} = mockFetch();
 
 describe('SearchPageClient', () => {
     const fakeDocInfo = {
@@ -58,7 +57,7 @@ describe('SearchPageClient', () => {
     };
 
     beforeEach(() => {
-        jest.spyOn(CrossFetch, 'fetch').mockImplementation(fetchMock);
+        fetchMockBeforeEach();
 
         client = initClient();
         fetchMock.mock(/.*/, {

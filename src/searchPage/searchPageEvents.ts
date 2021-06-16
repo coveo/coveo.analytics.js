@@ -157,6 +157,10 @@ export enum SearchPageEvents {
      * Identifies the search event that gets logged when a user action (that is not a query) reloads the Recommendations panel with new recommendations.
      */
     recommendationInterfaceLoad = 'recommendationInterfaceLoad',
+    /**
+     * Identifies the click event that gets logged when a user clicks a recommendation in the Recommendations panel.
+     */
+    recommendationOpen = 'recommendationOpen',
 }
 
 export const CustomEventsTypes: Partial<Record<SearchPageEvents, string>> = {

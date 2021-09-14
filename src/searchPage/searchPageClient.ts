@@ -287,7 +287,7 @@ export class CoveoSearchPageClient {
         return this.logCustomEvent(SearchPageEvents.clearRecentResults);
     }
 
-    public async logNoResultsBack() {
+    public logNoResultsBack() {
         return this.logSearchEvent(SearchPageEvents.noResultsBack);
     }
 

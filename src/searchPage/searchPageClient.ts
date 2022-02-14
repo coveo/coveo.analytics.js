@@ -1,5 +1,5 @@
 import CoveoAnalyticsClient, {ClientOptions, AnalyticsClient} from '../client/analytics';
-import {SearchEventRequest, ClickEventRequest, CustomEventRequest} from '../events';
+import {SearchEventRequest, ClickEventRequest, CustomEventRequest, SearchEventResponse} from '../events';
 import {
     SearchPageEvents,
     OmniboxSuggestionsMetadata,
@@ -44,6 +44,13 @@ export interface SearchPageClientProvider {
 
 export interface SearchPageClientOptions extends ClientOptions {
     enableAnalytics: boolean;
+}
+
+export type EventDescription = Pick<SearchEventRequest, 'actionCause' | 'customData'>;
+
+export interface EventBuilder {
+    description: EventDescription;
+    exec: () => Promise<SearchEventResponse | void>;
 }
 
 export class CoveoSearchPageClient {
@@ -115,6 +122,16 @@ export class CoveoSearchPageClient {
 
     public logSearchboxSubmit() {
         return this.logSearchEvent(SearchPageEvents.searchboxSubmit);
+    }
+
+    public makeLogSearchboxSubmit(): EventBuilder {
+        return {
+            description: {
+                actionCause: SearchPageEvents.searchboxSubmit,
+                customData: {},
+            },
+            exec: this.logSearchboxSubmit,
+        };
     }
 
     public logSearchboxClear() {

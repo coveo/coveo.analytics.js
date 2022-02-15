@@ -128,9 +128,9 @@ export class CoveoSearchPageClient {
         return {
             description: {
                 actionCause: SearchPageEvents.searchboxSubmit,
-                customData: {},
+                customData: this.provider.getBaseMetadata(),
             },
-            exec: this.logSearchboxSubmit,
+            exec: () => this.logSearchboxSubmit(),
         };
     }
 
@@ -160,6 +160,16 @@ export class CoveoSearchPageClient {
 
     public logOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
         return this.logSearchEvent(SearchPageEvents.omniboxAnalytics, formatOmniboxMetadata(meta));
+    }
+
+    public makeLogOmniboxAnalytics(meta: OmniboxSuggestionsMetadata): EventBuilder {
+        return {
+            description: {
+                actionCause: SearchPageEvents.omniboxAnalytics,
+                customData: {...this.provider.getBaseMetadata(), ...meta},
+            },
+            exec: () => this.logOmniboxAnalytics(meta),
+        };
     }
 
     public logOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {

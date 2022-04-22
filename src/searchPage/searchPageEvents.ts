@@ -242,7 +242,7 @@ export enum SearchPageEvents {
      */
     showMoreFoldedResults = 'showMoreFoldedResults',
     /**
-     * Identifies the click event that gets logged when a user clicks the Show Less link under a search result that support the folding component.
+     * Identifies the custom event that gets logged when a user clicks the Show Less link under a search result that support the folding component.
      */
     showLessFoldedResults = 'showLessFoldedResults',
 }

@@ -277,7 +277,6 @@ export const CustomEventsTypes: Partial<Record<SearchPageEvents, string>> = {
     [SearchPageEvents.clearRecentQueries]: 'recentQueries',
     [SearchPageEvents.recentResultClick]: 'recentlyClickedDocuments',
     [SearchPageEvents.clearRecentResults]: 'recentlyClickedDocuments',
-    [SearchPageEvents.showMoreFoldedResults]: 'folding',
     [SearchPageEvents.showLessFoldedResults]: 'folding',
 };
 

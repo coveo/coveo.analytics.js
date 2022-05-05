@@ -298,7 +298,7 @@ export class CoveoSearchPageClient {
     }
 
     public logShowLessSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
-        return this.logCustomEvent(SearchPageEvents.smartSnippetSuggestionShowLess, snippet);
+        return this.logCustomEvent(SearchPageEvents.showLessSmartSnippetSuggestion, snippet);
     }
 
     public logOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {

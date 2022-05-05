@@ -582,7 +582,7 @@ describe('SearchPageClient', () => {
             answerSnippet: 'Def',
             documentId: {contentIdKey: 'permanentid', contentIdValue: 'foo'},
         });
-        expectMatchCustomEventPayload(SearchPageEvents.smartSnippetSuggestionShowLess, {
+        expectMatchCustomEventPayload(SearchPageEvents.showLessSmartSnippetSuggestion, {
             question: 'Abc',
             answerSnippet: 'Def',
             documentId: {contentIdKey: 'permanentid', contentIdValue: 'foo'},

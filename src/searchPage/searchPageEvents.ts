@@ -220,7 +220,7 @@ export enum SearchPageEvents {
     /**
      * Identifies the custom event that gets logged when the user presses "show less" on a snippet suggestion for a related question.
      */
-    smartSnippetSuggestionShowLess = 'smartSnippetSuggestionShowLess',
+    showLessSmartSnippetSuggestion = 'showLessSmartSnippetSuggestion',
     /**
      * Identifies the custom event that gets logged when a user clicks on the source of an answer in a smart snippet.
      */
@@ -283,7 +283,7 @@ export const CustomEventsTypes: Partial<Record<SearchPageEvents, string>> = {
     [SearchPageEvents.expandSmartSnippetSuggestion]: 'smartSnippetSuggestions',
     [SearchPageEvents.collapseSmartSnippetSuggestion]: 'smartSnippetSuggestions',
     [SearchPageEvents.showMoreSmartSnippetSuggestion]: 'smartSnippetSuggestions',
-    [SearchPageEvents.smartSnippetSuggestionShowLess]: 'smartSnippetSuggestions',
+    [SearchPageEvents.showLessSmartSnippetSuggestion]: 'smartSnippetSuggestions',
     [SearchPageEvents.clearRecentQueries]: 'recentQueries',
     [SearchPageEvents.recentResultClick]: 'recentlyClickedDocuments',
     [SearchPageEvents.clearRecentResults]: 'recentlyClickedDocuments',

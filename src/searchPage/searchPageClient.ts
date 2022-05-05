@@ -293,11 +293,11 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logSmartSnippetSuggestionShowMore(snippet: SmartSnippetSuggestionMeta) {
-        return this.logCustomEvent(SearchPageEvents.smartSnippetSuggestionShowMore, snippet);
+    public logShowMoreSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
+        return this.logCustomEvent(SearchPageEvents.showMoreSmartSnippetSuggestion, snippet);
     }
 
-    public logSmartSnippetSuggestionShowLess(snippet: SmartSnippetSuggestionMeta) {
+    public logShowLessSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
         return this.logCustomEvent(SearchPageEvents.smartSnippetSuggestionShowLess, snippet);
     }
 

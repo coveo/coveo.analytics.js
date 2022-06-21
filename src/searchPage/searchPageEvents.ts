@@ -345,6 +345,10 @@ export interface DocumentIdentifier {
     contentIDValue: string;
 }
 
+export interface DocumentMetadata {
+    location: string;
+}
+
 export interface InterfaceChangeMetadata {
     interfaceChangeTo: string;
 }

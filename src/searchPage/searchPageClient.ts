@@ -25,6 +25,7 @@ import {
     SmartSnippetDocumentIdentifier,
     StaticFilterMetadata,
     StaticFilterToggleValueMetadata,
+    DocumentMetadata,
 } from './searchPageEvents';
 import {NoopAnalytics} from '../client/noopAnalytics';
 import {formatOmniboxMetadata} from '../formatting/format-omnibox-metadata';
@@ -138,8 +139,12 @@ export class CoveoSearchPageClient {
         return this.logClickEvent(SearchPageEvents.documentQuickview, info, identifier);
     }
 
-    public logDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.logClickEvent(SearchPageEvents.documentOpen, info, identifier);
+    public logDocumentOpen(
+        info: PartialDocumentInformation,
+        identifier: DocumentIdentifier,
+        metadata?: DocumentMetadata
+    ) {
+        return this.logClickEvent(SearchPageEvents.documentOpen, info, identifier, metadata);
     }
 
     public logOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {

@@ -104,6 +104,71 @@ describe('InsightClient', () => {
         expectMatchCustomEventPayload(SearchPageEvents.pagerScrolling, {type: 'getMoreResults'});
     });
 
+    it('should send proper payload for #logFacetSelect', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+            facetValue: 'qwerty',
+        };
+
+        await client.logFacetSelect(meta);
+        expectMatchPayload(SearchPageEvents.facetSelect, meta);
+    });
+
+    it('should send proper payload for #logFacetDeselect', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+            facetValue: 'qwerty',
+        };
+
+        await client.logFacetDeselect(meta);
+        expectMatchPayload(SearchPageEvents.facetDeselect, meta);
+    });
+
+    it('should send proper payload for #logFacetUpdateSort', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+            criteria: 'bazz',
+        };
+        await client.logFacetUpdateSort(meta);
+        expectMatchPayload(SearchPageEvents.facetUpdateSort, meta);
+    });
+
+    it('should send proper payload for #logFacetClearAll', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+        };
+        await client.logFacetClearAll(meta);
+        expectMatchPayload(SearchPageEvents.facetClearAll, meta);
+    });
+
+    it('should send proper payload for #logFacetShowMore', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+        };
+        await client.logFacetShowMore(meta);
+        expectMatchCustomEventPayload(SearchPageEvents.facetShowMore, meta);
+    });
+
+    it('should send proper payload for #logFacetShowLess', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+        };
+        await client.logFacetShowLess(meta);
+        expectMatchCustomEventPayload(SearchPageEvents.facetShowLess, meta);
+    });
+
     it('should send proper payload for #logQueryError', async () => {
         const meta = {
             query: 'q',

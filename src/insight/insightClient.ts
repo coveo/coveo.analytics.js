@@ -1,7 +1,15 @@
 import CoveoAnalyticsClient, {AnalyticsClient, ClientOptions} from '../client/analytics';
 import {NoopAnalytics} from '../client/noopAnalytics';
 import {CustomEventRequest, SearchEventRequest} from '../events';
-import {CustomEventsTypes, FacetStateMetadata, QueryErrorMeta, SearchPageEvents} from '../searchPage/searchPageEvents';
+import {
+    CustomEventsTypes,
+    FacetBaseMeta,
+    FacetMetadata,
+    FacetSortMeta,
+    FacetStateMetadata,
+    QueryErrorMeta,
+    SearchPageEvents,
+} from '../searchPage/searchPageEvents';
 
 export interface InsightClientProvider {
     getSearchEventRequestPayload: () => Omit<SearchEventRequest, 'actionCause' | 'searchQueryUid'>;
@@ -46,6 +54,30 @@ export class CoveoInsightClient {
 
     public logFetchMoreResults() {
         return this.logCustomEvent(SearchPageEvents.pagerScrolling, {type: 'getMoreResults'});
+    }
+
+    public logFacetSelect(meta: FacetMetadata) {
+        return this.logSearchEvent(SearchPageEvents.facetSelect, meta);
+    }
+
+    public logFacetDeselect(meta: FacetMetadata) {
+        return this.logSearchEvent(SearchPageEvents.facetDeselect, meta);
+    }
+
+    public logFacetUpdateSort(meta: FacetSortMeta) {
+        return this.logSearchEvent(SearchPageEvents.facetUpdateSort, meta);
+    }
+
+    public logFacetClearAll(meta: FacetBaseMeta) {
+        return this.logSearchEvent(SearchPageEvents.facetClearAll, meta);
+    }
+
+    public logFacetShowMore(meta: FacetBaseMeta) {
+        return this.logCustomEvent(SearchPageEvents.facetShowMore, meta);
+    }
+
+    public logFacetShowLess(meta: FacetBaseMeta) {
+        return this.logCustomEvent(SearchPageEvents.facetShowLess, meta);
     }
 
     public logQueryError(meta: QueryErrorMeta) {

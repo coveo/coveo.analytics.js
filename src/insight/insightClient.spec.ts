@@ -3,6 +3,14 @@ import CoveoAnalyticsClient from '../client/analytics';
 import {NoopAnalytics} from '../client/noopAnalytics';
 import {CustomEventsTypes, SearchPageEvents} from '../searchPage/searchPageEvents';
 import {CoveoInsightClient, InsightClientProvider} from './insightClient';
+import doNotTrack from '../donottrack';
+
+jest.mock('../donottrack', () => {
+    return {
+        default: jest.fn(),
+        doNotTrack: jest.fn(),
+    };
+});
 
 const {fetchMock, fetchMockBeforeEach} = mockFetch();
 describe('InsightClient', () => {
@@ -196,6 +204,13 @@ describe('InsightClient', () => {
         const c = new CoveoInsightClient({enableAnalytics: true}, provider);
         expect(c.coveoAnalyticsClient instanceof CoveoAnalyticsClient).toBe(true);
         c.disable();
+        expect(c.coveoAnalyticsClient instanceof NoopAnalytics).toBe(true);
+    });
+
+    it('should disable analytics when doNotTrack is enabled', async () => {
+        (doNotTrack as jest.Mock).mockImplementationOnce(() => true);
+
+        const c = new CoveoInsightClient({}, provider);
         expect(c.coveoAnalyticsClient instanceof NoopAnalytics).toBe(true);
     });
 

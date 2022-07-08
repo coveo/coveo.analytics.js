@@ -3,10 +3,15 @@
     "team_name": "commerce",
     "general": {
         "environments_order": {
-            "sequential": ["dev", "prd"]
+            "sequential": [
+                "dev",
+                "prd"
+            ]
         },
         "notifications": {
-            "slack_channels": ["commerceteambuilds"]
+            "slack_channels": [
+                "commerceteambuilds"
+            ]
         },
         "team_jenkins": "commercebuilds"
     },
@@ -105,10 +110,10 @@
         "dev": [
             {
                 "job_name": "coveoanalyticsjs_fts",
-                "name": "FTs",
                 "extra_parameters": {
                     "VERSION": "$[PACKAGE_JSON_MAJOR_MINOR_PATCH_VERSION]"
-                }
+                },
+                "name": "FTs"
             }
         ]
     }

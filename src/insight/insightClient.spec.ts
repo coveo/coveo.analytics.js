@@ -119,7 +119,7 @@ describe('InsightClient', () => {
         expectMatchCustomEventPayload(SearchPageEvents.pagerScrolling, {type: 'getMoreResults'});
     });
 
-    it('should send proper payload for #StaticFilterDeselect', async () => {
+    it('should send proper payload for #staticFilterDeselect', async () => {
         const meta: StaticFilterToggleValueMetadata = {
             staticFilterId: 'filetypes',
             staticFilterValue: {
@@ -130,6 +130,22 @@ describe('InsightClient', () => {
         await client.logStaticFilterDeselect(meta);
 
         expectMatchPayload(SearchPageEvents.staticFilterDeselect, meta);
+    });
+
+    it('should send proper payload for #breadcrumbResetAll', async () => {
+        await client.logBreadcrumbResetAll();
+        expectMatchPayload(SearchPageEvents.breadcrumbResetAll);
+    });
+
+    it('should send proper payload for #breadcrumbFacet', async () => {
+        const meta = {
+            facetField: '@foo',
+            facetId: 'bar',
+            facetTitle: 'title',
+            facetValue: 'qwerty',
+        };
+        await client.logBreadcrumbFacet(meta);
+        expectMatchPayload(SearchPageEvents.breadcrumbFacet, meta);
     });
 
     it('should send proper payload for #breadcrumbResetAll', async () => {

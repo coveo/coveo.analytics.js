@@ -1,7 +1,7 @@
 import {mockFetch} from '../../tests/fetchMock';
 import CoveoAnalyticsClient from '../client/analytics';
 import {NoopAnalytics} from '../client/noopAnalytics';
-import {CustomEventsTypes, SearchPageEvents} from '../searchPage/searchPageEvents';
+import {CustomEventsTypes, SearchPageEvents, StaticFilterToggleValueMetadata} from '../searchPage/searchPageEvents';
 import {CoveoInsightClient, InsightClientProvider} from './insightClient';
 import doNotTrack from '../donottrack';
 
@@ -117,6 +117,19 @@ describe('InsightClient', () => {
     it('should send proper payload for #fetchMoreResults', async () => {
         await client.logFetchMoreResults();
         expectMatchCustomEventPayload(SearchPageEvents.pagerScrolling, {type: 'getMoreResults'});
+    });
+
+    it('should send proper payload for #StaticFilterDeselect', async () => {
+        const meta: StaticFilterToggleValueMetadata = {
+            staticFilterId: 'filetypes',
+            staticFilterValue: {
+                caption: 'Youtube',
+                expression: '@filetype="youtubevideo"',
+            },
+        };
+        await client.logStaticFilterDeselect(meta);
+
+        expectMatchPayload(SearchPageEvents.staticFilterDeselect, meta);
     });
 
     it('should send proper payload for #breadcrumbResetAll', async () => {

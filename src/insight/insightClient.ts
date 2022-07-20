@@ -139,6 +139,10 @@ export class CoveoInsightClient {
         return this.logSearchEvent(SearchPageEvents.resultsSort, metadata);
     }
 
+    public logSearchboxSubmit() {
+        return this.logSearchEvent(SearchPageEvents.searchboxSubmit);
+    }
+
     private async getBaseCustomEventRequest(metadata?: Record<string, any>) {
         return {
             ...(await this.getBaseEventRequest(metadata)),

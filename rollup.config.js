@@ -31,12 +31,6 @@ const browserUMD = {
             name: 'coveoua',
             sourcemap: true,
         },
-        {
-            file: './dist/coveoua.browser.js',
-            format: 'iife',
-            name: 'coveoua',
-            sourcemap: true,
-        },
     ],
     plugins: [
         browserFetch(),

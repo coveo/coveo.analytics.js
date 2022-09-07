@@ -1,10 +1,10 @@
 {
     "name": "coveo.analytics",
-    "version": "2.20.20",
+    "version": "2.20.18",
     "description": "📈 Coveo analytics client (node and browser compatible) ",
     "main": "dist/library.js",
     "module": "dist/library.es.js",
-    "browser": "dist/coveoua.browser.js",
+    "browser": "dist/coveoua.js",
     "types": "dist/definitions/coveoua/library.d.ts",
     "scripts": {
         "lint:check": "prettier --check .",

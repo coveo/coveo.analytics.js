@@ -704,31 +704,32 @@ export class CoveoSearchPageClient {
         return this.makeShowLessFoldedResults().log();
     }
 
-    public async logCustomEvent(
-        event: SearchPageEvents,
-        metadata?: Record<string, any>,
-        eventType: string = CustomEventsTypes[event]!
-    ) {
-        const customData = {...this.provider.getBaseMetadata(), ...metadata};
-
-        const payload: CustomEventRequest = {
-            ...(await this.getBaseCustomEventRequest(customData)),
-            eventType,
-            eventValue: event,
-        };
-
-        return this.coveoAnalyticsClient.sendCustomEvent(payload);
-    }
-
     public makeCustomEvent(
         event: SearchPageEvents,
         metadata?: Record<string, any>,
         eventType: string = CustomEventsTypes[event]!
     ): EventBuilder<CustomEventResponse> {
+        const customData = {...this.provider.getBaseMetadata(), ...metadata};
         return {
             description: this.makeDescription(event, metadata),
-            log: () => this.logCustomEvent(event, metadata, eventType),
+            log: async () => {
+                const payload: CustomEventRequest = {
+                    ...(await this.getBaseCustomEventRequest(customData)),
+                    eventType,
+                    eventValue: event,
+                };
+
+                return this.coveoAnalyticsClient.sendCustomEvent(payload);
+            },
         };
+    }
+
+    public logCustomEvent(
+        event: SearchPageEvents,
+        metadata?: Record<string, any>,
+        eventType: string = CustomEventsTypes[event]!
+    ) {
+        return this.makeCustomEvent(event, metadata, eventType).log();
     }
 
     public makeCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
@@ -789,7 +790,7 @@ export class CoveoSearchPageClient {
         metadata?: Record<string, any>
     ): EventBuilder<ClickEventResponse> {
         return {
-            description: this.makeDescription(event, metadata),
+            description: this.makeDescription(event, {...identifier, ...metadata}),
             log: () => this.logClickEvent(event, info, identifier, metadata),
         };
     }

@@ -67,7 +67,7 @@ export abstract class BasePlugin {
     public getDefaultContextInformation(eventType: string) {
         const documentContext = {
             title: hasDocument() ? document.title : '',
-            encoding: hasDocument() ? document.characterSet :'UTF-8',
+            encoding: hasDocument() ? document.characterSet : 'UTF-8',
         };
         const screenContext = {
             screenResolution: `${screen.width}x${screen.height}`,

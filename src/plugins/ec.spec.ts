@@ -80,6 +80,27 @@ describe('EC plugin', () => {
             expect(result).toEqual({...defaultResult, pr1nm: '🧀', pr1pr: 5.99});
         });
 
+        it('should convert currency product keys into numerical values', () => {
+            ec.addProduct({name: '🧀', price: '£ 5.99'});
+            ec.addProduct({name: '🐭', price: '€ -20.99'});
+            ec.addProduct({name: '🐈', price: '1.99 $'});
+            ec.addProduct({name: '🦊', price: 'anything goes'});
+
+            const result = executeRegisteredHook(ECPluginEventTypes.event, {});
+
+            expect(result).toEqual({
+                ...defaultResult,
+                pr1nm: '🧀',
+                pr1pr: 5.99,
+                pr2nm: '🐭',
+                pr2pr: -20.99,
+                pr3nm: '🐈',
+                pr3pr: 1.99,
+                pr4nm: '🦊',
+                pr4pr: 'anything goes',
+            });
+        });
+
         it('should keep custom metadata in the product', () => {
             ec.addProduct({name: '🧀', price: 5.99, custom: {verycustom: 'value'}});
 
@@ -268,6 +289,27 @@ describe('EC plugin', () => {
                 ...defaultResult,
                 il1pi1nm: '🧀',
                 il1pi1group: 'mahgroup',
+            });
+        });
+
+        it('should convert currency impression keys into numerical values', () => {
+            ec.addImpression({name: '🧀', price: '£ 5.99'});
+            ec.addImpression({name: '🐭', price: '€ -20.99'});
+            ec.addImpression({name: '🐈', price: '1.99 $'});
+            ec.addImpression({name: '🦊', price: 'anything goes'});
+
+            const result = executeRegisteredHook(ECPluginEventTypes.event, {});
+
+            expect(result).toEqual({
+                ...defaultResult,
+                il1pi1nm: '🧀',
+                il1pi1pr: 5.99,
+                il1pi2nm: '🐭',
+                il1pi2pr: -20.99,
+                il1pi3nm: '🐈',
+                il1pi3pr: 1.99,
+                il1pi4nm: '🦊',
+                il1pi4pr: 'anything goes',
             });
         });
 

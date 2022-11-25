@@ -34,7 +34,7 @@ export interface ProductProperties extends CoveoExtensionProperties {
     brand?: string;
     category?: string;
     variant?: string;
-    price?: number;
+    price?: Number | string;
     quantity?: number;
     coupon?: string;
     position?: number;
@@ -51,7 +51,7 @@ export interface ImpressionProperties extends CoveoExtensionProperties {
     category?: string;
     variant?: string;
     position?: number;
-    price?: number;
+    price?: any;
     custom?: CustomValues;
 }
 
@@ -144,6 +144,7 @@ export class ECPlugin extends BasePlugin {
     private getProductPayload() {
         return this.products
             .map((product) => this.assureProductValidity(product))
+            .map((product) => this.convertProductPriceToNumber(product))
             .reduce((newPayload, product, index) => {
                 return {
                     ...newPayload,
@@ -159,9 +160,9 @@ export class ECPlugin extends BasePlugin {
                 ({impressions, ...rest}) =>
                     ({
                         ...rest,
-                        impressions: impressions.map((baseImpression) =>
-                            this.assureBaseImpressionValidity(baseImpression)
-                        ),
+                        impressions: impressions
+                            .map((baseImpression) => this.assureBaseImpressionValidity(baseImpression))
+                            .map((impression) => this.convertImpressionPriceToNumber(impression)),
                     } as ImpressionList)
             )
             .reduce((newPayload, impressionList, index) => {
@@ -170,6 +171,33 @@ export class ECPlugin extends BasePlugin {
                     ...convertImpressionListToMeasurementProtocol(impressionList, index, 'pi'),
                 };
             }, {});
+    }
+
+    private convertProductPriceToNumber(product: Product) {
+        if (product.price) {
+            product.price = this.tryConvertStringPriceToNumber(product.price);
+        }
+
+        return product;
+    }
+
+    private convertImpressionPriceToNumber(impression: BaseImpression) {
+        if (impression.price) {
+            impression.price = this.tryConvertStringPriceToNumber(impression.price);
+        }
+
+        return impression;
+    }
+
+    private tryConvertStringPriceToNumber(price: Number | string): Number | string {
+        if (typeof price === 'string') {
+            let parsedPrice = Number(price.replace(/[^0-9\.-]/g, ''));
+            if (parsedPrice) {
+                return parsedPrice;
+            }
+        }
+
+        return price;
     }
 
     private assureProductValidity(product: Product) {

@@ -194,7 +194,7 @@ export class ECPlugin extends BasePlugin {
             return price;
         }
 
-        let parsedPrice = parseFloat(price.replace(/[^0-9\.-]/g, ''));
+        const parsedPrice = parseFloat(price.replace(/[^0-9\.-]/g, ''));
 
         return isNaN(parsedPrice) ? price : parsedPrice;
     }

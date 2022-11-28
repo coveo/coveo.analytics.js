@@ -34,7 +34,7 @@ export interface ProductProperties extends CoveoExtensionProperties {
     brand?: string;
     category?: string;
     variant?: string;
-    price?: Number | string;
+    price?: number | string;
     quantity?: number;
     coupon?: string;
     position?: number;
@@ -51,7 +51,7 @@ export interface ImpressionProperties extends CoveoExtensionProperties {
     category?: string;
     variant?: string;
     position?: number;
-    price?: any;
+    price?: number | string;
     custom?: CustomValues;
 }
 
@@ -189,15 +189,12 @@ export class ECPlugin extends BasePlugin {
         return impression;
     }
 
-    private tryConvertStringPriceToNumber(price: Number | string): Number | string {
-        if (typeof price === 'string') {
-            let parsedPrice = Number(price.replace(/[^0-9\.-]/g, ''));
-            if (parsedPrice) {
-                return parsedPrice;
-            }
+    private tryConvertStringPriceToNumber(price: number | string): number | string {
+        if (typeof price === 'number') {
+            return price;
         }
 
-        return price;
+        return Number(price.replace(/[^0-9\.-]/g, '')) || price;
     }
 
     private assureProductValidity(product: Product) {

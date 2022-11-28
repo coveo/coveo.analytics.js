@@ -85,6 +85,7 @@ describe('EC plugin', () => {
             ec.addProduct({name: '🐭', price: '€ -20.99'});
             ec.addProduct({name: '🐈', price: '1.99 $'});
             ec.addProduct({name: '🦊', price: 'anything goes'});
+            ec.addProduct({name: '🐓', price: '£ 0'});
 
             const result = executeRegisteredHook(ECPluginEventTypes.event, {});
 
@@ -98,6 +99,8 @@ describe('EC plugin', () => {
                 pr3pr: 1.99,
                 pr4nm: '🦊',
                 pr4pr: 'anything goes',
+                pr5nm: '🐓',
+                pr5pr: 0,
             });
         });
 
@@ -297,6 +300,7 @@ describe('EC plugin', () => {
             ec.addImpression({name: '🐭', price: '€ -20.99'});
             ec.addImpression({name: '🐈', price: '1.99 $'});
             ec.addImpression({name: '🦊', price: 'anything goes'});
+            ec.addImpression({name: '🐓', price: '£ 0'});
 
             const result = executeRegisteredHook(ECPluginEventTypes.event, {});
 
@@ -310,6 +314,8 @@ describe('EC plugin', () => {
                 il1pi3pr: 1.99,
                 il1pi4nm: '🦊',
                 il1pi4pr: 'anything goes',
+                il1pi5nm: '🐓',
+                il1pi5pr: 0,
             });
         });
 

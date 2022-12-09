@@ -1,4 +1,4 @@
-import CoveoAnalyticsClient, {ClientOptions, AnalyticsClient} from '../client/analytics';
+import CoveoAnalyticsClient, {ClientOptions, AnalyticsClient, PreparedEvent} from '../client/analytics';
 import {
     SearchEventRequest,
     ClickEventRequest,
@@ -91,192 +91,192 @@ export class CoveoSearchPageClient {
         return this.makeSearchEvent(SearchPageEvents.interfaceLoad);
     }
 
-    public logInterfaceLoad() {
-        return this.makeInterfaceLoad().log();
+    public async logInterfaceLoad() {
+        return (await this.makeInterfaceLoad()).log();
     }
 
     public makeRecommendationInterfaceLoad() {
         return this.makeSearchEvent(SearchPageEvents.recommendationInterfaceLoad);
     }
 
-    public logRecommendationInterfaceLoad() {
-        return this.makeRecommendationInterfaceLoad().log();
+    public async logRecommendationInterfaceLoad() {
+        return (await this.makeRecommendationInterfaceLoad()).log();
     }
 
     public makeRecommendation() {
         return this.makeCustomEvent(SearchPageEvents.recommendation);
     }
 
-    public logRecommendation() {
-        return this.makeRecommendation().log();
+    public async logRecommendation() {
+        return (await this.makeRecommendation()).log();
     }
 
     public makeRecommendationOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeClickEvent(SearchPageEvents.recommendationOpen, info, identifier);
     }
 
-    public logRecommendationOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeRecommendationOpen(info, identifier).log();
+    public async logRecommendationOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeRecommendationOpen(info, identifier)).log();
     }
 
     public makeStaticFilterClearAll(meta: StaticFilterMetadata) {
         return this.makeSearchEvent(SearchPageEvents.staticFilterClearAll, meta);
     }
 
-    public logStaticFilterClearAll(meta: StaticFilterMetadata) {
-        return this.makeStaticFilterClearAll(meta).log();
+    public async logStaticFilterClearAll(meta: StaticFilterMetadata) {
+        return (await this.makeStaticFilterClearAll(meta)).log();
     }
 
     public makeStaticFilterSelect(meta: StaticFilterToggleValueMetadata) {
         return this.makeSearchEvent(SearchPageEvents.staticFilterSelect, meta);
     }
 
-    public logStaticFilterSelect(meta: StaticFilterToggleValueMetadata) {
-        return this.makeStaticFilterSelect(meta).log();
+    public async logStaticFilterSelect(meta: StaticFilterToggleValueMetadata) {
+        return (await this.makeStaticFilterSelect(meta)).log();
     }
 
     public makeStaticFilterDeselect(meta: StaticFilterToggleValueMetadata) {
         return this.makeSearchEvent(SearchPageEvents.staticFilterDeselect, meta);
     }
 
-    public logStaticFilterDeselect(meta: StaticFilterToggleValueMetadata) {
-        return this.makeStaticFilterDeselect(meta).log();
+    public async logStaticFilterDeselect(meta: StaticFilterToggleValueMetadata) {
+        return (await this.makeStaticFilterDeselect(meta)).log();
     }
 
     public makeFetchMoreResults() {
         return this.makeCustomEvent(SearchPageEvents.pagerScrolling, {type: 'getMoreResults'});
     }
 
-    public logFetchMoreResults() {
-        return this.makeFetchMoreResults().log();
+    public async logFetchMoreResults() {
+        return (await this.makeFetchMoreResults()).log();
     }
 
     public makeInterfaceChange(metadata: InterfaceChangeMetadata) {
         return this.makeSearchEvent(SearchPageEvents.interfaceChange, metadata);
     }
 
-    public logInterfaceChange(metadata: InterfaceChangeMetadata) {
-        return this.makeInterfaceChange(metadata).log();
+    public async logInterfaceChange(metadata: InterfaceChangeMetadata) {
+        return (await this.makeInterfaceChange(metadata)).log();
     }
 
     public makeDidYouMeanAutomatic() {
         return this.makeSearchEvent(SearchPageEvents.didyoumeanAutomatic);
     }
 
-    public logDidYouMeanAutomatic() {
-        return this.makeDidYouMeanAutomatic().log();
+    public async logDidYouMeanAutomatic() {
+        return (await this.makeDidYouMeanAutomatic()).log();
     }
 
     public makeDidYouMeanClick() {
         return this.makeSearchEvent(SearchPageEvents.didyoumeanClick);
     }
 
-    public logDidYouMeanClick() {
-        return this.makeDidYouMeanClick().log();
+    public async logDidYouMeanClick() {
+        return (await this.makeDidYouMeanClick()).log();
     }
 
     public makeResultsSort(metadata: ResultsSortMetadata) {
         return this.makeSearchEvent(SearchPageEvents.resultsSort, metadata);
     }
 
-    public logResultsSort(metadata: ResultsSortMetadata) {
-        return this.makeResultsSort(metadata).log();
+    public async logResultsSort(metadata: ResultsSortMetadata) {
+        return (await this.makeResultsSort(metadata)).log();
     }
 
     public makeSearchboxSubmit() {
         return this.makeSearchEvent(SearchPageEvents.searchboxSubmit);
     }
 
-    public logSearchboxSubmit() {
-        return this.makeSearchboxSubmit().log();
+    public async logSearchboxSubmit() {
+        return (await this.makeSearchboxSubmit()).log();
     }
 
     public makeSearchboxClear() {
         return this.makeSearchEvent(SearchPageEvents.searchboxClear);
     }
 
-    public logSearchboxClear() {
-        return this.makeSearchboxClear().log();
+    public async logSearchboxClear() {
+        return (await this.makeSearchboxClear()).log();
     }
 
     public makeSearchboxAsYouType() {
         return this.makeSearchEvent(SearchPageEvents.searchboxAsYouType);
     }
 
-    public logSearchboxAsYouType() {
-        return this.makeSearchboxAsYouType().log();
+    public async logSearchboxAsYouType() {
+        return (await this.makeSearchboxAsYouType()).log();
     }
 
     public makeBreadcrumbFacet(metadata: FacetMetadata | FacetRangeMetadata | CategoryFacetMetadata) {
         return this.makeSearchEvent(SearchPageEvents.breadcrumbFacet, metadata);
     }
 
-    public logBreadcrumbFacet(metadata: FacetMetadata | FacetRangeMetadata | CategoryFacetMetadata) {
-        return this.makeBreadcrumbFacet(metadata).log();
+    public async logBreadcrumbFacet(metadata: FacetMetadata | FacetRangeMetadata | CategoryFacetMetadata) {
+        return (await this.makeBreadcrumbFacet(metadata)).log();
     }
 
     public makeBreadcrumbResetAll() {
         return this.makeSearchEvent(SearchPageEvents.breadcrumbResetAll);
     }
 
-    public logBreadcrumbResetAll() {
-        return this.makeBreadcrumbResetAll().log();
+    public async logBreadcrumbResetAll() {
+        return (await this.makeBreadcrumbResetAll()).log();
     }
 
     public makeDocumentQuickview(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeClickEvent(SearchPageEvents.documentQuickview, info, identifier);
     }
 
-    public logDocumentQuickview(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeDocumentQuickview(info, identifier).log();
+    public async logDocumentQuickview(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeDocumentQuickview(info, identifier)).log();
     }
 
     public makeDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeClickEvent(SearchPageEvents.documentOpen, info, identifier);
     }
 
-    public logDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeDocumentOpen(info, identifier).log();
+    public async logDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeDocumentOpen(info, identifier)).log();
     }
 
     public makeOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
         return this.makeSearchEvent(SearchPageEvents.omniboxAnalytics, formatOmniboxMetadata(meta));
     }
 
-    public logOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
-        return this.makeOmniboxAnalytics(meta).log();
+    public async logOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
+        return (await this.makeOmniboxAnalytics(meta)).log();
     }
 
     public makeOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {
         return this.makeSearchEvent(SearchPageEvents.omniboxFromLink, formatOmniboxMetadata(meta));
     }
 
-    public logOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {
-        return this.makeOmniboxFromLink(meta).log();
+    public async logOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {
+        return (await this.makeOmniboxFromLink(meta)).log();
     }
 
     public makeSearchFromLink() {
         return this.makeSearchEvent(SearchPageEvents.searchFromLink);
     }
 
-    public logSearchFromLink() {
-        return this.makeSearchFromLink().log();
+    public async logSearchFromLink() {
+        return (await this.makeSearchFromLink()).log();
     }
 
     public makeTriggerNotify(meta: TriggerNotifyMetadata) {
         return this.makeCustomEvent(SearchPageEvents.triggerNotify, meta);
     }
 
-    public logTriggerNotify(meta: TriggerNotifyMetadata) {
-        return this.makeTriggerNotify(meta).log();
+    public async logTriggerNotify(meta: TriggerNotifyMetadata) {
+        return (await this.makeTriggerNotify(meta)).log();
     }
 
     public makeTriggerExecute(meta: TriggerExecuteMetadata) {
         return this.makeCustomEvent(SearchPageEvents.triggerExecute, meta);
     }
 
-    public logTriggerExecute(meta: TriggerExecuteMetadata) {
-        return this.makeTriggerExecute(meta).log();
+    public async logTriggerExecute(meta: TriggerExecuteMetadata) {
+        return (await this.makeTriggerExecute(meta)).log();
     }
 
     public makeTriggerQuery() {
@@ -287,16 +287,16 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logTriggerQuery() {
-        return this.makeTriggerQuery().log();
+    public async logTriggerQuery() {
+        return (await this.makeTriggerQuery()).log();
     }
 
     public makeUndoTriggerQuery(meta: UndoTriggerRedirectMetadata) {
         return this.makeSearchEvent(SearchPageEvents.undoTriggerQuery, meta);
     }
 
-    public logUndoTriggerQuery(meta: UndoTriggerRedirectMetadata) {
-        return this.makeUndoTriggerQuery(meta).log();
+    public async logUndoTriggerQuery(meta: UndoTriggerRedirectMetadata) {
+        return (await this.makeUndoTriggerQuery(meta)).log();
     }
 
     public makeTriggerRedirect(meta: TriggerRedirectMetadata) {
@@ -306,234 +306,237 @@ export class CoveoSearchPageClient {
         });
     }
 
-    public logTriggerRedirect(meta: TriggerRedirectMetadata) {
-        return this.makeTriggerRedirect(meta).log();
+    public async logTriggerRedirect(meta: TriggerRedirectMetadata) {
+        return (await this.makeTriggerRedirect(meta)).log();
     }
 
     public makePagerResize(meta: PagerResizeMetadata) {
         return this.makeCustomEvent(SearchPageEvents.pagerResize, meta);
     }
 
-    public logPagerResize(meta: PagerResizeMetadata) {
-        return this.makePagerResize(meta).log();
+    public async logPagerResize(meta: PagerResizeMetadata) {
+        return (await this.makePagerResize(meta)).log();
     }
 
     public makePagerNumber(meta: PagerMetadata) {
         return this.makeCustomEvent(SearchPageEvents.pagerNumber, meta);
     }
 
-    public logPagerNumber(meta: PagerMetadata) {
-        return this.makePagerNumber(meta).log();
+    public async logPagerNumber(meta: PagerMetadata) {
+        return (await this.makePagerNumber(meta)).log();
     }
 
     public makePagerNext(meta: PagerMetadata) {
         return this.makeCustomEvent(SearchPageEvents.pagerNext, meta);
     }
 
-    public logPagerNext(meta: PagerMetadata) {
-        return this.makePagerNext(meta).log();
+    public async logPagerNext(meta: PagerMetadata) {
+        return (await this.makePagerNext(meta)).log();
     }
 
     public makePagerPrevious(meta: PagerMetadata) {
         return this.makeCustomEvent(SearchPageEvents.pagerPrevious, meta);
     }
 
-    public logPagerPrevious(meta: PagerMetadata) {
-        return this.makePagerPrevious(meta).log();
+    public async logPagerPrevious(meta: PagerMetadata) {
+        return (await this.makePagerPrevious(meta)).log();
     }
 
     public makePagerScrolling() {
         return this.makeCustomEvent(SearchPageEvents.pagerScrolling);
     }
 
-    public logPagerScrolling() {
-        return this.makePagerScrolling().log();
+    public async logPagerScrolling() {
+        return (await this.makePagerScrolling()).log();
     }
 
     public makeFacetClearAll(meta: FacetBaseMeta) {
         return this.makeSearchEvent(SearchPageEvents.facetClearAll, meta);
     }
 
-    public logFacetClearAll(meta: FacetBaseMeta) {
-        return this.makeFacetClearAll(meta).log();
+    public async logFacetClearAll(meta: FacetBaseMeta) {
+        return (await this.makeFacetClearAll(meta)).log();
     }
 
     public makeFacetSearch(meta: FacetBaseMeta) {
         return this.makeSearchEvent(SearchPageEvents.facetSearch, meta);
     }
 
-    public logFacetSearch(meta: FacetBaseMeta) {
-        return this.makeFacetSearch(meta).log();
+    public async logFacetSearch(meta: FacetBaseMeta) {
+        return (await this.makeFacetSearch(meta)).log();
     }
 
     public makeFacetSelect(meta: FacetMetadata) {
         return this.makeSearchEvent(SearchPageEvents.facetSelect, meta);
     }
 
-    public logFacetSelect(meta: FacetMetadata) {
-        return this.makeFacetSelect(meta).log();
+    public async logFacetSelect(meta: FacetMetadata) {
+        return (await this.makeFacetSelect(meta)).log();
     }
 
     public makeFacetDeselect(meta: FacetMetadata) {
         return this.makeSearchEvent(SearchPageEvents.facetDeselect, meta);
     }
 
-    public logFacetDeselect(meta: FacetMetadata) {
-        return this.makeFacetDeselect(meta).log();
+    public async logFacetDeselect(meta: FacetMetadata) {
+        return (await this.makeFacetDeselect(meta)).log();
     }
 
     public makeFacetExclude(meta: FacetMetadata) {
         return this.makeSearchEvent(SearchPageEvents.facetExclude, meta);
     }
 
-    public logFacetExclude(meta: FacetMetadata) {
-        return this.makeFacetExclude(meta).log();
+    public async logFacetExclude(meta: FacetMetadata) {
+        return (await this.makeFacetExclude(meta)).log();
     }
 
     public makeFacetUnexclude(meta: FacetMetadata) {
         return this.makeSearchEvent(SearchPageEvents.facetUnexclude, meta);
     }
 
-    public logFacetUnexclude(meta: FacetMetadata) {
-        return this.makeFacetUnexclude(meta).log();
+    public async logFacetUnexclude(meta: FacetMetadata) {
+        return (await this.makeFacetUnexclude(meta)).log();
     }
 
     public makeFacetSelectAll(meta: FacetBaseMeta) {
         return this.makeSearchEvent(SearchPageEvents.facetSelectAll, meta);
     }
 
-    public logFacetSelectAll(meta: FacetBaseMeta) {
-        return this.makeFacetSelectAll(meta).log();
+    public async logFacetSelectAll(meta: FacetBaseMeta) {
+        return (await this.makeFacetSelectAll(meta)).log();
     }
 
     public makeFacetUpdateSort(meta: FacetSortMeta) {
         return this.makeSearchEvent(SearchPageEvents.facetUpdateSort, meta);
     }
 
-    public logFacetUpdateSort(meta: FacetSortMeta) {
-        return this.makeFacetUpdateSort(meta).log();
+    public async logFacetUpdateSort(meta: FacetSortMeta) {
+        return (await this.makeFacetUpdateSort(meta)).log();
     }
 
     public makeFacetShowMore(meta: FacetBaseMeta) {
         return this.makeCustomEvent(SearchPageEvents.facetShowMore, meta);
     }
 
-    public logFacetShowMore(meta: FacetBaseMeta) {
-        return this.makeFacetShowMore(meta).log();
+    public async logFacetShowMore(meta: FacetBaseMeta) {
+        return (await this.makeFacetShowMore(meta)).log();
     }
 
     public makeFacetShowLess(meta: FacetBaseMeta) {
         return this.makeCustomEvent(SearchPageEvents.facetShowLess, meta);
     }
 
-    public logFacetShowLess(meta: FacetBaseMeta) {
-        return this.makeFacetShowLess(meta).log();
+    public async logFacetShowLess(meta: FacetBaseMeta) {
+        return (await this.makeFacetShowLess(meta)).log();
     }
 
     public makeQueryError(meta: QueryErrorMeta) {
         return this.makeCustomEvent(SearchPageEvents.queryError, meta);
     }
 
-    public logQueryError(meta: QueryErrorMeta) {
-        return this.makeQueryError(meta).log();
+    public async logQueryError(meta: QueryErrorMeta) {
+        return (await this.makeQueryError(meta)).log();
     }
 
-    public makeQueryErrorBack(): EventBuilder<SearchEventResponse> {
+    public async makeQueryErrorBack(): Promise<EventBuilder<SearchEventResponse>> {
+        const customEventBuilder = await this.makeCustomEvent(SearchPageEvents.queryErrorBack);
         return {
-            description: this.makeDescription(SearchPageEvents.queryErrorBack),
+            description: customEventBuilder.description,
             log: async () => {
-                await this.logCustomEvent(SearchPageEvents.queryErrorBack);
+                await customEventBuilder.log();
                 return this.logSearchEvent(SearchPageEvents.queryErrorBack);
             },
         };
     }
 
-    public logQueryErrorBack() {
-        return this.makeQueryErrorBack().log();
+    public async logQueryErrorBack() {
+        return (await this.makeQueryErrorBack()).log();
     }
 
-    public makeQueryErrorRetry(): EventBuilder<SearchEventResponse> {
+    public async makeQueryErrorRetry(): Promise<EventBuilder<SearchEventResponse>> {
+        const customEventBuilder = await this.makeCustomEvent(SearchPageEvents.queryErrorRetry);
         return {
-            description: this.makeDescription(SearchPageEvents.queryErrorRetry),
+            description: customEventBuilder.description,
             log: async () => {
-                await this.logCustomEvent(SearchPageEvents.queryErrorRetry);
+                await customEventBuilder.log();
                 return this.logSearchEvent(SearchPageEvents.queryErrorRetry);
             },
         };
     }
 
-    public logQueryErrorRetry() {
-        return this.makeQueryErrorRetry().log();
+    public async logQueryErrorRetry() {
+        return (await this.makeQueryErrorRetry()).log();
     }
 
-    public makeQueryErrorClear(): EventBuilder<SearchEventResponse> {
+    public async makeQueryErrorClear(): Promise<EventBuilder<SearchEventResponse>> {
+        const customEventBuilder = await this.makeCustomEvent(SearchPageEvents.queryErrorClear);
         return {
-            description: this.makeDescription(SearchPageEvents.queryErrorClear),
+            description: customEventBuilder.description,
             log: async () => {
-                await this.logCustomEvent(SearchPageEvents.queryErrorClear);
+                await customEventBuilder.log();
                 return this.logSearchEvent(SearchPageEvents.queryErrorClear);
             },
         };
     }
 
-    public logQueryErrorClear() {
-        return this.makeQueryErrorClear().log();
+    public async logQueryErrorClear() {
+        return (await this.makeQueryErrorClear()).log();
     }
 
     public makeLikeSmartSnippet() {
         return this.makeCustomEvent(SearchPageEvents.likeSmartSnippet);
     }
 
-    public logLikeSmartSnippet() {
-        return this.makeLikeSmartSnippet().log();
+    public async logLikeSmartSnippet() {
+        return (await this.makeLikeSmartSnippet()).log();
     }
 
     public makeDislikeSmartSnippet() {
         return this.makeCustomEvent(SearchPageEvents.dislikeSmartSnippet);
     }
 
-    public logDislikeSmartSnippet() {
-        return this.makeDislikeSmartSnippet().log();
+    public async logDislikeSmartSnippet() {
+        return (await this.makeDislikeSmartSnippet()).log();
     }
 
     public makeExpandSmartSnippet() {
         return this.makeCustomEvent(SearchPageEvents.expandSmartSnippet);
     }
 
-    public logExpandSmartSnippet() {
-        return this.makeExpandSmartSnippet().log();
+    public async logExpandSmartSnippet() {
+        return (await this.makeExpandSmartSnippet()).log();
     }
 
     public makeCollapseSmartSnippet() {
         return this.makeCustomEvent(SearchPageEvents.collapseSmartSnippet);
     }
 
-    public logCollapseSmartSnippet() {
-        return this.makeCollapseSmartSnippet().log();
+    public async logCollapseSmartSnippet() {
+        return (await this.makeCollapseSmartSnippet()).log();
     }
 
     public makeOpenSmartSnippetFeedbackModal() {
         return this.makeCustomEvent(SearchPageEvents.openSmartSnippetFeedbackModal);
     }
 
-    public logOpenSmartSnippetFeedbackModal() {
-        return this.makeOpenSmartSnippetFeedbackModal().log();
+    public async logOpenSmartSnippetFeedbackModal() {
+        return (await this.makeOpenSmartSnippetFeedbackModal()).log();
     }
 
     public makeCloseSmartSnippetFeedbackModal() {
         return this.makeCustomEvent(SearchPageEvents.closeSmartSnippetFeedbackModal);
     }
 
-    public logCloseSmartSnippetFeedbackModal() {
-        return this.makeCloseSmartSnippetFeedbackModal().log();
+    public async logCloseSmartSnippetFeedbackModal() {
+        return (await this.makeCloseSmartSnippetFeedbackModal()).log();
     }
 
     public makeSmartSnippetFeedbackReason(reason: SmartSnippetFeedbackReason, details?: string) {
         return this.makeCustomEvent(SearchPageEvents.sendSmartSnippetReason, {reason, details});
     }
 
-    public logSmartSnippetFeedbackReason(reason: SmartSnippetFeedbackReason, details?: string) {
-        return this.makeSmartSnippetFeedbackReason(reason, details).log();
+    public async logSmartSnippetFeedbackReason(reason: SmartSnippetFeedbackReason, details?: string) {
+        return (await this.makeSmartSnippetFeedbackReason(reason, details)).log();
     }
 
     public makeExpandSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
@@ -543,8 +546,8 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logExpandSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
-        return this.makeExpandSmartSnippetSuggestion(snippet).log();
+    public async logExpandSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
+        return (await this.makeExpandSmartSnippetSuggestion(snippet)).log();
     }
 
     public makeCollapseSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
@@ -554,8 +557,10 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logCollapseSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
-        return this.makeCollapseSmartSnippetSuggestion(snippet).log();
+    public async logCollapseSmartSnippetSuggestion(
+        snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier
+    ) {
+        return (await this.makeCollapseSmartSnippetSuggestion(snippet)).log();
     }
 
     /**
@@ -568,8 +573,8 @@ export class CoveoSearchPageClient {
     /**
      * @deprecated
      */
-    public logShowMoreSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
-        return this.makeShowMoreSmartSnippetSuggestion(snippet).log();
+    public async logShowMoreSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
+        return (await this.makeShowMoreSmartSnippetSuggestion(snippet)).log();
     }
 
     /**
@@ -582,16 +587,16 @@ export class CoveoSearchPageClient {
     /**
      * @deprecated
      */
-    public logShowLessSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
-        return this.makeShowLessSmartSnippetSuggestion(snippet).log();
+    public async logShowLessSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
+        return (await this.makeShowLessSmartSnippetSuggestion(snippet)).log();
     }
 
     public makeOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeClickEvent(SearchPageEvents.openSmartSnippetSource, info, identifier);
     }
 
-    public logOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeOpenSmartSnippetSource(info, identifier).log();
+    public async logOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeOpenSmartSnippetSource(info, identifier)).log();
     }
 
     public makeOpenSmartSnippetSuggestionSource(info: PartialDocumentInformation, snippet: SmartSnippetSuggestionMeta) {
@@ -607,12 +612,15 @@ export class CoveoSearchPageClient {
         return this.makeClickEvent(SearchPageEvents.copyToClipboard, info, identifier);
     }
 
-    public logCopyToClipboard(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeCopyToClipboard(info, identifier).log();
+    public async logCopyToClipboard(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeCopyToClipboard(info, identifier)).log();
     }
 
-    public logOpenSmartSnippetSuggestionSource(info: PartialDocumentInformation, snippet: SmartSnippetSuggestionMeta) {
-        return this.makeOpenSmartSnippetSuggestionSource(info, snippet).log();
+    public async logOpenSmartSnippetSuggestionSource(
+        info: PartialDocumentInformation,
+        snippet: SmartSnippetSuggestionMeta
+    ) {
+        return (await this.makeOpenSmartSnippetSuggestionSource(info, snippet)).log();
     }
 
     public makeOpenSmartSnippetInlineLink(
@@ -627,11 +635,11 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logOpenSmartSnippetInlineLink(
+    public async logOpenSmartSnippetInlineLink(
         info: PartialDocumentInformation,
         identifierAndLink: DocumentIdentifier & SmartSnippetLinkMeta
     ) {
-        return this.makeOpenSmartSnippetInlineLink(info, identifierAndLink).log();
+        return (await this.makeOpenSmartSnippetInlineLink(info, identifierAndLink)).log();
     }
 
     public makeOpenSmartSnippetSuggestionInlineLink(
@@ -649,129 +657,144 @@ export class CoveoSearchPageClient {
         );
     }
 
-    public logOpenSmartSnippetSuggestionInlineLink(
+    public async logOpenSmartSnippetSuggestionInlineLink(
         info: PartialDocumentInformation,
         snippetAndLink: SmartSnippetSuggestionMeta & SmartSnippetLinkMeta
     ) {
-        return this.makeOpenSmartSnippetSuggestionInlineLink(info, snippetAndLink).log();
+        return (await this.makeOpenSmartSnippetSuggestionInlineLink(info, snippetAndLink)).log();
     }
 
     public makeRecentQueryClick() {
         return this.makeSearchEvent(SearchPageEvents.recentQueryClick);
     }
 
-    public logRecentQueryClick() {
-        return this.makeRecentQueryClick().log();
+    public async logRecentQueryClick() {
+        return (await this.makeRecentQueryClick()).log();
     }
 
     public makeClearRecentQueries() {
         return this.makeCustomEvent(SearchPageEvents.clearRecentQueries);
     }
 
-    public logClearRecentQueries() {
-        return this.makeClearRecentQueries().log();
+    public async logClearRecentQueries() {
+        return (await this.makeClearRecentQueries()).log();
     }
 
     public makeRecentResultClick(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeCustomEvent(SearchPageEvents.recentResultClick, {info, identifier});
     }
 
-    public logRecentResultClick(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeRecentResultClick(info, identifier).log();
+    public async logRecentResultClick(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeRecentResultClick(info, identifier)).log();
     }
 
     public makeClearRecentResults() {
         return this.makeCustomEvent(SearchPageEvents.clearRecentResults);
     }
 
-    public logClearRecentResults() {
-        return this.makeClearRecentResults().log();
+    public async logClearRecentResults() {
+        return (await this.makeClearRecentResults()).log();
     }
 
     public makeNoResultsBack() {
         return this.makeSearchEvent(SearchPageEvents.noResultsBack);
     }
 
-    public logNoResultsBack() {
-        return this.makeNoResultsBack().log();
+    public async logNoResultsBack() {
+        return (await this.makeNoResultsBack()).log();
     }
 
     public makeShowMoreFoldedResults(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
         return this.makeClickEvent(SearchPageEvents.showMoreFoldedResults, info, identifier);
     }
 
-    public logShowMoreFoldedResults(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return this.makeShowMoreFoldedResults(info, identifier).log();
+    public async logShowMoreFoldedResults(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
+        return (await this.makeShowMoreFoldedResults(info, identifier)).log();
     }
 
     public makeShowLessFoldedResults() {
         return this.makeCustomEvent(SearchPageEvents.showLessFoldedResults);
     }
 
-    public logShowLessFoldedResults() {
-        return this.makeShowLessFoldedResults().log();
+    public async logShowLessFoldedResults() {
+        return (await this.makeShowLessFoldedResults()).log();
     }
 
-    public makeCustomEvent(
+    private makeEventBuilder<T extends AnyEventResponse>(
+        actionCause: SearchPageEvents,
+        preparedEvent: PreparedEvent<T>
+    ): EventBuilder<T> {
+        const description: EventDescription = {actionCause, customData: preparedEvent.payload?.customData};
+        return {description, log: () => preparedEvent.log()};
+    }
+
+    public async makeCustomEvent(
         event: SearchPageEvents,
         metadata?: Record<string, any>,
         eventType: string = CustomEventsTypes[event]!
-    ): EventBuilder<CustomEventResponse> {
+    ): Promise<EventBuilder<CustomEventResponse>> {
+        this.coveoAnalyticsClient.getParameters;
         const customData = {...this.provider.getBaseMetadata(), ...metadata};
-        return {
-            description: this.makeDescription(event, metadata),
-            log: async () => {
-                const payload: CustomEventRequest = {
-                    ...(await this.getBaseCustomEventRequest(customData)),
-                    eventType,
-                    eventValue: event,
-                };
-
-                return this.coveoAnalyticsClient.sendCustomEvent(payload);
-            },
+        const request: CustomEventRequest = {
+            ...(await this.getBaseCustomEventRequest(customData)),
+            eventType,
+            eventValue: event,
         };
+        const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(request);
+        return this.makeEventBuilder(event, preparedEvent);
     }
 
-    public logCustomEvent(
+    public async logCustomEvent(
         event: SearchPageEvents,
         metadata?: Record<string, any>,
         eventType: string = CustomEventsTypes[event]!
     ) {
-        return this.makeCustomEvent(event, metadata, eventType).log();
+        return (await this.makeCustomEvent(event, metadata, eventType)).log();
     }
 
-    public makeCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
+    public async makeCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
         const customData = {...this.provider.getBaseMetadata(), ...metadata};
-        return {
-            description: <EventDescription>{actionCause: eventValue, customData},
-            log: async () => {
-                const payload: CustomEventRequest = {
-                    ...(await this.getBaseCustomEventRequest(customData)),
-                    eventType,
-                    eventValue,
-                };
-                return this.coveoAnalyticsClient.sendCustomEvent(payload);
-            },
+        const payload: CustomEventRequest = {
+            ...(await this.getBaseCustomEventRequest(customData)),
+            eventType,
+            eventValue,
         };
+        const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(payload);
+        return this.makeEventBuilder(eventValue as SearchPageEvents, preparedEvent);
     }
 
-    public logCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
-        return this.makeCustomEventWithType(eventValue, eventType, metadata).log();
+    public async logCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
+        return (await this.makeCustomEventWithType(eventValue, eventType, metadata)).log();
     }
 
     public async logSearchEvent(event: SearchPageEvents, metadata?: Record<string, any>) {
-        return this.coveoAnalyticsClient.sendSearchEvent(await this.getBaseSearchEventRequest(event, metadata));
+        return (await this.makeSearchEvent(event, metadata)).log();
     }
 
-    private makeDescription(actionCause: SearchPageEvents, metadata?: Record<string, any>): EventDescription {
-        return {actionCause, customData: {...this.provider.getBaseMetadata(), ...metadata}};
+    public async makeSearchEvent(
+        event: SearchPageEvents,
+        metadata?: Record<string, any>
+    ): Promise<EventBuilder<SearchEventResponse>> {
+        const request = await this.getBaseSearchEventRequest(event, metadata);
+        const preparedEvent = await this.coveoAnalyticsClient.prepareSearchEvent(request);
+        return this.makeEventBuilder(event, preparedEvent);
     }
 
-    public makeSearchEvent(event: SearchPageEvents, metadata?: Record<string, any>): EventBuilder<SearchEventResponse> {
-        return {
-            description: this.makeDescription(event, metadata),
-            log: () => this.logSearchEvent(event, metadata),
+    public async makeClickEvent(
+        event: SearchPageEvents,
+        info: PartialDocumentInformation,
+        identifier: DocumentIdentifier,
+        metadata?: Record<string, any>
+    ): Promise<EventBuilder<ClickEventResponse>> {
+        const request: ClickEventRequest = {
+            ...info,
+            ...(await this.getBaseEventRequest({...identifier, ...metadata})),
+            searchQueryUid: this.provider.getSearchUID(),
+            queryPipeline: this.provider.getPipeline(),
+            actionCause: event,
         };
+        const preparedEvent = await this.coveoAnalyticsClient.prepareClickEvent(request);
+        return this.makeEventBuilder(event, preparedEvent);
     }
 
     public async logClickEvent(
@@ -780,27 +803,7 @@ export class CoveoSearchPageClient {
         identifier: DocumentIdentifier,
         metadata?: Record<string, any>
     ) {
-        const payload: ClickEventRequest = {
-            ...info,
-            ...(await this.getBaseEventRequest({...identifier, ...metadata})),
-            searchQueryUid: this.provider.getSearchUID(),
-            queryPipeline: this.provider.getPipeline(),
-            actionCause: event,
-        };
-
-        return this.coveoAnalyticsClient.sendClickEvent(payload);
-    }
-
-    public makeClickEvent(
-        event: SearchPageEvents,
-        info: PartialDocumentInformation,
-        identifier: DocumentIdentifier,
-        metadata?: Record<string, any>
-    ): EventBuilder<ClickEventResponse> {
-        return {
-            description: this.makeDescription(event, {...identifier, ...metadata}),
-            log: () => this.logClickEvent(event, info, identifier, metadata),
-        };
+        return (await this.makeClickEvent(event, info, identifier, metadata)).log();
     }
 
     private async getBaseSearchEventRequest(

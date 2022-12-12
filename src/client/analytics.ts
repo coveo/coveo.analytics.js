@@ -64,7 +64,7 @@ export type EventTypeConfig = {
 
 export interface PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>
     extends BufferedRequest {
-    log(missingPayload: Omit<TCompleteRequest, keyof TPreparedRequest>): Promise<TResponse | void>;
+    log(remainingPayload: Omit<TCompleteRequest, keyof TPreparedRequest>): Promise<TResponse | void>;
 }
 
 export interface AnalyticsClient {
@@ -322,13 +322,13 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         return {
             eventType: eventTypeToSend,
             payload: payloadToSend,
-            log: async (missingPayload) => {
+            log: async (remainingPayload) => {
                 this.bufferedRequests.push(<BufferedRequest>{
                     eventType: eventTypeToSend,
-                    payload: {...payloadToSend, ...missingPayload},
+                    payload: {...payloadToSend, ...remainingPayload},
                 });
                 await Promise.all(
-                    this.afterSendHooks.map((hook) => hook(eventType, {...parametersToSend, ...missingPayload}))
+                    this.afterSendHooks.map((hook) => hook(eventType, {...parametersToSend, ...remainingPayload}))
                 );
                 await this.deferExecution();
                 return (await this.sendFromBufferWithFetch()) as TResponse | void;

@@ -70,24 +70,24 @@ export interface PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse ext
 export interface AnalyticsClient {
     getPayload(eventType: string, ...payload: VariableArgumentsPayload): Promise<any>;
     getParameters(eventType: string, ...payload: VariableArgumentsPayload): Promise<any>;
-    prepareEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
+    makeEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
         eventType: string,
         ...payload: VariableArgumentsPayload
     ): Promise<PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse>>;
     sendEvent(eventType: string, ...payload: VariableArgumentsPayload): Promise<AnyEventResponse | void>;
-    prepareSearchEvent(
+    makeSearchEvent(
         request: PreparedSearchEventRequest
     ): Promise<PreparedEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>>;
     sendSearchEvent(request: SearchEventRequest): Promise<SearchEventResponse | void>;
-    prepareClickEvent(
+    makeClickEvent(
         request: PreparedClickEventRequest
     ): Promise<PreparedEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>>;
     sendClickEvent(request: ClickEventRequest): Promise<ClickEventResponse | void>;
-    prepareCustomEvent(
+    makeCustomEvent(
         request: PreparedCustomEventRequest
     ): Promise<PreparedEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>>;
     sendCustomEvent(request: CustomEventRequest): Promise<CustomEventResponse | void>;
-    prepareViewEvent(
+    makeViewEvent(
         request: PreparedViewEventRequest
     ): Promise<PreparedEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>>;
     sendViewEvent(request: ViewEventRequest): Promise<ViewEventResponse | void>;
@@ -310,7 +310,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         return payloadToSend;
     }
 
-    async prepareEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
+    async makeEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
         eventType: EventType | string,
         ...payload: VariableArgumentsPayload
     ): Promise<PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse>> {
@@ -337,7 +337,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     async sendEvent(eventType: EventType | string, ...payload: VariableArgumentsPayload) {
-        return (await this.prepareEvent<any, any, AnyEventResponse>(eventType, ...payload)).log({});
+        return (await this.makeEvent<any, any, AnyEventResponse>(eventType, ...payload)).log({});
     }
 
     private deferExecution(): Promise<void> {
@@ -362,48 +362,45 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         this.runtime.client.deleteHttpCookieVisitorId();
     }
 
-    async prepareSearchEvent(request: PreparedSearchEventRequest) {
-        return this.prepareEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>(
+    async makeSearchEvent(request: PreparedSearchEventRequest) {
+        return this.makeEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>(
             EventType.search,
             request
         );
     }
 
     async sendSearchEvent({searchQueryUid, ...preparedRequest}: SearchEventRequest) {
-        return (await this.prepareSearchEvent(preparedRequest)).log({searchQueryUid});
+        return (await this.makeSearchEvent(preparedRequest)).log({searchQueryUid});
     }
 
-    async prepareClickEvent(request: PreparedClickEventRequest) {
-        return this.prepareEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>(
+    async makeClickEvent(request: PreparedClickEventRequest) {
+        return this.makeEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>(
             EventType.click,
             request
         );
     }
 
     async sendClickEvent({searchQueryUid, ...preparedRequest}: ClickEventRequest) {
-        return (await this.prepareClickEvent(preparedRequest)).log({searchQueryUid});
+        return (await this.makeClickEvent(preparedRequest)).log({searchQueryUid});
     }
 
-    async prepareCustomEvent(request: PreparedCustomEventRequest) {
-        return this.prepareEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>(
+    async makeCustomEvent(request: PreparedCustomEventRequest) {
+        return this.makeEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>(
             EventType.custom,
             request
         );
     }
 
     async sendCustomEvent({lastSearchQueryUid, ...preparedRequest}: CustomEventRequest) {
-        return (await this.prepareCustomEvent(preparedRequest)).log({lastSearchQueryUid});
+        return (await this.makeCustomEvent(preparedRequest)).log({lastSearchQueryUid});
     }
 
-    async prepareViewEvent(request: PreparedViewEventRequest) {
-        return this.prepareEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>(
-            EventType.view,
-            request
-        );
+    async makeViewEvent(request: PreparedViewEventRequest) {
+        return this.makeEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>(EventType.view, request);
     }
 
     async sendViewEvent(request: ViewEventRequest): Promise<ViewEventResponse | void> {
-        return (await this.prepareViewEvent(request)).log({});
+        return (await this.makeViewEvent(request)).log({});
     }
 
     async getVisit(): Promise<VisitResponse> {

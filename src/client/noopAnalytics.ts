@@ -26,7 +26,7 @@ export class NoopAnalytics implements AnalyticsClient {
     getParameters(): Promise<any> {
         return Promise.resolve();
     }
-    prepareEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
+    makeEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
         eventType: EventType | string
     ): Promise<PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse>> {
         return Promise.resolve({eventType: eventType as EventType, payload: null, log: () => Promise.resolve()});
@@ -34,26 +34,26 @@ export class NoopAnalytics implements AnalyticsClient {
     sendEvent(): Promise<AnyEventResponse | void> {
         return Promise.resolve();
     }
-    prepareSearchEvent() {
-        return this.prepareEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>(EventType.search);
+    makeSearchEvent() {
+        return this.makeEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>(EventType.search);
     }
     sendSearchEvent(): Promise<SearchEventResponse | void> {
         return Promise.resolve();
     }
-    prepareClickEvent() {
-        return this.prepareEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>(EventType.click);
+    makeClickEvent() {
+        return this.makeEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>(EventType.click);
     }
     sendClickEvent(): Promise<ClickEventResponse | void> {
         return Promise.resolve();
     }
-    prepareCustomEvent() {
-        return this.prepareEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>(EventType.custom);
+    makeCustomEvent() {
+        return this.makeEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>(EventType.custom);
     }
     sendCustomEvent(): Promise<CustomEventResponse | void> {
         return Promise.resolve();
     }
-    prepareViewEvent() {
-        return this.prepareEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>(EventType.view);
+    makeViewEvent() {
+        return this.makeEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>(EventType.view);
     }
     sendViewEvent(): Promise<ViewEventResponse | void> {
         return Promise.resolve();

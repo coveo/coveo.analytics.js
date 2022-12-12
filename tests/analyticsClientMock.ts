@@ -5,21 +5,21 @@ import {AnyEventResponse, EventType} from '../src/events';
 
 export const visitorIdMock = 'mockvisitorid';
 
-const prepareEvent = (eventType: EventType | string) =>
+const makeEvent = (eventType: EventType | string) =>
     Promise.resolve({eventType: eventType as EventType, payload: null, log: () => Promise.resolve()});
 
 export const createAnalyticsClientMock = (): jest.Mocked<AnalyticsClient> => ({
     getPayload: jest.fn((eventType, ...payload) => Promise.resolve()),
     getParameters: jest.fn((eventType, ...payload) => Promise.resolve()),
-    prepareEvent: jest.fn(prepareEvent),
+    makeEvent: jest.fn(makeEvent),
     sendEvent: jest.fn((eventType, payload) => Promise.resolve()),
-    prepareClickEvent: jest.fn((request) => prepareEvent(EventType.click)),
+    makeClickEvent: jest.fn((request) => makeEvent(EventType.click)),
     sendClickEvent: jest.fn((request) => Promise.resolve()),
-    prepareCustomEvent: jest.fn((request) => prepareEvent(EventType.custom)),
+    makeCustomEvent: jest.fn((request) => makeEvent(EventType.custom)),
     sendCustomEvent: jest.fn((request) => Promise.resolve()),
-    prepareSearchEvent: jest.fn((request) => prepareEvent(EventType.search)),
+    makeSearchEvent: jest.fn((request) => makeEvent(EventType.search)),
     sendSearchEvent: jest.fn((request) => Promise.resolve()),
-    prepareViewEvent: jest.fn((request) => prepareEvent(EventType.view)),
+    makeViewEvent: jest.fn((request) => makeEvent(EventType.view)),
     sendViewEvent: jest.fn((request) => Promise.resolve()),
     getHealth: jest.fn(() => Promise.resolve({status: 'ok'})),
     getVisit: jest.fn(() => Promise.resolve({id: 'a', visitorId: 'ok'})),

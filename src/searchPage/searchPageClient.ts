@@ -742,7 +742,7 @@ export class CoveoSearchPageClient {
             eventType,
             eventValue: event,
         };
-        const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(request);
+        const preparedEvent = await this.coveoAnalyticsClient.makeCustomEvent(request);
         return {
             description: this.makeEventDescription(preparedEvent, event),
             log: (searchUID) => preparedEvent.log({lastSearchQueryUid: searchUID}),
@@ -768,7 +768,7 @@ export class CoveoSearchPageClient {
             eventType,
             eventValue,
         };
-        const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(payload);
+        const preparedEvent = await this.coveoAnalyticsClient.makeCustomEvent(payload);
         return {
             description: this.makeEventDescription(preparedEvent, eventValue as SearchPageEvents),
             log: (searchUID) => preparedEvent.log({lastSearchQueryUid: searchUID}),
@@ -788,7 +788,7 @@ export class CoveoSearchPageClient {
         metadata?: Record<string, any>
     ): Promise<EventBuilder<SearchEventResponse>> {
         const request = await this.getBaseSearchEventRequest(event, metadata);
-        const preparedEvent = await this.coveoAnalyticsClient.prepareSearchEvent(request);
+        const preparedEvent = await this.coveoAnalyticsClient.makeSearchEvent(request);
         return {
             description: this.makeEventDescription(preparedEvent, event),
             log: (searchUID) => preparedEvent.log({searchQueryUid: searchUID}),
@@ -807,7 +807,7 @@ export class CoveoSearchPageClient {
             queryPipeline: this.provider.getPipeline(),
             actionCause: event,
         };
-        const preparedEvent = await this.coveoAnalyticsClient.prepareClickEvent(request);
+        const preparedEvent = await this.coveoAnalyticsClient.makeClickEvent(request);
         return {
             description: this.makeEventDescription(preparedEvent, event),
             log: (searchUID) => preparedEvent.log({searchQueryUid: searchUID}),

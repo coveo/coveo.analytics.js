@@ -13,6 +13,10 @@ import {
     VisitResponse,
     IRequestPayload,
     VariableArgumentsPayload,
+    PreparedClickEventRequest,
+    PreparedCustomEventRequest,
+    PreparedViewEventRequest,
+    PreparedSearchEventRequest,
 } from '../events';
 import {IAnalyticsClientOptions, PreprocessAnalyticsRequest, VisitorIdProvider} from './analyticsRequestClient';
 import {hasWindow, hasDocument} from '../detector';
@@ -58,25 +62,34 @@ export type EventTypeConfig = {
     usesMeasurementProtocol?: boolean;
 };
 
-export interface PreparedEvent<T extends AnyEventResponse> extends BufferedRequest {
-    log(): Promise<T | void>;
+export interface PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>
+    extends BufferedRequest {
+    log(missingPayload: Omit<TCompleteRequest, keyof TPreparedRequest>): Promise<TResponse | void>;
 }
 
 export interface AnalyticsClient {
     getPayload(eventType: string, ...payload: VariableArgumentsPayload): Promise<any>;
     getParameters(eventType: string, ...payload: VariableArgumentsPayload): Promise<any>;
-    prepareEvent<T extends AnyEventResponse>(
+    prepareEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
         eventType: string,
         ...payload: VariableArgumentsPayload
-    ): Promise<PreparedEvent<T>>;
+    ): Promise<PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse>>;
     sendEvent(eventType: string, ...payload: VariableArgumentsPayload): Promise<AnyEventResponse | void>;
-    prepareSearchEvent(request: SearchEventRequest): Promise<PreparedEvent<SearchEventResponse>>;
+    prepareSearchEvent(
+        request: PreparedSearchEventRequest
+    ): Promise<PreparedEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>>;
     sendSearchEvent(request: SearchEventRequest): Promise<SearchEventResponse | void>;
-    prepareClickEvent(request: ClickEventRequest): Promise<PreparedEvent<ClickEventResponse>>;
+    prepareClickEvent(
+        request: PreparedClickEventRequest
+    ): Promise<PreparedEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>>;
     sendClickEvent(request: ClickEventRequest): Promise<ClickEventResponse | void>;
-    prepareCustomEvent(request: CustomEventRequest): Promise<PreparedEvent<CustomEventResponse>>;
+    prepareCustomEvent(
+        request: PreparedCustomEventRequest
+    ): Promise<PreparedEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>>;
     sendCustomEvent(request: CustomEventRequest): Promise<CustomEventResponse | void>;
-    prepareViewEvent(request: ViewEventRequest): Promise<PreparedEvent<ViewEventResponse>>;
+    prepareViewEvent(
+        request: PreparedViewEventRequest
+    ): Promise<PreparedEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>>;
     sendViewEvent(request: ViewEventRequest): Promise<ViewEventResponse | void>;
     getVisit(): Promise<VisitResponse>;
     getHealth(): Promise<HealthResponse>;
@@ -297,29 +310,34 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         return payloadToSend;
     }
 
-    async prepareEvent<T extends AnyEventResponse>(
+    async prepareEvent<TPreparedRequest, TCompleteRequest, TResponse extends AnyEventResponse>(
         eventType: EventType | string,
         ...payload: VariableArgumentsPayload
-    ): Promise<PreparedEvent<T>> {
+    ): Promise<PreparedEvent<TPreparedRequest, TCompleteRequest, TResponse>> {
         const {newEventType: eventTypeToSend = eventType as EventType} = this.eventTypeMapping[eventType] || {};
 
         const parametersToSend = await this.resolveParameters(eventType, ...payload);
         const payloadToSend = await this.resolvePayloadForParameters(eventType, parametersToSend);
-        const bufferedRequest: BufferedRequest = {eventType: eventTypeToSend, payload: payloadToSend};
 
         return {
-            ...bufferedRequest,
-            log: async () => {
-                this.bufferedRequests.push(bufferedRequest);
-                await Promise.all(this.afterSendHooks.map((hook) => hook(eventType, parametersToSend)));
+            eventType: eventTypeToSend,
+            payload: payloadToSend,
+            log: async (missingPayload) => {
+                this.bufferedRequests.push(<BufferedRequest>{
+                    eventType: eventTypeToSend,
+                    payload: {...payloadToSend, ...missingPayload},
+                });
+                await Promise.all(
+                    this.afterSendHooks.map((hook) => hook(eventType, {...parametersToSend, ...missingPayload}))
+                );
                 await this.deferExecution();
-                return (await this.sendFromBufferWithFetch()) as T | void;
+                return (await this.sendFromBufferWithFetch()) as TResponse | void;
             },
         };
     }
 
     async sendEvent(eventType: EventType | string, ...payload: VariableArgumentsPayload) {
-        return (await this.prepareEvent(eventType, ...payload)).log();
+        return (await this.prepareEvent<any, any, AnyEventResponse>(eventType, ...payload)).log({});
     }
 
     private deferExecution(): Promise<void> {
@@ -344,36 +362,48 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         this.runtime.client.deleteHttpCookieVisitorId();
     }
 
-    async prepareSearchEvent(request: SearchEventRequest) {
-        return this.prepareEvent<SearchEventResponse>(EventType.search, request);
+    async prepareSearchEvent(request: PreparedSearchEventRequest) {
+        return this.prepareEvent<PreparedSearchEventRequest, SearchEventRequest, SearchEventResponse>(
+            EventType.search,
+            request
+        );
     }
 
-    async sendSearchEvent(request: SearchEventRequest) {
-        return (await this.prepareSearchEvent(request)).log();
+    async sendSearchEvent({searchQueryUid, ...preparedRequest}: SearchEventRequest) {
+        return (await this.prepareSearchEvent(preparedRequest)).log({searchQueryUid});
     }
 
-    async prepareClickEvent(request: ClickEventRequest) {
-        return this.prepareEvent<ClickEventResponse>(EventType.click, request);
+    async prepareClickEvent(request: PreparedClickEventRequest) {
+        return this.prepareEvent<PreparedClickEventRequest, ClickEventRequest, ClickEventResponse>(
+            EventType.click,
+            request
+        );
     }
 
-    async sendClickEvent(request: ClickEventRequest) {
-        return (await this.prepareClickEvent(request)).log();
+    async sendClickEvent({searchQueryUid, ...preparedRequest}: ClickEventRequest) {
+        return (await this.prepareClickEvent(preparedRequest)).log({searchQueryUid});
     }
 
-    async prepareCustomEvent(request: CustomEventRequest) {
-        return this.prepareEvent<CustomEventResponse>(EventType.custom, request);
+    async prepareCustomEvent(request: PreparedCustomEventRequest) {
+        return this.prepareEvent<PreparedCustomEventRequest, CustomEventRequest, CustomEventResponse>(
+            EventType.custom,
+            request
+        );
     }
 
-    async sendCustomEvent(request: CustomEventRequest) {
-        return (await this.prepareCustomEvent(request)).log();
+    async sendCustomEvent({lastSearchQueryUid, ...preparedRequest}: CustomEventRequest) {
+        return (await this.prepareCustomEvent(preparedRequest)).log({lastSearchQueryUid});
     }
 
-    async prepareViewEvent(request: ViewEventRequest) {
-        return this.prepareEvent<ViewEventResponse>(EventType.view, request);
+    async prepareViewEvent(request: PreparedViewEventRequest) {
+        return this.prepareEvent<PreparedViewEventRequest, ViewEventRequest, ViewEventResponse>(
+            EventType.view,
+            request
+        );
     }
 
     async sendViewEvent(request: ViewEventRequest): Promise<ViewEventResponse | void> {
-        return (await this.prepareViewEvent(request)).log();
+        return (await this.prepareViewEvent(request)).log({});
     }
 
     async getVisit(): Promise<VisitResponse> {

@@ -1,12 +1,13 @@
 import CoveoAnalyticsClient, {ClientOptions, AnalyticsClient, PreparedEvent} from '../client/analytics';
 import {
     SearchEventRequest,
-    ClickEventRequest,
     CustomEventRequest,
     SearchEventResponse,
     AnyEventResponse,
     ClickEventResponse,
     CustomEventResponse,
+    PreparedClickEventRequest,
+    PreparedSearchEventRequest,
 } from '../events';
 import {
     SearchPageEvents,
@@ -64,7 +65,7 @@ export type EventDescription = Pick<SearchEventRequest, 'actionCause' | 'customD
 
 export interface EventBuilder<T extends AnyEventResponse = AnyEventResponse> {
     description: EventDescription;
-    log: () => Promise<T | void>;
+    log: (searchUID: string) => Promise<T | void>;
 }
 
 export class CoveoSearchPageClient {
@@ -92,7 +93,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logInterfaceLoad() {
-        return (await this.makeInterfaceLoad()).log();
+        return (await this.makeInterfaceLoad()).log(this.provider.getSearchUID());
     }
 
     public makeRecommendationInterfaceLoad() {
@@ -100,7 +101,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logRecommendationInterfaceLoad() {
-        return (await this.makeRecommendationInterfaceLoad()).log();
+        return (await this.makeRecommendationInterfaceLoad()).log(this.provider.getSearchUID());
     }
 
     public makeRecommendation() {
@@ -108,7 +109,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logRecommendation() {
-        return (await this.makeRecommendation()).log();
+        return (await this.makeRecommendation()).log(this.provider.getSearchUID());
     }
 
     public makeRecommendationOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -116,7 +117,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logRecommendationOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeRecommendationOpen(info, identifier)).log();
+        return (await this.makeRecommendationOpen(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeStaticFilterClearAll(meta: StaticFilterMetadata) {
@@ -124,7 +125,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logStaticFilterClearAll(meta: StaticFilterMetadata) {
-        return (await this.makeStaticFilterClearAll(meta)).log();
+        return (await this.makeStaticFilterClearAll(meta)).log(this.provider.getSearchUID());
     }
 
     public makeStaticFilterSelect(meta: StaticFilterToggleValueMetadata) {
@@ -132,7 +133,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logStaticFilterSelect(meta: StaticFilterToggleValueMetadata) {
-        return (await this.makeStaticFilterSelect(meta)).log();
+        return (await this.makeStaticFilterSelect(meta)).log(this.provider.getSearchUID());
     }
 
     public makeStaticFilterDeselect(meta: StaticFilterToggleValueMetadata) {
@@ -140,7 +141,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logStaticFilterDeselect(meta: StaticFilterToggleValueMetadata) {
-        return (await this.makeStaticFilterDeselect(meta)).log();
+        return (await this.makeStaticFilterDeselect(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFetchMoreResults() {
@@ -148,7 +149,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFetchMoreResults() {
-        return (await this.makeFetchMoreResults()).log();
+        return (await this.makeFetchMoreResults()).log(this.provider.getSearchUID());
     }
 
     public makeInterfaceChange(metadata: InterfaceChangeMetadata) {
@@ -156,7 +157,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logInterfaceChange(metadata: InterfaceChangeMetadata) {
-        return (await this.makeInterfaceChange(metadata)).log();
+        return (await this.makeInterfaceChange(metadata)).log(this.provider.getSearchUID());
     }
 
     public makeDidYouMeanAutomatic() {
@@ -164,7 +165,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logDidYouMeanAutomatic() {
-        return (await this.makeDidYouMeanAutomatic()).log();
+        return (await this.makeDidYouMeanAutomatic()).log(this.provider.getSearchUID());
     }
 
     public makeDidYouMeanClick() {
@@ -172,7 +173,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logDidYouMeanClick() {
-        return (await this.makeDidYouMeanClick()).log();
+        return (await this.makeDidYouMeanClick()).log(this.provider.getSearchUID());
     }
 
     public makeResultsSort(metadata: ResultsSortMetadata) {
@@ -180,7 +181,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logResultsSort(metadata: ResultsSortMetadata) {
-        return (await this.makeResultsSort(metadata)).log();
+        return (await this.makeResultsSort(metadata)).log(this.provider.getSearchUID());
     }
 
     public makeSearchboxSubmit() {
@@ -188,7 +189,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logSearchboxSubmit() {
-        return (await this.makeSearchboxSubmit()).log();
+        return (await this.makeSearchboxSubmit()).log(this.provider.getSearchUID());
     }
 
     public makeSearchboxClear() {
@@ -196,7 +197,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logSearchboxClear() {
-        return (await this.makeSearchboxClear()).log();
+        return (await this.makeSearchboxClear()).log(this.provider.getSearchUID());
     }
 
     public makeSearchboxAsYouType() {
@@ -204,7 +205,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logSearchboxAsYouType() {
-        return (await this.makeSearchboxAsYouType()).log();
+        return (await this.makeSearchboxAsYouType()).log(this.provider.getSearchUID());
     }
 
     public makeBreadcrumbFacet(metadata: FacetMetadata | FacetRangeMetadata | CategoryFacetMetadata) {
@@ -212,7 +213,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logBreadcrumbFacet(metadata: FacetMetadata | FacetRangeMetadata | CategoryFacetMetadata) {
-        return (await this.makeBreadcrumbFacet(metadata)).log();
+        return (await this.makeBreadcrumbFacet(metadata)).log(this.provider.getSearchUID());
     }
 
     public makeBreadcrumbResetAll() {
@@ -220,7 +221,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logBreadcrumbResetAll() {
-        return (await this.makeBreadcrumbResetAll()).log();
+        return (await this.makeBreadcrumbResetAll()).log(this.provider.getSearchUID());
     }
 
     public makeDocumentQuickview(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -228,7 +229,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logDocumentQuickview(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeDocumentQuickview(info, identifier)).log();
+        return (await this.makeDocumentQuickview(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -236,7 +237,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logDocumentOpen(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeDocumentOpen(info, identifier)).log();
+        return (await this.makeDocumentOpen(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
@@ -244,7 +245,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logOmniboxAnalytics(meta: OmniboxSuggestionsMetadata) {
-        return (await this.makeOmniboxAnalytics(meta)).log();
+        return (await this.makeOmniboxAnalytics(meta)).log(this.provider.getSearchUID());
     }
 
     public makeOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {
@@ -252,7 +253,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logOmniboxFromLink(meta: OmniboxSuggestionsMetadata) {
-        return (await this.makeOmniboxFromLink(meta)).log();
+        return (await this.makeOmniboxFromLink(meta)).log(this.provider.getSearchUID());
     }
 
     public makeSearchFromLink() {
@@ -260,7 +261,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logSearchFromLink() {
-        return (await this.makeSearchFromLink()).log();
+        return (await this.makeSearchFromLink()).log(this.provider.getSearchUID());
     }
 
     public makeTriggerNotify(meta: TriggerNotifyMetadata) {
@@ -268,7 +269,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logTriggerNotify(meta: TriggerNotifyMetadata) {
-        return (await this.makeTriggerNotify(meta)).log();
+        return (await this.makeTriggerNotify(meta)).log(this.provider.getSearchUID());
     }
 
     public makeTriggerExecute(meta: TriggerExecuteMetadata) {
@@ -276,7 +277,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logTriggerExecute(meta: TriggerExecuteMetadata) {
-        return (await this.makeTriggerExecute(meta)).log();
+        return (await this.makeTriggerExecute(meta)).log(this.provider.getSearchUID());
     }
 
     public makeTriggerQuery() {
@@ -288,7 +289,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logTriggerQuery() {
-        return (await this.makeTriggerQuery()).log();
+        return (await this.makeTriggerQuery()).log(this.provider.getSearchUID());
     }
 
     public makeUndoTriggerQuery(meta: UndoTriggerRedirectMetadata) {
@@ -296,7 +297,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logUndoTriggerQuery(meta: UndoTriggerRedirectMetadata) {
-        return (await this.makeUndoTriggerQuery(meta)).log();
+        return (await this.makeUndoTriggerQuery(meta)).log(this.provider.getSearchUID());
     }
 
     public makeTriggerRedirect(meta: TriggerRedirectMetadata) {
@@ -307,7 +308,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logTriggerRedirect(meta: TriggerRedirectMetadata) {
-        return (await this.makeTriggerRedirect(meta)).log();
+        return (await this.makeTriggerRedirect(meta)).log(this.provider.getSearchUID());
     }
 
     public makePagerResize(meta: PagerResizeMetadata) {
@@ -315,7 +316,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logPagerResize(meta: PagerResizeMetadata) {
-        return (await this.makePagerResize(meta)).log();
+        return (await this.makePagerResize(meta)).log(this.provider.getSearchUID());
     }
 
     public makePagerNumber(meta: PagerMetadata) {
@@ -323,7 +324,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logPagerNumber(meta: PagerMetadata) {
-        return (await this.makePagerNumber(meta)).log();
+        return (await this.makePagerNumber(meta)).log(this.provider.getSearchUID());
     }
 
     public makePagerNext(meta: PagerMetadata) {
@@ -331,7 +332,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logPagerNext(meta: PagerMetadata) {
-        return (await this.makePagerNext(meta)).log();
+        return (await this.makePagerNext(meta)).log(this.provider.getSearchUID());
     }
 
     public makePagerPrevious(meta: PagerMetadata) {
@@ -339,7 +340,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logPagerPrevious(meta: PagerMetadata) {
-        return (await this.makePagerPrevious(meta)).log();
+        return (await this.makePagerPrevious(meta)).log(this.provider.getSearchUID());
     }
 
     public makePagerScrolling() {
@@ -347,7 +348,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logPagerScrolling() {
-        return (await this.makePagerScrolling()).log();
+        return (await this.makePagerScrolling()).log(this.provider.getSearchUID());
     }
 
     public makeFacetClearAll(meta: FacetBaseMeta) {
@@ -355,7 +356,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetClearAll(meta: FacetBaseMeta) {
-        return (await this.makeFacetClearAll(meta)).log();
+        return (await this.makeFacetClearAll(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetSearch(meta: FacetBaseMeta) {
@@ -363,7 +364,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetSearch(meta: FacetBaseMeta) {
-        return (await this.makeFacetSearch(meta)).log();
+        return (await this.makeFacetSearch(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetSelect(meta: FacetMetadata) {
@@ -371,7 +372,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetSelect(meta: FacetMetadata) {
-        return (await this.makeFacetSelect(meta)).log();
+        return (await this.makeFacetSelect(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetDeselect(meta: FacetMetadata) {
@@ -379,7 +380,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetDeselect(meta: FacetMetadata) {
-        return (await this.makeFacetDeselect(meta)).log();
+        return (await this.makeFacetDeselect(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetExclude(meta: FacetMetadata) {
@@ -387,7 +388,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetExclude(meta: FacetMetadata) {
-        return (await this.makeFacetExclude(meta)).log();
+        return (await this.makeFacetExclude(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetUnexclude(meta: FacetMetadata) {
@@ -395,7 +396,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetUnexclude(meta: FacetMetadata) {
-        return (await this.makeFacetUnexclude(meta)).log();
+        return (await this.makeFacetUnexclude(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetSelectAll(meta: FacetBaseMeta) {
@@ -403,7 +404,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetSelectAll(meta: FacetBaseMeta) {
-        return (await this.makeFacetSelectAll(meta)).log();
+        return (await this.makeFacetSelectAll(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetUpdateSort(meta: FacetSortMeta) {
@@ -411,7 +412,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetUpdateSort(meta: FacetSortMeta) {
-        return (await this.makeFacetUpdateSort(meta)).log();
+        return (await this.makeFacetUpdateSort(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetShowMore(meta: FacetBaseMeta) {
@@ -419,7 +420,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetShowMore(meta: FacetBaseMeta) {
-        return (await this.makeFacetShowMore(meta)).log();
+        return (await this.makeFacetShowMore(meta)).log(this.provider.getSearchUID());
     }
 
     public makeFacetShowLess(meta: FacetBaseMeta) {
@@ -427,7 +428,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logFacetShowLess(meta: FacetBaseMeta) {
-        return (await this.makeFacetShowLess(meta)).log();
+        return (await this.makeFacetShowLess(meta)).log(this.provider.getSearchUID());
     }
 
     public makeQueryError(meta: QueryErrorMeta) {
@@ -435,7 +436,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logQueryError(meta: QueryErrorMeta) {
-        return (await this.makeQueryError(meta)).log();
+        return (await this.makeQueryError(meta)).log(this.provider.getSearchUID());
     }
 
     public async makeQueryErrorBack(): Promise<EventBuilder<SearchEventResponse>> {
@@ -443,14 +444,14 @@ export class CoveoSearchPageClient {
         return {
             description: customEventBuilder.description,
             log: async () => {
-                await customEventBuilder.log();
+                await customEventBuilder.log(this.provider.getSearchUID());
                 return this.logSearchEvent(SearchPageEvents.queryErrorBack);
             },
         };
     }
 
     public async logQueryErrorBack() {
-        return (await this.makeQueryErrorBack()).log();
+        return (await this.makeQueryErrorBack()).log(this.provider.getSearchUID());
     }
 
     public async makeQueryErrorRetry(): Promise<EventBuilder<SearchEventResponse>> {
@@ -458,14 +459,14 @@ export class CoveoSearchPageClient {
         return {
             description: customEventBuilder.description,
             log: async () => {
-                await customEventBuilder.log();
+                await customEventBuilder.log(this.provider.getSearchUID());
                 return this.logSearchEvent(SearchPageEvents.queryErrorRetry);
             },
         };
     }
 
     public async logQueryErrorRetry() {
-        return (await this.makeQueryErrorRetry()).log();
+        return (await this.makeQueryErrorRetry()).log(this.provider.getSearchUID());
     }
 
     public async makeQueryErrorClear(): Promise<EventBuilder<SearchEventResponse>> {
@@ -473,14 +474,14 @@ export class CoveoSearchPageClient {
         return {
             description: customEventBuilder.description,
             log: async () => {
-                await customEventBuilder.log();
+                await customEventBuilder.log(this.provider.getSearchUID());
                 return this.logSearchEvent(SearchPageEvents.queryErrorClear);
             },
         };
     }
 
     public async logQueryErrorClear() {
-        return (await this.makeQueryErrorClear()).log();
+        return (await this.makeQueryErrorClear()).log(this.provider.getSearchUID());
     }
 
     public makeLikeSmartSnippet() {
@@ -488,7 +489,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logLikeSmartSnippet() {
-        return (await this.makeLikeSmartSnippet()).log();
+        return (await this.makeLikeSmartSnippet()).log(this.provider.getSearchUID());
     }
 
     public makeDislikeSmartSnippet() {
@@ -496,7 +497,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logDislikeSmartSnippet() {
-        return (await this.makeDislikeSmartSnippet()).log();
+        return (await this.makeDislikeSmartSnippet()).log(this.provider.getSearchUID());
     }
 
     public makeExpandSmartSnippet() {
@@ -504,7 +505,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logExpandSmartSnippet() {
-        return (await this.makeExpandSmartSnippet()).log();
+        return (await this.makeExpandSmartSnippet()).log(this.provider.getSearchUID());
     }
 
     public makeCollapseSmartSnippet() {
@@ -512,7 +513,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logCollapseSmartSnippet() {
-        return (await this.makeCollapseSmartSnippet()).log();
+        return (await this.makeCollapseSmartSnippet()).log(this.provider.getSearchUID());
     }
 
     public makeOpenSmartSnippetFeedbackModal() {
@@ -520,7 +521,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logOpenSmartSnippetFeedbackModal() {
-        return (await this.makeOpenSmartSnippetFeedbackModal()).log();
+        return (await this.makeOpenSmartSnippetFeedbackModal()).log(this.provider.getSearchUID());
     }
 
     public makeCloseSmartSnippetFeedbackModal() {
@@ -528,7 +529,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logCloseSmartSnippetFeedbackModal() {
-        return (await this.makeCloseSmartSnippetFeedbackModal()).log();
+        return (await this.makeCloseSmartSnippetFeedbackModal()).log(this.provider.getSearchUID());
     }
 
     public makeSmartSnippetFeedbackReason(reason: SmartSnippetFeedbackReason, details?: string) {
@@ -536,7 +537,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logSmartSnippetFeedbackReason(reason: SmartSnippetFeedbackReason, details?: string) {
-        return (await this.makeSmartSnippetFeedbackReason(reason, details)).log();
+        return (await this.makeSmartSnippetFeedbackReason(reason, details)).log(this.provider.getSearchUID());
     }
 
     public makeExpandSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
@@ -547,7 +548,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logExpandSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
-        return (await this.makeExpandSmartSnippetSuggestion(snippet)).log();
+        return (await this.makeExpandSmartSnippetSuggestion(snippet)).log(this.provider.getSearchUID());
     }
 
     public makeCollapseSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier) {
@@ -560,7 +561,7 @@ export class CoveoSearchPageClient {
     public async logCollapseSmartSnippetSuggestion(
         snippet: SmartSnippetSuggestionMeta | SmartSnippetDocumentIdentifier
     ) {
-        return (await this.makeCollapseSmartSnippetSuggestion(snippet)).log();
+        return (await this.makeCollapseSmartSnippetSuggestion(snippet)).log(this.provider.getSearchUID());
     }
 
     /**
@@ -574,7 +575,7 @@ export class CoveoSearchPageClient {
      * @deprecated
      */
     public async logShowMoreSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
-        return (await this.makeShowMoreSmartSnippetSuggestion(snippet)).log();
+        return (await this.makeShowMoreSmartSnippetSuggestion(snippet)).log(this.provider.getSearchUID());
     }
 
     /**
@@ -588,7 +589,7 @@ export class CoveoSearchPageClient {
      * @deprecated
      */
     public async logShowLessSmartSnippetSuggestion(snippet: SmartSnippetSuggestionMeta) {
-        return (await this.makeShowLessSmartSnippetSuggestion(snippet)).log();
+        return (await this.makeShowLessSmartSnippetSuggestion(snippet)).log(this.provider.getSearchUID());
     }
 
     public makeOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -596,7 +597,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logOpenSmartSnippetSource(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeOpenSmartSnippetSource(info, identifier)).log();
+        return (await this.makeOpenSmartSnippetSource(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeOpenSmartSnippetSuggestionSource(info: PartialDocumentInformation, snippet: SmartSnippetSuggestionMeta) {
@@ -613,14 +614,14 @@ export class CoveoSearchPageClient {
     }
 
     public async logCopyToClipboard(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeCopyToClipboard(info, identifier)).log();
+        return (await this.makeCopyToClipboard(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public async logOpenSmartSnippetSuggestionSource(
         info: PartialDocumentInformation,
         snippet: SmartSnippetSuggestionMeta
     ) {
-        return (await this.makeOpenSmartSnippetSuggestionSource(info, snippet)).log();
+        return (await this.makeOpenSmartSnippetSuggestionSource(info, snippet)).log(this.provider.getSearchUID());
     }
 
     public makeOpenSmartSnippetInlineLink(
@@ -639,7 +640,7 @@ export class CoveoSearchPageClient {
         info: PartialDocumentInformation,
         identifierAndLink: DocumentIdentifier & SmartSnippetLinkMeta
     ) {
-        return (await this.makeOpenSmartSnippetInlineLink(info, identifierAndLink)).log();
+        return (await this.makeOpenSmartSnippetInlineLink(info, identifierAndLink)).log(this.provider.getSearchUID());
     }
 
     public makeOpenSmartSnippetSuggestionInlineLink(
@@ -661,7 +662,9 @@ export class CoveoSearchPageClient {
         info: PartialDocumentInformation,
         snippetAndLink: SmartSnippetSuggestionMeta & SmartSnippetLinkMeta
     ) {
-        return (await this.makeOpenSmartSnippetSuggestionInlineLink(info, snippetAndLink)).log();
+        return (await this.makeOpenSmartSnippetSuggestionInlineLink(info, snippetAndLink)).log(
+            this.provider.getSearchUID()
+        );
     }
 
     public makeRecentQueryClick() {
@@ -669,7 +672,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logRecentQueryClick() {
-        return (await this.makeRecentQueryClick()).log();
+        return (await this.makeRecentQueryClick()).log(this.provider.getSearchUID());
     }
 
     public makeClearRecentQueries() {
@@ -677,7 +680,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logClearRecentQueries() {
-        return (await this.makeClearRecentQueries()).log();
+        return (await this.makeClearRecentQueries()).log(this.provider.getSearchUID());
     }
 
     public makeRecentResultClick(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -685,7 +688,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logRecentResultClick(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeRecentResultClick(info, identifier)).log();
+        return (await this.makeRecentResultClick(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeClearRecentResults() {
@@ -693,7 +696,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logClearRecentResults() {
-        return (await this.makeClearRecentResults()).log();
+        return (await this.makeClearRecentResults()).log(this.provider.getSearchUID());
     }
 
     public makeNoResultsBack() {
@@ -701,7 +704,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logNoResultsBack() {
-        return (await this.makeNoResultsBack()).log();
+        return (await this.makeNoResultsBack()).log(this.provider.getSearchUID());
     }
 
     public makeShowMoreFoldedResults(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
@@ -709,7 +712,7 @@ export class CoveoSearchPageClient {
     }
 
     public async logShowMoreFoldedResults(info: PartialDocumentInformation, identifier: DocumentIdentifier) {
-        return (await this.makeShowMoreFoldedResults(info, identifier)).log();
+        return (await this.makeShowMoreFoldedResults(info, identifier)).log(this.provider.getSearchUID());
     }
 
     public makeShowLessFoldedResults() {
@@ -717,15 +720,14 @@ export class CoveoSearchPageClient {
     }
 
     public async logShowLessFoldedResults() {
-        return (await this.makeShowLessFoldedResults()).log();
+        return (await this.makeShowLessFoldedResults()).log(this.provider.getSearchUID());
     }
 
-    private makeEventBuilder<T extends AnyEventResponse>(
-        actionCause: SearchPageEvents,
-        preparedEvent: PreparedEvent<T>
-    ): EventBuilder<T> {
-        const description: EventDescription = {actionCause, customData: preparedEvent.payload?.customData};
-        return {description, log: () => preparedEvent.log()};
+    private makeEventDescription(
+        preparedEvent: PreparedEvent<unknown, unknown, AnyEventResponse>,
+        actionCause: SearchPageEvents
+    ): EventDescription {
+        return {actionCause, customData: preparedEvent.payload?.customData};
     }
 
     public async makeCustomEvent(
@@ -736,12 +738,15 @@ export class CoveoSearchPageClient {
         this.coveoAnalyticsClient.getParameters;
         const customData = {...this.provider.getBaseMetadata(), ...metadata};
         const request: CustomEventRequest = {
-            ...(await this.getBaseCustomEventRequest(customData)),
+            ...(await this.getBaseEventRequest(customData)),
             eventType,
             eventValue: event,
         };
         const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(request);
-        return this.makeEventBuilder(event, preparedEvent);
+        return {
+            description: this.makeEventDescription(preparedEvent, event),
+            log: (searchUID) => preparedEvent.log({lastSearchQueryUid: searchUID}),
+        };
     }
 
     public async logCustomEvent(
@@ -749,26 +754,33 @@ export class CoveoSearchPageClient {
         metadata?: Record<string, any>,
         eventType: string = CustomEventsTypes[event]!
     ) {
-        return (await this.makeCustomEvent(event, metadata, eventType)).log();
+        return (await this.makeCustomEvent(event, metadata, eventType)).log(this.provider.getSearchUID());
     }
 
-    public async makeCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
+    public async makeCustomEventWithType(
+        eventValue: string,
+        eventType: string,
+        metadata?: Record<string, any>
+    ): Promise<EventBuilder<CustomEventResponse>> {
         const customData = {...this.provider.getBaseMetadata(), ...metadata};
         const payload: CustomEventRequest = {
-            ...(await this.getBaseCustomEventRequest(customData)),
+            ...(await this.getBaseEventRequest(customData)),
             eventType,
             eventValue,
         };
         const preparedEvent = await this.coveoAnalyticsClient.prepareCustomEvent(payload);
-        return this.makeEventBuilder(eventValue as SearchPageEvents, preparedEvent);
+        return {
+            description: this.makeEventDescription(preparedEvent, eventValue as SearchPageEvents),
+            log: (searchUID) => preparedEvent.log({lastSearchQueryUid: searchUID}),
+        };
     }
 
     public async logCustomEventWithType(eventValue: string, eventType: string, metadata?: Record<string, any>) {
-        return (await this.makeCustomEventWithType(eventValue, eventType, metadata)).log();
+        return (await this.makeCustomEventWithType(eventValue, eventType, metadata)).log(this.provider.getSearchUID());
     }
 
     public async logSearchEvent(event: SearchPageEvents, metadata?: Record<string, any>) {
-        return (await this.makeSearchEvent(event, metadata)).log();
+        return (await this.makeSearchEvent(event, metadata)).log(this.provider.getSearchUID());
     }
 
     public async makeSearchEvent(
@@ -777,7 +789,10 @@ export class CoveoSearchPageClient {
     ): Promise<EventBuilder<SearchEventResponse>> {
         const request = await this.getBaseSearchEventRequest(event, metadata);
         const preparedEvent = await this.coveoAnalyticsClient.prepareSearchEvent(request);
-        return this.makeEventBuilder(event, preparedEvent);
+        return {
+            description: this.makeEventDescription(preparedEvent, event),
+            log: (searchUID) => preparedEvent.log({searchQueryUid: searchUID}),
+        };
     }
 
     public async makeClickEvent(
@@ -786,15 +801,17 @@ export class CoveoSearchPageClient {
         identifier: DocumentIdentifier,
         metadata?: Record<string, any>
     ): Promise<EventBuilder<ClickEventResponse>> {
-        const request: ClickEventRequest = {
+        const request: PreparedClickEventRequest = {
             ...info,
             ...(await this.getBaseEventRequest({...identifier, ...metadata})),
-            searchQueryUid: this.provider.getSearchUID(),
             queryPipeline: this.provider.getPipeline(),
             actionCause: event,
         };
         const preparedEvent = await this.coveoAnalyticsClient.prepareClickEvent(request);
-        return this.makeEventBuilder(event, preparedEvent);
+        return {
+            description: this.makeEventDescription(preparedEvent, event),
+            log: (searchUID) => preparedEvent.log({searchQueryUid: searchUID}),
+        };
     }
 
     public async logClickEvent(
@@ -803,26 +820,18 @@ export class CoveoSearchPageClient {
         identifier: DocumentIdentifier,
         metadata?: Record<string, any>
     ) {
-        return (await this.makeClickEvent(event, info, identifier, metadata)).log();
+        return (await this.makeClickEvent(event, info, identifier, metadata)).log(this.provider.getSearchUID());
     }
 
     private async getBaseSearchEventRequest(
         event: SearchPageEvents,
         metadata?: Record<string, any>
-    ): Promise<SearchEventRequest> {
+    ): Promise<PreparedSearchEventRequest> {
         return {
             ...(await this.getBaseEventRequest(metadata)),
             ...this.provider.getSearchEventRequestPayload(),
-            searchQueryUid: this.provider.getSearchUID(),
             queryPipeline: this.provider.getPipeline(),
             actionCause: event,
-        };
-    }
-
-    private async getBaseCustomEventRequest(metadata?: Record<string, any>) {
-        return {
-            ...(await this.getBaseEventRequest(metadata)),
-            lastSearchQueryUid: this.provider.getSearchUID(),
         };
     }
 

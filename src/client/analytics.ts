@@ -269,7 +269,9 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         const removeUnknownParameters: ProcessPayloadStep = (currentPayload) =>
             usesMeasurementProtocol ? this.removeUnknownParameters(currentPayload) : currentPayload;
         const processCustomParameters: ProcessPayloadStep = (currentPayload) =>
-            usesMeasurementProtocol ? this.processCustomParameters(currentPayload) : currentPayload;
+            usesMeasurementProtocol
+                ? this.processCustomParameters(currentPayload)
+                : this.mapCustomParametersToCustomData(currentPayload);
 
         const payloadToSend = await [
             cleanPayloadStep,
@@ -439,6 +441,16 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             ...lowercasedCustom,
             ...newPayload,
         };
+    }
+
+    private mapCustomParametersToCustomData(payload: IRequestPayload): IRequestPayload {
+        const {custom, ...rest} = payload;
+        if (custom) {
+            const lowercasedCustom = this.lowercaseKeys(custom);
+            return {...rest, customData: {...lowercasedCustom, ...payload.customData}};
+        } else {
+            return payload;
+        }
     }
 
     private lowercaseKeys(custom: any) {

@@ -432,8 +432,10 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     private processCustomParameters(payload: IRequestPayload): IRequestPayload {
         const {custom, ...rest} = payload;
-
-        const lowercasedCustom = this.lowercaseKeys(custom);
+        let lowercasedCustom = {};
+        if (custom && typeof custom === 'object' && !Array.isArray(custom)) {
+            lowercasedCustom = this.lowercaseKeys(custom);
+        }
 
         const newPayload = convertCustomMeasurementProtocolKeys(rest);
 
@@ -445,7 +447,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     private mapCustomParametersToCustomData(payload: IRequestPayload): IRequestPayload {
         const {custom, ...rest} = payload;
-        if (custom) {
+        if (custom && typeof custom === 'object' && !Array.isArray(custom)) {
             const lowercasedCustom = this.lowercaseKeys(custom);
             return {...rest, customData: {...lowercasedCustom, ...payload.customData}};
         } else {
@@ -453,16 +455,13 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         }
     }
 
-    private lowercaseKeys(custom: any) {
-        const keys = Object.keys(custom || {});
-
-        return keys.reduce(
-            (all, key) => ({
-                ...all,
-                [key.toLowerCase()]: custom[key],
-            }),
-            {}
-        );
+    private lowercaseKeys(custom: Record<string, unknown>) {
+        const keys = Object.keys(custom);
+        let result: Record<string, unknown> = {};
+        keys.forEach((key) => {
+            result[key.toLowerCase() as string] = custom[key];
+        });
+        return result;
     }
 
     private validateParams(payload: IRequestPayload): IRequestPayload {

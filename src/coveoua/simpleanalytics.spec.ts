@@ -245,6 +245,46 @@ describe('simpleanalytics', () => {
             expect(result).toHaveProperty('context_website', 'MY_WEBSITE');
         });
 
+        it('does not set custom parameters which are strings', async () => {
+            coveoua('init', 'MYTOKEN', {plugins: ['ec']});
+            coveoua('set', 'custom', 'test');
+            await coveoua('send', 'pageview');
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(Object.keys(result).length).toBe(11);
+        });
+
+        it('does not set custom parameters which are arrays', async () => {
+            coveoua('init', 'MYTOKEN', {plugins: ['ec']});
+            coveoua('set', 'custom', ['test']);
+            await coveoua('send', 'pageview');
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(Object.keys(result).length).toBe(11);
+        });
+
+        it('does not set custom parameters which are null', async () => {
+            coveoua('init', 'MYTOKEN', {plugins: ['ec']});
+            coveoua('set', 'custom', null);
+            await coveoua('send', 'pageview');
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(Object.keys(result).length).toBe(11);
+        });
+
+        it('does not set custom parameters which are undefined', async () => {
+            coveoua('init', 'MYTOKEN', {plugins: ['ec']});
+            coveoua('set', 'custom', undefined);
+            await coveoua('send', 'pageview');
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(Object.keys(result).length).toBe(11);
+        });
+
         it('can set a custom_website parameter on a non-collect event', async () => {
             coveoua('init', 'MYTOKEN', {plugins: []});
             coveoua('set', 'custom', {context_website: 'MY_WEBSITE'});
@@ -278,7 +318,29 @@ describe('simpleanalytics', () => {
             expect(result).not.toHaveProperty('customData');
         });
 
-        it('will not override hardcoded custom parameters', async () => {
+        it('does not add a customData entry for customData params which are strings', async () => {
+            coveoua('init', 'MYTOKEN', {plugins: []});
+            coveoua('set', 'custom', 'test');
+            await coveoua('send', 'view', {somedata: 'something'});
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(result).toHaveProperty('somedata', 'something');
+            expect(result).not.toHaveProperty('customData');
+        });
+
+        it('does not add a customData entry for customData params which are arrays', async () => {
+            coveoua('init', 'MYTOKEN', [{plugins: []}]);
+            coveoua('set', 'custom', [test]);
+            await coveoua('send', 'view', {somedata: 'something'});
+
+            expect(fetchMock.calls().length).toBe(1);
+            let result = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+            expect(result).toHaveProperty('somedata', 'something');
+            expect(result).not.toHaveProperty('customData');
+        });
+
+        it('will not override hardcoded customData parameters', async () => {
             coveoua('init', 'MYTOKEN', {plugins: []});
             coveoua('set', 'custom', {context_website: 'MY_WEBSITE'});
             await coveoua('send', 'view', {somedata: 'something', customData: {context_website: 'MY_OTHER_WEBSITE'}});

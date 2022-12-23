@@ -30,6 +30,7 @@ import {isApiKey} from './token';
 import {isReactNative, ReactNativeRuntimeWarning} from '../react-native/react-native-utils';
 import {doNotTrack} from '../donottrack';
 import {NullStorage} from '../storage';
+import {isObject} from './utils';
 
 export const Version = 'v15';
 
@@ -433,7 +434,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private processCustomParameters(payload: IRequestPayload): IRequestPayload {
         const {custom, ...rest} = payload;
         let lowercasedCustom = {};
-        if (custom && typeof custom === 'object' && !Array.isArray(custom)) {
+        if (custom && isObject(custom)) {
             lowercasedCustom = this.lowercaseKeys(custom);
         }
 
@@ -447,7 +448,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     private mapCustomParametersToCustomData(payload: IRequestPayload): IRequestPayload {
         const {custom, ...rest} = payload;
-        if (custom && typeof custom === 'object' && !Array.isArray(custom)) {
+        if (custom && isObject(custom)) {
             const lowercasedCustom = this.lowercaseKeys(custom);
             return {...rest, customData: {...lowercasedCustom, ...payload.customData}};
         } else {

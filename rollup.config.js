@@ -22,6 +22,12 @@ const tsPlugin = () =>
         useTsconfigDeclarationDir: true,
     });
 
+const nodeResolvePlugin = () =>
+    nodeResolve({
+        preferBuiltins: true,
+        only: ['cross-fetch', 'uuid'],
+    });
+
 const browserUMD = {
     input: './src/coveoua/browser.ts',
     output: [
@@ -48,6 +54,7 @@ const browserUMD = {
     ],
     plugins: [
         browserFetch(),
+        nodeResolvePlugin(),
         tsPlugin(),
         process.env.SERVE
             ? serve({
@@ -68,7 +75,7 @@ const nodeCJS = {
         file: './dist/library.js',
         format: 'cjs',
     },
-    plugins: [nodeResolve({mainFields: ['main']}), commonjs(), tsPlugin(), json()],
+    plugins: [nodeResolve({mainFields: ['main'], preferBuiltins: true}), commonjs(), tsPlugin(), json()],
 };
 
 const browserESM = {
@@ -79,6 +86,7 @@ const browserESM = {
     },
     plugins: [
         browserFetch(),
+        nodeResolvePlugin(),
         typescript({
             useTsconfigDeclarationDir: true,
             tsconfigOverride: {compilerOptions: {target: 'es6'}},
@@ -93,6 +101,9 @@ const libRN = {
         format: 'es',
     },
     plugins: [
+        nodeResolvePlugin(),
+        commonjs(),
+        json(),
         typescript({
             useTsconfigDeclarationDir: true,
             tsconfigOverride: {compilerOptions: {target: 'es6'}},

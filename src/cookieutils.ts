@@ -46,7 +46,7 @@ export class Cookie {
 function writeCookie(name: string, value: string, expirationDate?: Date, domain?: string) {
     document.cookie =
         `${name}=${value}` +
-        (expirationDate ? `;expires=${(expirationDate as any).toGMTString()}` : '') +
+        (expirationDate ? `;expires=${expirationDate.toUTCString()}` : '') +
         (domain ? `;domain=${domain}` : '') +
         ';SameSite=Lax';
 }

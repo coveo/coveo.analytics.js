@@ -119,7 +119,10 @@ export function buildBaseUrl(endpoint = Endpoints.default, apiVersion = Version)
     return `${endpoint}${endpointIsCoveoProxy ? '' : '/rest'}/${apiVersion}`;
 }
 
-const COVEO_NAMESPACE = '38824e1f-37f5-42d3-8372-a4b8fa9df946'; //note: changing this value will destroy the mapping from tracking string to clientId.
+// Note: Changing this value will destroy the mapping from tracking string to clientId for all customers
+// using the setClientId() api. It will have the same effect as every visitor for those customers clearing
+// their cookie store at the same time, with corresponding downstream effects.
+const COVEO_NAMESPACE = '38824e1f-37f5-42d3-8372-a4b8fa9df946';
 
 export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider {
     private get defaultOptions(): ClientOptions {
@@ -216,7 +219,9 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         if (uuidValidate(value)) {
             this.setCurrentVisitorId(value);
         } else {
-            if (!namespace) throw Error('Cannot generate uuid client id without a specific namespace string.');
+            if (!namespace) {
+                throw Error('Cannot generate uuid client id without a specific namespace string.');
+            }
             this.setCurrentVisitorId(uuidv5(value, uuidv5(namespace, COVEO_NAMESPACE)));
         }
     }

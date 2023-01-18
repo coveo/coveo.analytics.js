@@ -31,7 +31,7 @@ export class Cookie {
         for (var i = 0; i < cookieArray.length; i++) {
             var cookie = cookieArray[i];
             cookie = cookie.replace(/^\s+/, ''); //strip whitespace from front of cookie only
-            if (cookie.indexOf(cookiePrefix) == 0) {
+            if (cookie.lastIndexOf(cookiePrefix, 0) === 0) {
                 return cookie.substring(cookiePrefix.length, cookie.length);
             }
         }

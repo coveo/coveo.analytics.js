@@ -6,6 +6,7 @@ import {nodeResolve} from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import json from '@rollup/plugin-json';
 import {resolve} from 'path';
+import versionInjector from 'rollup-plugin-version-injector';
 
 const browserFetch = () =>
     alias({
@@ -49,6 +50,7 @@ const browserUMD = {
     plugins: [
         browserFetch(),
         nodeResolve({preferBuiltins: true, only: ['uuid']}),
+        versionInjector({logLevel: 'warn'}),
         tsPlugin(),
         process.env.SERVE
             ? serve({
@@ -71,6 +73,7 @@ const nodeCJS = {
     },
     plugins: [
         nodeResolve({mainFields: ['main'], preferBuiltins: true, only: ['uuid']}),
+        versionInjector({logLevel: 'warn'}),
         commonjs(),
         tsPlugin(),
         json(),
@@ -86,6 +89,7 @@ const browserESM = {
     plugins: [
         browserFetch(),
         nodeResolve({preferBuiltins: true, only: ['uuid']}),
+        versionInjector({logLevel: 'warn'}),
         typescript({
             useTsconfigDeclarationDir: true,
             tsconfigOverride: {compilerOptions: {target: 'es6'}},
@@ -101,6 +105,7 @@ const libRN = {
     },
     plugins: [
         nodeResolve({preferBuiltins: true, only: ['uuid']}),
+        versionInjector({logLevel: 'warn'}),
         commonjs(),
         json(),
         typescript({

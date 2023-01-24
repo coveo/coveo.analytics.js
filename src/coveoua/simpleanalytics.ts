@@ -140,7 +140,7 @@ export class CoveoUA {
     }
 
     version(): string {
-        return `${libVersion}`;
+        return libVersion;
     }
 }
 

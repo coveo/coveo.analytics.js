@@ -5,7 +5,7 @@ import {uuidv4} from '../client/crypto';
 import {PluginOptions} from '../plugins/BasePlugin';
 import {mockFetch} from '../../tests/fetchMock';
 import {CookieStorage} from '../storage';
-import {lib_version} from '../version';
+import {libVersion} from '../version';
 
 const uuidv4Mock = jest.fn();
 jest.mock('../client/crypto', () => ({
@@ -380,7 +380,7 @@ describe('simpleanalytics', () => {
     describe('version', () => {
         it('returns the current version string', () => {
             coveoua('init', 'MYTOKEN');
-            expect(coveoua('version')).toBe(lib_version);
+            expect(coveoua('version')).toBe(libVersion);
         });
     });
 

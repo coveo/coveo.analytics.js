@@ -3,7 +3,7 @@ import {AnalyticsClient, CoveoAnalyticsClient, Endpoints} from '../client/analyt
 import {Plugins} from './plugins';
 import {PluginOptions} from '../plugins/BasePlugin';
 import {PluginClass} from '../plugins/BasePlugin';
-import {lib_version} from '../version';
+import {libVersion} from '../version';
 
 export type AvailableActions = keyof CoveoUA;
 
@@ -140,7 +140,7 @@ export class CoveoUA {
     }
 
     version(): string {
-        return `${lib_version}`;
+        return `${libVersion}`;
     }
 }
 

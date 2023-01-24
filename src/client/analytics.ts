@@ -24,7 +24,7 @@ import {addDefaultValues} from '../hook/addDefaultValues';
 import {enhanceViewEvent} from '../hook/enhanceViewEvent';
 import {uuidv4} from './crypto';
 import {v5 as uuidv5, validate as uuidValidate} from 'uuid';
-import {lib_version} from '../version';
+import {libVersion} from '../version';
 import {
     convertKeysToMeasurementProtocol,
     isMeasurementProtocolKey,
@@ -139,7 +139,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     public runtime: IRuntimeEnvironment;
     public get version(): string {
-        return lib_version;
+        return libVersion;
     }
     private visitorId: string;
     private bufferedRequests: BufferedRequest[];

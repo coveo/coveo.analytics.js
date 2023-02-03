@@ -1,24 +1,21 @@
 import coveoua from './simpleanalytics';
 import {createAnalyticsClientMock, visitorIdMock} from '../../tests/analyticsClientMock';
 import {TestPlugin} from '../../tests/pluginMock';
-import {uuidv4} from '../client/crypto';
 import {PluginOptions} from '../plugins/BasePlugin';
 import {mockFetch} from '../../tests/fetchMock';
 import {CookieStorage} from '../storage';
 import {libVersion} from '../version';
 
 const uuidv4Mock = jest.fn();
-jest.mock('../client/crypto', () => ({
-    uuidv4: () => uuidv4Mock(),
-}));
+jest.mock('uuid', () => ({v4: () => uuidv4Mock()}));
 
 const {fetchMock, fetchMockBeforeEach} = mockFetch();
 
 class TestPluginWithSpy extends TestPlugin {
     public static readonly Id: 'test';
     public static spy: jest.Mock;
-    constructor({client, uuidGenerator = uuidv4}: PluginOptions) {
-        super({client, uuidGenerator});
+    constructor({client}: PluginOptions) {
+        super({client});
         TestPluginWithSpy.spy = jest.fn();
     }
     testMethod(...args: any[]) {

@@ -1,6 +1,7 @@
 import coveoua from './simpleanalytics';
 import {createAnalyticsClientMock, visitorIdMock} from '../../tests/analyticsClientMock';
 import {TestPlugin} from '../../tests/pluginMock';
+import {v4 as uuidv4} from 'uuid';
 import {PluginOptions} from '../plugins/BasePlugin';
 import {mockFetch} from '../../tests/fetchMock';
 import {CookieStorage} from '../storage';
@@ -14,8 +15,8 @@ const {fetchMock, fetchMockBeforeEach} = mockFetch();
 class TestPluginWithSpy extends TestPlugin {
     public static readonly Id: 'test';
     public static spy: jest.Mock;
-    constructor({client}: PluginOptions) {
-        super({client});
+    constructor({client, uuidGenerator = uuidv4}: PluginOptions) {
+        super({client, uuidGenerator});
         TestPluginWithSpy.spy = jest.fn();
     }
     testMethod(...args: any[]) {

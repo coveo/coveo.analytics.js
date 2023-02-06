@@ -1,13 +1,12 @@
 import {SVCPlugin, SVCPluginEventTypes} from './svc';
 import {createAnalyticsClientMock} from '../../tests/analyticsClientMock';
 
-const someUUID = '13ccebdb-0138-45e8-bf70-884817ead190';
-const someUUIDGenerator = jest.fn(() => someUUID);
-jest.mock('uuid', () => ({v4: () => someUUIDGenerator()}));
-
 describe('SVC plugin', () => {
     let svc: SVCPlugin;
     let client: ReturnType<typeof createAnalyticsClientMock>;
+
+    const someUUIDGenerator = jest.fn(() => someUUID);
+    const someUUID = '13ccebdb-0138-45e8-bf70-884817ead190';
     const defaultResult = {
         pageViewId: someUUID,
         encoding: document.characterSet,
@@ -26,7 +25,7 @@ describe('SVC plugin', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         client = createAnalyticsClientMock();
-        svc = new SVCPlugin({client});
+        svc = new SVCPlugin({client, uuidGenerator: someUUIDGenerator as any});
     });
 
     it('should register a hook in the client', () => {

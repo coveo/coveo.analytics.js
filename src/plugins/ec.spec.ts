@@ -1,13 +1,12 @@
 import {ECPlugin, ECPluginEventTypes} from './ec';
 import {createAnalyticsClientMock} from '../../tests/analyticsClientMock';
 
-const someUUID = '13ccebdb-0138-45e8-bf70-884817ead190';
-const someUUIDGenerator = jest.fn(() => someUUID);
-jest.mock('uuid', () => ({v4: () => someUUIDGenerator()}));
-
 describe('EC plugin', () => {
     let ec: ECPlugin;
     let client: ReturnType<typeof createAnalyticsClientMock>;
+
+    const someUUIDGenerator = jest.fn(() => someUUID);
+    const someUUID = '13ccebdb-0138-45e8-bf70-884817ead190';
     const defaultResult = {
         pageViewId: someUUID,
         encoding: document.characterSet,
@@ -26,7 +25,7 @@ describe('EC plugin', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         client = createAnalyticsClientMock();
-        ec = new ECPlugin({client});
+        ec = new ECPlugin({client, uuidGenerator: someUUIDGenerator as any});
     });
 
     it('should register a hook in the client', () => {

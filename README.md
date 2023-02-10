@@ -19,7 +19,7 @@ This JavaScript client provides a code snippet that can easily be added to websi
 
 Initially, the `pageview` events data will be used exclusively by the Coveo ML Event Recommendations (ER) Feature (see [Event Recommendations (ER) Feature](https://docs.coveo.com/en/1671/coveo-machine-learning/coveo-machine-learning-features#ER)). It is recommended that you start sending `pageview` events to the Coveo Usage Analytics service as soon as possible so that you get relevant items recommended.
 
-On top of `pageview` events, generic and commerce events can also be tracked. See [Tracking Commerce Events](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events).
+On top of `pageview` events, generic and commerce events can also be tracked. See [Send an event](https://docs.coveo.com/en/l3am0254/coveo-for-commerce/send-an-event).
 
 **Note: This Coveo code snippet is similar to the Google analytics one (analytics.js).**
 
@@ -27,7 +27,7 @@ On top of `pageview` events, generic and commerce events can also be tracked. Se
 
 1. Get an API key.
 
-    You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events (see [User Authentication](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#user-authentication)).
+    You need a Coveo Cloud API key which has the [**Push** access level on the **Analytics Data** domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain) to send events (see [User Authentication](https://docs.coveo.com/en/l2bf0354/coveo-for-commerce/initialize-the-coveo-analytics-javascript#user-authentication)).
 
     Create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
@@ -110,7 +110,7 @@ Add the code snippet to all your website pages.
 </script>
 ```
 
-To send commerce events, call `coveoua` with the event name. Here is how an [addition to the cart interaction](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart) is measured:
+To send commerce events, call `coveoua` with the event name. Here is how an [addition to the cart interaction](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-an-increase-in-item-quantity-in-cart) is measured:
 
 1. First use the `ec:addProduct` command to include the relevant product data in the event you’re about to send
     ```js
@@ -125,9 +125,9 @@ To send commerce events, call `coveoua` with the event name. Here is how an [add
     coveoua('send', 'event');
     ```
 
-Refer to the [**Tracking Commerce Events** page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events) to see how to measure [a product details view](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-product-details-view), [an addition to the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart), [a removal from the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-removal-from-the-cart), [a purchase](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-purchases) or [an event on a search-driven listing-page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-events-on-a-search-driven-listing-page) in more details.
+Refer to the [**Commerce data health implementation guide** page](https://docs.coveo.com/en/3188/) to see how to measure [a product details view](https://docs.coveo.com/en/l2pd0522/coveo-for-commerce/measure-events-on-a-product-detail-page#product-detail-view), [an addition to the cart](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-an-increase-in-item-quantity-in-cart), [a removal from the cart](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-a-decrease-in-item-quantity-in-cart), [a purchase](https://docs.coveo.com/en/l39m0327/coveo-for-commerce/measure-a-purchase) or [an event on a search-driven listing-page](https://docs.coveo.com/en/l41a1037/coveo-for-commerce/measure-events-on-a-listing-or-search-page) in more details.
 
-All supported actions are also listed in the [**Possible Actions** section of the **Tracking Commerce Events** page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#possible-actions).
+All supported actions are also listed in the [**Product action type reference** page](https://docs.coveo.com/en/l29e0540/coveo-for-commerce/commerce-events-reference#product-action-type-reference).
 
 ### Usage (for developers)
 

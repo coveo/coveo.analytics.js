@@ -35,7 +35,7 @@ In order to ensure the tracking code is available on your webpage, the following
 coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your api key</COVEO_API_KEY></COVEO_API_KEY>
 ```
 
-Since calls to the coveo analytics service need to be authenticated, the library needs to be initialized with a Coveo api key which has push access to the [Usage Analytics domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain). You can create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
+Since calls to the coveo analytics service need to be authenticated, the library needs to be initialized with a Coveo api key which has push access to the [Analytics Data Domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain). You can create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).
 
 ## Available actions
 
@@ -83,13 +83,13 @@ In most common integration usecases, you will be using Coveo pre-wired component
 
 When you are not using any specific Coveo web component, you need to send these events payloads explicitly, use the `send` action to transmit an assembled payload to the usage analytics backend. See the [Usage Analytics Events](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events) documentation for description of the payload contents. The following event types are supported in coveoua
 
--   `search`: sends a [client side search](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events#search-performsearch) event.
--   `click`: sends a [click event](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events#click-documentview).
--   `view`: sends a [pageview event](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events#view).
--   `custom`: sends a [custom event](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events#custom-customevent).
--   `collect`: sends a [collect event](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events#collect) payload. We strongly recommend you use the simplified api in the ecommerce plugin [to send these events instead](#sending-commerce-specific-events).
+-   `search`: sends a [client side search](https://docs.coveo.com/en/1502/build-a-search-ui/log-search-events) event.
+-   `click`: sends a [click event](https://docs.coveo.com/en/2064/build-a-search-ui/log-click-events).
+-   `view`: sends a [view event](https://docs.coveo.com/en/2651/build-a-search-ui/log-view-events).
+-   `custom`: sends a [custom event](https://docs.coveo.com/en/2650/build-a-search-ui/log-custom-events).
+-   `collect`: sends a [collect event](https://docs.coveo.com/en/l41i0031/build-a-search-ui/log-collect-events) payload. We strongly recommend you use the simplified api in the ecommerce plugin [to send these events instead](#sending-commerce-specific-events).
 
-For example, in order to send a click event after a user has interacted with a Coveo provided result, first initialize the library with an api key and then send a click event with the appropriate payload. Refer to the [click event documentation](https://docs.coveo.com/en/1373/build-a-search-ui/log-usage-analytics-events) for up to date information on event payloads.
+For example, in order to send a click event after a user has interacted with a Coveo provided result, first initialize the library with an api key and then send a click event with the appropriate payload. Refer to the [click event documentation](https://docs.coveo.com/en/2064/build-a-search-ui/log-click-events) for up to date information on event payloads.
 
 ```js
 coveoua('send', 'click', {...});
@@ -106,21 +106,21 @@ Commerce specific events such as product selections, shopping cart modifications
 
 See the [Send an Event](https://docs.coveo.com/en/l3am0254/coveo-for-commerce/send-an-event) page for more information on the expected payloads for both of these.
 
-The full list of supported eCommerce plugin actions are listed in the [**Possible Actions** section of the Tracking Commerce Events page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#possible-actions). This page also provides information on how to log
+The full list of supported eCommerce plugin actions are listed in the [**Possible Actions** section of the Tracking Commerce Events page](https://docs.coveo.com/en/3188/coveo-for-commerce/commerce-data-health-implementation-guide#possible-actions). This page also provides information on how to log
 
--   A [product detail view](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-product-details-view)
--   An [addition to the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart)
--   A [removal from the cart](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-a-removal-from-the-cart)
--   A [cart purchase](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-purchases)
--   An [event on a search-driven listing-page](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-events-on-a-search-driven-listing-page)
+-   A [product detail view](https://docs.coveo.com/en/3188/coveo-for-commerce/commerce-data-health-implementation-guide#measuring-a-product-details-view)
+-   An [addition to the cart](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-an-increase-in-item-quantity-in-cart)
+-   A [removal from the cart](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-a-decrease-in-item-quantity-in-cart)
+-   A [cart purchase](https://docs.coveo.com/en/l39m0327/coveo-for-commerce/measure-a-purchase)
+-   An [event on a search-driven listing-page](https://docs.coveo.com/en/l41a1037/coveo-for-commerce/measure-events-on-a-listing-or-search-page)
 
-As a sample, here is how an [addition to the cart interaction](https://docs.coveo.com/en/3188/coveo-solutions/tracking-commerce-events#measuring-an-addition-to-the-cart) is measured:
+As a sample, here is how an [addition to the cart interaction](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-an-increase-in-item-quantity-in-cart) is measured:
 
-1. First use the `ec:addProduct` action to include the relevant product data in the event you’re about to send
+1. First use the `ec:addProduct` action to include the [relevant product data](https://docs.coveo.com/en/l29e0540/coveo-for-commerce/commerce-events-reference#product-data-fields-reference) in the event you’re about to send
     ```js
     coveoua('ec:addProduct', <PRODUCT_DATA>);
     ```
-2. Then use the `ec:setAction` action to specify that the action done on this data is an addition to the cart:
+2. Then use the `ec:setAction` action to specify that the [action done on this data](https://docs.coveo.com/en/l29e0540/coveo-for-commerce/commerce-events-reference#product-action-type-reference) is an addition to the cart.
     ```js
     coveoua('ec:setAction', 'add');
     ```
@@ -131,7 +131,7 @@ As a sample, here is how an [addition to the cart interaction](https://docs.cove
 
 # Developer information
 
-Information for constributors or Coveo developers integrating coveoua into their codebases.
+Information for contributors or Coveo developers developing or integrating coveoua.
 
 ## Setup
 

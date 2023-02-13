@@ -51,8 +51,9 @@ After the library has loaded sucessfully, you can interact with coveoua through 
     -   COVEO_API_KEY (mandatory): A valid api key.
     -   ENDPOINT (optional): An object string specifying the desired analytics endpoint. The default value is https://analytics.cloud.coveo.com/rest/ua. In case your organization is HIPAA enabled, you should override with https://analyticshipaa.cloud.coveo.com/rest/ua.
     -   PLUGINS (optional): An array of known plugin names. See [plugins](#plugins) for more information.
--   `coveoua('set', <NAME>, <VALUE>)`: Attempts to inject an attribute with given name and value on every logged event. Some payloads may reject attributes they do not support.
--   `coveoua('set', <OBJECT>)`: Attempts to inject all attributes and values of the given object on every logged event. Some payloads may reject attributes they do not support.
+-   `coveoua('set', <NAME>, <VALUE>)`: Attempts to inject an attribute with given name and value on every logged event, overriding any existing value. Some payloads may reject attributes they do not support.
+-   `coveoua('set', <OBJECT>)`: Attempts to inject all attributes and values of the given object on every logged event, overriding any existing value. Some payloads may reject attributes they do not support.
+-   `coveoua('set', 'custom', <OBJECT>)`: Attempts to inject all attributes and values of the given object in the custom section of an object, overriding any existing value. Use this call to pass customer specific parameters on the payload.
 -   `coveoua('onLoad', <CALLBACK>)`: Calls the specified function immediately, library initialization is not required.
 -   `coveoua('reset')`: Resets the state of the logger to the state before initialization.
 
@@ -106,7 +107,7 @@ Commerce specific events such as product selections, shopping cart modifications
 
 See the [Send an Event](https://docs.coveo.com/en/l3am0254/coveo-for-commerce/send-an-event) page for more information on the expected payloads for both of these.
 
-The full list of supported eCommerce plugin actions are listed in the [**Possible Actions** section of the Tracking Commerce Events page](https://docs.coveo.com/en/3188/coveo-for-commerce/commerce-data-health-implementation-guide#possible-actions). This page also provides information on how to log
+The eCommerce plugin supports adding product data (`ec:addProduct`), product impression data (`ec:addImpression`) as well as setting the [appropriate event action](https://docs.coveo.com/en/l29e0540/coveo-for-commerce/commerce-events-reference#product-action-type-reference) through `ec:setAction`. These calls can be used in series to assemble different types of payloads:
 
 -   A [product detail view](https://docs.coveo.com/en/3188/coveo-for-commerce/commerce-data-health-implementation-guide#measuring-a-product-details-view)
 -   An [addition to the cart](https://docs.coveo.com/en/l3jg0266/coveo-for-commerce/measure-cart-page-events#measure-an-increase-in-item-quantity-in-cart)

@@ -6,7 +6,7 @@
 
 # Coveo Analytics JavaScript client
 
-The Coveo analytics javascript client, also called coveo.analytics.js or coveoua for short, is responsible for logging analytics events with the Coveo backend. Analytics events may include basic Coveo web events such as pageviews, clicks or searches. For specific usecases, such as commerce and service, dedicated events may be defined and logged.
+The Coveo analytics javascript client, also called coveo.analytics.js or coveoua for short, is responsible for logging analytics events to the Coveo platform. Analytics events may include basic Coveo web events such as pageviews, clicks or searches. For specific usecases, such as commerce and service, dedicated events may be defined and logged.
 
 The analytics library is bundled with all Coveo provided UI components. Integrations which exclusively rely on these components, generally don't have to interact with coveoua directly. For Coveo integrations which integrate with an already existing UI and do not use headless, coveoua will be required to ensure events are logged correctly.
 

@@ -74,7 +74,7 @@ Coveoua is set up in a modular way with different plugins providing functionalit
 -   `ec`: eCommerce plugin which takes care of sending eCommerce specific events.
 -   `svc`: Service plugin which takes care of sending customer service specific events.
 
-Plugin actions extend the set of available actions. They can be executed either via the `callPlugin` action above, or via the shorthand. For example, to call the function `addImpression` on the `ec` plugin, you'd specify `coveoua(ec:addImpression, ...)`.
+Plugin actions extend the set of available actions. They can be executed either via the `callPlugin` action above, or via the shorthand. For example, to call the function `addImpression` on the `ec` plugin, you'd specify `coveoua('ec:addImpression', ...)`.
 
 It is possible to disable loading of any plugins by explicitly initializing the library with an empty list of plugins using `coveoua('init', <API_KEY>, {plugins:[]})`.
 
@@ -82,7 +82,7 @@ It is possible to disable loading of any plugins by explicitly initializing the 
 
 In most common integration usecases, you will be using Coveo pre-wired components (e.g. jsui, headless or atomic) to handle communication with the Coveo backend. These components have their own specific apis to handle event logging.
 
-When you are not using any specific Coveo web component, you need to send these events payloads explicitly, use the `send` action to transmit an assembled payload to the usage analytics backend. See the [Usage Analytics Events](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events) documentation for description of the payload contents. The following event types are supported in coveoua
+When you are not using any specific Coveo web component, you need to send these events payloads explicitly, use the `send` action to transmit an assembled payload to the usage analytics backend. See the [Usage Analytics Events](https://docs.coveo.com/en/2949/analyze-usage-data/usage-analytics-events) documentation for description of the payload contents. The following event types are supported in coveoua:
 
 -   `search`: sends a [client side search](https://docs.coveo.com/en/1502/build-a-search-ui/log-search-events) event.
 -   `click`: sends a [click event](https://docs.coveo.com/en/2064/build-a-search-ui/log-click-events).
@@ -100,10 +100,10 @@ You should be able to observe the click event being transmitted to the Coveo bac
 
 ## Sending commerce specific events
 
-Commerce specific events such as product selections, shopping cart modifications and transactions are sent to Coveo in the compact [collect protocol](https://docs.coveo.com/en/l41i0031/build-a-search-ui/log-collect-events). Rather than explicitly assembling these payloads by hand, the eCommerce plugin provides compact apis to assemble and transmit the payloads. There are two event names that are specific to the eCommerce plugin:
+Commerce specific events such as product selections, shopping cart modifications and transactions are sent to Coveo in the compact [collect protocol](https://docs.coveo.com/en/l41i0031/build-a-search-ui/log-collect-events). Rather than explicitly assembling these payloads by hand, the eCommerce plugin provides apis to assemble and transmit the payloads. There are two event names that are specific to the eCommerce plugin:
 
 -   `event`: A generic event, which has been assembled through different plugin actions.
--   `pageview`: An ecommerce specific pageview event which is automatically populated.
+-   `pageview`: An ecommerce specific pageview event which is automatically populated with the current page context.
 
 See the [Send an Event](https://docs.coveo.com/en/l3am0254/coveo-for-commerce/send-an-event) page for more information on the expected payloads for both of these.
 
@@ -159,13 +159,13 @@ To test out your changes, add `coveoua` function calls in the `public/index.html
 
 ## Storage and persistence
 
-Coveo.analytics.js tracks interactions from the same browserclient, through a clientside provided uuid called a `clientId`. This clientId is initialized on first use and there are multiple options for persisting it's value:
+Coveo.analytics.js tracks interactions from the same browser client, through a client side provided uuid called a `clientId`. This clientId is initialized on first use and there are multiple options for persisting it's value:
 
 -   Cookie storage, which supports top level domain storage. This means that the clientId for a.foo.com will be identical to the one on b.foo.com.
 -   Local storage, which allows to store much more information client side, but has the drawback of not being able to access data across multiple top level domains.
 -   Session storage, which has roughly the same limitation and capability as Local storage, except that it is cleared when the web browser tab is closed.
 
-By default, coveoua will use both local storage and cookie storage to persist it's clientId. If your environment does not support local persistence, it's possible to write your own storage abstraction.
+By default, coveoua will use both local storage and cookie storage to persist its clientId. If your environment does not support local persistence, it's possible to write your own storage abstraction.
 
 ## Using coveo.analytics.js with React Native
 

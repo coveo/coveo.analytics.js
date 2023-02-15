@@ -32,7 +32,7 @@ In order to ensure the tracking code is available on your webpage, the following
     })(window, document, 'script', 'https://static.cloud.coveo.com/coveo.analytics.js/2/coveoua.js');
 </script>
 
-coveoua('init', <COVEO_API_KEY>); // Replace <COVEO_API_KEY> with your api key</COVEO_API_KEY></COVEO_API_KEY>
+coveoua('init', #COVEO_API_KEY); // Replace #COVEO_API_KEY with your api key
 ```
 
 Since calls to the coveo analytics service need to be authenticated, the library needs to be initialized with a Coveo api key which has push access to the [Analytics Data Domain](https://docs.coveo.com/en/1707/cloud-v2-administrators/privilege-reference#analytics-data-domain). You can create an API key from the [administration console](https://platform.cloud.coveo.com/admin/#/organization/api-access/) selecting the **Push** option box for the **Analytics Data** domain (see [Adding and Managing API Keys](https://docs.coveo.com/en/1718/cloud-v2-administrators/adding-and-managing-api-keys)).

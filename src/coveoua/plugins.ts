@@ -1,10 +1,10 @@
 import {PluginClass, PluginOptions, BasePlugin, Plugin} from '../plugins/BasePlugin';
-import {EC, ECPlugin} from '../plugins/ec';
-import {Link, LinkPlugin} from '../plugins/link';
-import {SVC, SVCPlugin} from '../plugins/svc';
+import {EC} from '../plugins/ec';
+import {Link} from '../plugins/link';
+import {SVC} from '../plugins/svc';
 
 export class Plugins {
-    public static readonly DefaultPlugins: string[] = [ECPlugin.Id, SVCPlugin.Id, LinkPlugin.Id];
+    public static readonly DefaultPlugins: string[] = [EC.Id, SVC.Id, Link.Id];
     private registeredPluginsMap: Record<string, PluginClass> = {
         [EC.Id]: EC,
         [SVC.Id]: SVC,

@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
 import {terser} from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
@@ -55,6 +56,7 @@ const browserUMD = {
         },
     ],
     plugins: [
+        nodePolyfills(),
         browserFetch(),
         nodeResolve({preferBuiltins: true, only: ['uuid']}),
         versionReplace(),

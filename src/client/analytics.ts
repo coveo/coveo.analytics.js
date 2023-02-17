@@ -24,6 +24,7 @@ import {addDefaultValues} from '../hook/addDefaultValues';
 import {enhanceViewEvent} from '../hook/enhanceViewEvent';
 import {v4 as uuidv4, v5 as uuidv5, validate as uuidValidate} from 'uuid';
 import {libVersion} from '../version';
+import {CoveoLinkParam} from '../plugins/link';
 import {
     convertKeysToMeasurementProtocol,
     isMeasurementProtocolKey,
@@ -105,6 +106,7 @@ export interface AnalyticsClient {
      */
     readonly currentVisitorId: string;
     getCurrentVisitorId?(): Promise<string>; // TODO: v3 make required
+    setAcceptedLinkReferrers?(hosts: string[]): void;
 }
 
 export interface BufferedRequest {
@@ -146,6 +148,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     private afterSendHooks: AnalyticsClientSendEventHook[];
     private eventTypeMapping: {[name: string]: EventTypeConfig};
     private options: ClientOptions;
+    private acceptedLinkReferrers: string[] = [];
 
     constructor(opts: Partial<ClientOptions>) {
         if (!opts) {
@@ -196,7 +199,11 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     private async determineVisitorId() {
         try {
-            return (await this.storage.getItem('visitorId')) || uuidv4();
+            return (
+                this.extractClientIdFromLink(window.location.href) ||
+                (await this.storage.getItem('visitorId')) ||
+                uuidv4()
+            );
         } catch (err) {
             console.log(
                 'Could not get visitor ID from the current runtime environment storage. Using a random ID instead.',
@@ -256,6 +263,33 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     set currentVisitorId(visitorId: string) {
         this.visitorId = visitorId;
         this.storage.setItem('visitorId', visitorId);
+    }
+
+    private extractClientIdFromLink(urlString: string): string | null {
+        try {
+            const linkParam: string | null = new URL(urlString).searchParams.get(CoveoLinkParam.cvo_cid);
+            if (linkParam && !doNotTrack()) {
+                const linker: CoveoLinkParam | null = CoveoLinkParam.fromString(linkParam);
+                if (linker && !linker.expired && this.matchReferrer(document.referrer)) {
+                    return linker.clientId;
+                }
+            }
+        } catch (error) {
+            return null;
+        }
+        return null;
+    }
+
+    private matchReferrer(urlString: string): boolean {
+        try {
+            const url: URL = new URL(urlString);
+            return this.acceptedLinkReferrers.some((value: string) => {
+                const hostRegExp: RegExp = new RegExp(value.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$');
+                return url.host.match(hostRegExp);
+            });
+        } catch (error) {
+            return false;
+        }
     }
 
     async resolveParameters(eventType: EventType | string, ...payload: VariableArgumentsPayload) {
@@ -451,6 +485,10 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
     addEventTypeMapping(eventType: string, eventConfig: EventTypeConfig): void {
         this.eventTypeMapping[eventType] = eventConfig;
+    }
+
+    setAcceptedLinkReferrers(hosts: string[]): void {
+        if (Array.isArray(hosts)) this.acceptedLinkReferrers = hosts;
     }
 
     private parseVariableArgumentsPayload(fieldsOrder: string[], payload: VariableArgumentsPayload) {

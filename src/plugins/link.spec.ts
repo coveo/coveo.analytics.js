@@ -9,7 +9,7 @@ function currentSecsSinceEpoch() {
 describe('CoveoLinkParam class', () => {
     it('can create a new link using a uuid', () => {
         const uuid = uuidv4();
-        const link: CoveoLinkParam = new CoveoLinkParam(uuid);
+        const link: CoveoLinkParam = new CoveoLinkParam(uuid, Date.now());
         expect(link.clientId).toBe(uuid);
         expect(link.creationDate).toBe(currentSecsSinceEpoch());
     });
@@ -23,7 +23,7 @@ describe('CoveoLinkParam class', () => {
 
     it('can not create a new link using a non uuid', () => {
         const uuid = 'Not_a_uuid';
-        expect(() => new CoveoLinkParam(uuid)).toThrow('Not a valid uuid');
+        expect(() => new CoveoLinkParam(uuid, Date.now())).toThrow('Not a valid uuid');
     });
 
     it('can parse a link from a string', () => {
@@ -40,6 +40,12 @@ describe('CoveoLinkParam class', () => {
         expect(coveoLinkParam).toBe(null);
     });
 
+    it('will not parse links with an invalid structure', () => {
+        const link = 'a0c56830743d46537f703.1676298678.353673463';
+        const coveoLinkParam: CoveoLinkParam | null = CoveoLinkParam.fromString(link);
+        expect(coveoLinkParam).toBe(null);
+    });
+
     it('will not parse links with invalid timestamps', () => {
         const link = 'a0c56830743d46537f703.invalidtimestamp';
         const coveoLinkParam: CoveoLinkParam | null = CoveoLinkParam.fromString(link);
@@ -47,7 +53,7 @@ describe('CoveoLinkParam class', () => {
     });
 
     it('can serialize a link to a string', () => {
-        const coveoLink: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9');
+        const coveoLink: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9', Date.now());
         const link = coveoLink.toString();
         const parts = link.split('.');
         expect(parts[0]).toBe('074af291224b47059dc5a47bd80a8db9');
@@ -55,7 +61,7 @@ describe('CoveoLinkParam class', () => {
     });
 
     it('checks for expiration on a link', () => {
-        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9');
+        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9', Date.now());
         expect(coveoLink1.expired).toBe(false);
         const coveoLink2: CoveoLinkParam = new CoveoLinkParam(
             '074af291-224b-4705-9dc5-a47bd80a8db9',
@@ -65,13 +71,22 @@ describe('CoveoLinkParam class', () => {
     });
 
     it('checks for expiration on a link if the timestamp is in the future', () => {
-        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9');
+        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9', Date.now());
         expect(coveoLink1.expired).toBe(false);
         const coveoLink2: CoveoLinkParam = new CoveoLinkParam(
             '074af291-224b-4705-9dc5-a47bd80a8db9',
             Date.now() + 5000
         );
         expect(coveoLink2.expired).toBe(true);
+    });
+
+    it('checks validation on referrers', () => {
+        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9', Date.now());
+        expect(coveoLink1.validate('http://sub.mysite.com', ['*'])).toBe(true);
+        expect(coveoLink1.validate('http://sub.mysite.com', ['*.mysite.com', '*'])).toBe(true);
+        expect(coveoLink1.validate('http://sub.mysite.com', ['*.mysite.com'])).toBe(true);
+        expect(coveoLink1.validate('http://sub.notmysite.com', ['*.mysite.com'])).toBe(false);
+        expect(coveoLink1.validate('http://sub.mysite.com', [])).toBe(false);
     });
 });
 

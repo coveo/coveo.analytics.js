@@ -266,30 +266,23 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private extractClientIdFromLink(urlString: string): string | null {
-        try {
-            const linkParam: string | null = new URL(urlString).searchParams.get(CoveoLinkParam.cvo_cid);
-            if (linkParam && !doNotTrack()) {
-                const linker: CoveoLinkParam | null = CoveoLinkParam.fromString(linkParam);
-                if (linker && !linker.expired && this.matchReferrer(document.referrer)) {
-                    return linker.clientId;
-                }
-            }
-        } catch (error) {
+        if (doNotTrack()) {
             return null;
         }
-        return null;
-    }
-
-    private matchReferrer(urlString: string): boolean {
         try {
-            const url: URL = new URL(urlString);
-            return this.acceptedLinkReferrers.some((value: string) => {
-                const hostRegExp: RegExp = new RegExp(value.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$');
-                return url.host.match(hostRegExp);
-            });
+            const linkParam: string | null = new URL(urlString).searchParams.get(CoveoLinkParam.cvo_cid);
+            if (linkParam == null) {
+                return null;
+            }
+            const linker: CoveoLinkParam | null = CoveoLinkParam.fromString(linkParam);
+            if (!linker || !hasDocument() || !linker.validate(document.referrer, this.acceptedLinkReferrers)) {
+                return null;
+            }
+            return linker.clientId;
         } catch (error) {
-            return false;
+            // Ignore any parsing errors
         }
+        return null;
     }
 
     async resolveParameters(eventType: EventType | string, ...payload: VariableArgumentsPayload) {
@@ -488,7 +481,8 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     setAcceptedLinkReferrers(hosts: string[]): void {
-        if (Array.isArray(hosts)) this.acceptedLinkReferrers = hosts;
+        if (Array.isArray(hosts) && hosts.every((host) => typeof host == 'string')) this.acceptedLinkReferrers = hosts;
+        else throw Error('Parameter should be an array of domain strings');
     }
 
     private parseVariableArgumentsPayload(fieldsOrder: string[], payload: VariableArgumentsPayload) {

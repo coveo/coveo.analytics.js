@@ -489,7 +489,7 @@ describe('custom clientId', () => {
 describe('clientId from link', () => {
     // note: referrer is set as http://somewhere.over/thereferrer in setup.js
     let client: CoveoAnalyticsClient;
-    let forcedUUID: string = 'c0b48880-743e-484f-8044-d7c37910c55b';
+    const forcedUUID: string = 'c0b48880-743e-484f-8044-d7c37910c55b';
 
     function navigateTo(url: string) {
         // @ts-ignore
@@ -500,35 +500,35 @@ describe('clientId from link', () => {
 
     beforeEach(() => {
         client = new CoveoAnalyticsClient({});
-        // need to clear existing c
+        // need to clear existing clientIds
         client.clear();
         jest.spyOn(doNotTrack, 'doNotTrack').mockImplementation(() => false);
     });
 
     it('will extract a clientId from a query param if the referrer matches all and it is not expired', async () => {
         client.setAcceptedLinkReferrers(['*']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).toBe(forcedUUID);
     });
 
     it('will extract a clientId from a query param if the referrer matches the current referrer exactly and it is not expired', async () => {
         client.setAcceptedLinkReferrers(['somewhere.over']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).toBe(forcedUUID);
     });
 
     it('will extract a clientId from a query param if the referrer matches the current referrer exactly and it is not expired', async () => {
         client.setAcceptedLinkReferrers(['*.over']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).toBe(forcedUUID);
     });
 
     it('will extract a clientId from a query param if one of the referrer matches the current referrer exactly and it is not expired', async () => {
         client.setAcceptedLinkReferrers(['*.mydomain.com', '*.over']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).toBe(forcedUUID);
     });
@@ -542,16 +542,7 @@ describe('clientId from link', () => {
     });
 
     it('will not extract a clientId from a query param if there is no accept list specified', async () => {
-        const linkString = new CoveoLinkParam(forcedUUID);
-        navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
-        expect(await client.getCurrentVisitorId()).not.toBe(null);
-        expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
-    });
-
-    it('will not extract a clientId from a query param if the accept list in not an array', async () => {
-        const linkString = new CoveoLinkParam(forcedUUID);
-        // @ts-ignore
-        client.setAcceptedLinkReferrers('*');
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
@@ -559,7 +550,7 @@ describe('clientId from link', () => {
 
     it('will not extract a clientId from a query param if there is an empty accept list', async () => {
         client.setAcceptedLinkReferrers([]);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
@@ -567,7 +558,7 @@ describe('clientId from link', () => {
 
     it('will not extract a clientId from a query param if the referrer list does not match', async () => {
         client.setAcceptedLinkReferrers(['*.mydomain.com']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
@@ -575,7 +566,7 @@ describe('clientId from link', () => {
 
     it('will not extract a clientId from a query param if the referrer list does not match the exact port', async () => {
         client.setAcceptedLinkReferrers(['*.over:9000']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
@@ -583,7 +574,7 @@ describe('clientId from link', () => {
 
     it('will not extract a clientId from a query param if the multi referrer list does not match', async () => {
         client.setAcceptedLinkReferrers(['*.mydomain.com', 'www.example.com']);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
@@ -599,9 +590,18 @@ describe('clientId from link', () => {
     it('will not extract a clientId from a query param if DNT is enabled', async () => {
         client.setAcceptedLinkReferrers(['*']);
         jest.spyOn(doNotTrack, 'doNotTrack').mockImplementation(() => true);
-        const linkString = new CoveoLinkParam(forcedUUID);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now());
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);
+    });
+
+    it('will throw when specifying invalid hosts list', async () => {
+        //@ts-ignore
+        expect(() => client.setAcceptedLinkReferrers('*')).toThrow('Parameter should be an array of domain strings');
+        //@ts-ignore
+        expect(() => client.setAcceptedLinkReferrers({})).toThrow('Parameter should be an array of domain strings');
+        //@ts-ignore
+        expect(() => client.setAcceptedLinkReferrers([{}])).toThrow('Parameter should be an array of domain strings');
     });
 });

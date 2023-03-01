@@ -55,7 +55,6 @@
         "rollup-plugin-serve": "^1.0.1",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.27.0",
-        "rollup-plugin-polyfill-node": "^0.12.0",
         "stylelint": "^13.6.1",
         "ts-jest": "^25.2.0",
         "tsjs": "4.2.1",

@@ -1,4 +1,3 @@
-import {URL} from 'url';
 import {validate as uuidvalidate, v4 as uuidv4} from 'uuid';
 import {Plugin, PluginOptions, PluginClass} from './BasePlugin';
 

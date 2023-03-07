@@ -3,7 +3,7 @@ import {Plugin, PluginOptions, PluginClass} from './BasePlugin';
 
 export class CoveoLinkParam {
     public static readonly cvo_cid: string = 'cvo_id'; // name of the url parameter
-    private static readonly expirationTime: number = 5; // expirationTime in secs
+    private static readonly expirationTime: number = 120; // expirationTime in secs
     public readonly clientId: string; //uuid
     public readonly creationDate: number; //seconds since epoch to save space in serialized param
 

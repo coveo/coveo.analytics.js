@@ -535,7 +535,7 @@ describe('clientId from link', () => {
 
     it('will not extract a clientId from a query param if the referrer matches and it is expired', async () => {
         client.setAcceptedLinkReferrers(['*']);
-        const linkString = new CoveoLinkParam(forcedUUID, Date.now() - 10000);
+        const linkString = new CoveoLinkParam(forcedUUID, Date.now() - 180000);
         navigateTo('http://my.receivingdomain.com/?cvo_id=' + linkString.toString());
         expect(await client.getCurrentVisitorId()).not.toBe(null);
         expect(await client.getCurrentVisitorId()).toBe(aVisitorId);

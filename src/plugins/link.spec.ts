@@ -65,7 +65,7 @@ describe('CoveoLinkParam class', () => {
         expect(coveoLink1.expired).toBe(false);
         const coveoLink2: CoveoLinkParam = new CoveoLinkParam(
             '074af291-224b-4705-9dc5-a47bd80a8db9',
-            Date.now() - 6000
+            Date.now() - 180000
         );
         expect(coveoLink2.expired).toBe(true);
     });

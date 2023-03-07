@@ -88,6 +88,11 @@ describe('CoveoLinkParam class', () => {
         expect(coveoLink1.validate('http://sub.notmysite.com', ['*.mysite.com'])).toBe(false);
         expect(coveoLink1.validate('http://sub.mysite.com', [])).toBe(false);
     });
+
+    it('escapes backslash correctly', () => {
+        const coveoLink1: CoveoLinkParam = new CoveoLinkParam('074af291-224b-4705-9dc5-a47bd80a8db9', Date.now());
+        expect(coveoLink1.validate('http://sub.mysite.com', ['\\w'])).toBe(false); // This should not be treated as a \w regexp!
+    });
 });
 
 describe('CoveoLinkPlugin', () => {

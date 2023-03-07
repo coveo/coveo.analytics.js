@@ -31,8 +31,10 @@ export class CoveoLinkParam {
         try {
             const url: URL = new URL(referrerString);
             return referrerList.some((value: string) => {
-                const hostRegExp: RegExp = new RegExp(value.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$');
-                return url.host.match(hostRegExp);
+                const hostRegExp: RegExp = new RegExp(
+                    value.replace(/\\/g, '\\\\').replace(/\./g, '\\.').replace(/\*/g, '.*') + '$'
+                );
+                return hostRegExp.test(url.host);
             });
         } catch (error) {
             return false;

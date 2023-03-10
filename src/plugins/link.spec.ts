@@ -108,14 +108,14 @@ describe('CoveoLinkPlugin', () => {
     it('decorates links with valid urls and no params', async () => {
         const url: string = 'https://coveo.com';
         const result: string = await link.decorate(url);
-        expect(result).toBe('https://coveo.com/?cvo_id=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch());
+        expect(result).toBe('https://coveo.com/?cvo_cid=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch());
     });
 
     it('decorates links with valid urls and no params', async () => {
         const url: string = 'https://coveo.com/some/path/';
         const result: string = await link.decorate(url);
         expect(result).toBe(
-            'https://coveo.com/some/path/?cvo_id=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch()
+            'https://coveo.com/some/path/?cvo_cid=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch()
         );
     });
 
@@ -123,7 +123,7 @@ describe('CoveoLinkPlugin', () => {
         const url: string = 'https://coveo.com/query?q=something&p=param';
         const result: string = await link.decorate(url);
         expect(result).toBe(
-            'https://coveo.com/query?q=something&p=param&cvo_id=85698661efdf4c6d9cadc4632bf81ce3.' +
+            'https://coveo.com/query?q=something&p=param&cvo_cid=85698661efdf4c6d9cadc4632bf81ce3.' +
                 currentSecsSinceEpoch()
         );
     });
@@ -132,16 +132,16 @@ describe('CoveoLinkPlugin', () => {
         const url: string = 'https://coveo.com/?q=something#frag';
         const result: string = await link.decorate(url);
         expect(result).toBe(
-            'https://coveo.com/?q=something&cvo_id=85698661efdf4c6d9cadc4632bf81ce3.' +
+            'https://coveo.com/?q=something&cvo_cid=85698661efdf4c6d9cadc4632bf81ce3.' +
                 currentSecsSinceEpoch() +
                 '#frag'
         );
     });
 
     it('updates an existing decoration links with valid urls and no params', async () => {
-        const url: string = 'https://coveo.com/?cvo_id=c0b48880743e484f8044d7c37910c55b.1676298678';
+        const url: string = 'https://coveo.com/?cvo_cid=c0b48880743e484f8044d7c37910c55b.1676298678';
         const result: string = await link.decorate(url);
-        expect(result).toBe('https://coveo.com/?cvo_id=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch());
+        expect(result).toBe('https://coveo.com/?cvo_cid=85698661efdf4c6d9cadc4632bf81ce3.' + currentSecsSinceEpoch());
     });
 
     it('errors on invalid urls', async () => {

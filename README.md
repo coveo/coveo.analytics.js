@@ -132,10 +132,10 @@ As a sample, here is how an [addition to the cart interaction](https://docs.cove
 
 ## Linking clientIds across different domains using a URL parameter
 
-To help track a visitor across different domains, the library offers functionality to initialize a clientId from a URL query parameter. The query parameter is named `cvo_id` with value `<clientid>.<timestamp>`. The clientId is encoded without dashes and the timestamp is encoded in seconds since epoch, both to save space in the url. Both are separated by a period. A sample parameter could be `cvo_id=c0b48880743e484f8044d7c37910c55b.1676298678`. This query parameter will be picked up by the target page if the following conditions hold:
+To help track a visitor across different domains, the library offers functionality to initialize a clientId from a URL query parameter. The query parameter is named `cvo_cid` with value `<clientid>.<timestamp>`. The clientId is encoded without dashes and the timestamp is encoded in seconds since epoch, both to save space in the url. Both are separated by a period. A sample parameter could be `cvo_cid=c0b48880743e484f8044d7c37910c55b.1676298678`. This query parameter will be picked up by the target page if the following conditions hold:
 
 -   The target page has a equal or greater version of coveo.analytics.js loaded.
--   The current URL contains a `cvo_id` query parameter
+-   The current URL contains a `cvo_cid` query parameter
 -   The parameter contains a valid uuid.
 -   The parameter contains a valid timestamp, and that timestamp is no more than 120 seconds in the past.
 -   The receiving page has specified a list of valid referrers and the current referrer host matches that list, using wildcards, including ports, specified using `coveoua('link:acceptFrom', [<referrers>])`.

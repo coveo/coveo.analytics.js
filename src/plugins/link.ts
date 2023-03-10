@@ -2,7 +2,7 @@ import {validate as uuidvalidate, v4 as uuidv4} from 'uuid';
 import {Plugin, PluginOptions, PluginClass} from './BasePlugin';
 
 export class CoveoLinkParam {
-    public static readonly cvo_cid: string = 'cvo_id'; // name of the url parameter
+    public static readonly cvo_cid: string = 'cvo_cid'; // name of the url parameter
     private static readonly expirationTime: number = 120; // expirationTime in secs
     public readonly clientId: string; //uuid
     public readonly creationDate: number; //seconds since epoch to save space in serialized param

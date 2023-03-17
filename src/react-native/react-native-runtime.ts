@@ -2,6 +2,7 @@ import {WebStorage} from '../storage';
 import {AnalyticsFetchClient} from '../client/analyticsFetchClient';
 import {IRuntimeEnvironment} from '../client/runtimeEnvironment';
 import {PreprocessAnalyticsRequest} from '../client/analyticsRequestClient';
+import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import {buildBaseUrl} from '../client/analytics';
 

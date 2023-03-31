@@ -77,7 +77,7 @@ describe('InsightClient', () => {
     });
 
     const expectMatchPayload = (actionCause: SearchPageEvents | InsightEvents, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...meta};
         expect(JSON.parse(body.toString())).toMatchObject({
             queryText: 'queryText',
@@ -93,7 +93,7 @@ describe('InsightClient', () => {
     };
 
     const expectMatchCustomEventPayload = (actionCause: SearchPageEvents | InsightEvents, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...meta};
         expect(JSON.parse(body.toString())).toMatchObject({
             eventValue: actionCause,
@@ -107,7 +107,7 @@ describe('InsightClient', () => {
     };
 
     const expectMatchDocumentPayload = (actionCause: SearchPageEvents, doc: PartialDocumentInformation, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...meta};
         expect(JSON.parse(body.toString())).toMatchObject({
             actionCause,

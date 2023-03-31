@@ -3,7 +3,6 @@ import {
     SearchPageEvents,
     PartialDocumentInformation,
     CustomEventsTypes,
-    SmartSnippetFeedbackReason,
     OmniboxSuggestionsMetadata,
     StaticFilterToggleValueMetadata,
 } from './searchPageEvents';
@@ -114,7 +113,7 @@ describe('SearchPageClient', () => {
     });
 
     const expectMatchPayload = (actionCause: SearchPageEvents, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...customDataFromMiddleware, ...meta};
         expect(JSON.parse(body.toString())).toEqual({
             queryText: 'queryText',
@@ -142,7 +141,7 @@ describe('SearchPageClient', () => {
     };
 
     const expectMatchDocumentPayload = (actionCause: SearchPageEvents, doc: PartialDocumentInformation, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...customDataFromMiddleware, ...meta};
         expect(JSON.parse(body.toString())).toEqual({
             anonymous: false,
@@ -164,7 +163,7 @@ describe('SearchPageClient', () => {
         meta = {},
         eventType = CustomEventsTypes[actionCause]
     ) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...customDataFromMiddleware, ...meta};
         expect(JSON.parse(body.toString())).toEqual({
             anonymous: false,
@@ -182,7 +181,7 @@ describe('SearchPageClient', () => {
     };
 
     const expectMatchCustomEventWithTypePayload = (eventValue: string, eventType: string, meta = {}) => {
-        const [, {body}] = fetchMock.lastCall();
+        const [, {body}]: any = fetchMock.lastCall();
         const customData = {foo: 'bar', ...customDataFromMiddleware, ...meta};
         expect(JSON.parse(body.toString())).toEqual({
             anonymous: false,

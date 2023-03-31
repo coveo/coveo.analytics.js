@@ -337,7 +337,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
 
         const cleanPayloadStep: ProcessPayloadStep = (currentPayload) =>
             this.removeEmptyPayloadValues(currentPayload, eventType);
-        const validateParams: ProcessPayloadStep = (currentPayload) => this.validateParams(currentPayload);
+        const validateParams: ProcessPayloadStep = (currentPayload) => this.validateParams(currentPayload, eventType);
         const processMeasurementProtocolConversionStep: ProcessPayloadStep = (currentPayload) =>
             usesMeasurementProtocol ? convertKeysToMeasurementProtocol(currentPayload) : currentPayload;
         const removeUnknownParameters: ProcessPayloadStep = (currentPayload) =>
@@ -577,12 +577,30 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         return result;
     }
 
-    private validateParams(payload: IRequestPayload): IRequestPayload {
+    private validateParams(payload: IRequestPayload, eventType: EventType | string): IRequestPayload {
         const {anonymizeIp, ...rest} = payload;
         if (anonymizeIp !== undefined) {
             if (['0', 'false', 'undefined', 'null', '{}', '[]', ''].indexOf(`${anonymizeIp}`.toLowerCase()) == -1) {
-                rest['anonymizeIp'] = 1;
+                rest.anonymizeIp = 1;
             }
+        }
+
+        const maxLength: number = 128;
+        if (
+            eventType == EventType.view ||
+            eventType == EventType.click ||
+            eventType == EventType.search ||
+            eventType == EventType.custom
+        ) {
+            rest.originLevel3 = this.limit(rest.originLevel3, maxLength);
+        }
+        if (eventType == EventType.view) {
+            rest.location = this.limit(rest.location, maxLength);
+        }
+        if (eventType == 'pageview' || eventType == 'event') {
+            rest.referrer = this.limit(rest.referrer, maxLength);
+            rest.location = this.limit(rest.location, maxLength);
+            rest.page = this.limit(rest.page, maxLength);
         }
         return rest;
     }
@@ -595,6 +613,11 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         } else {
             return payload;
         }
+    }
+
+    private limit(input: string, length: number): string | undefined | null {
+        if (input == undefined || input == null) return input;
+        return input.substring(0, length);
     }
 
     private get baseUrl(): string {

@@ -221,6 +221,34 @@ describe('simpleanalytics', () => {
             expect(fetchMock.calls().length).toBe(1);
             expect(fetchMock.lastUrl()).toBe(`https://myproxyendpoint.com/rest/v15/analytics/${someRandomEventName}`);
         });
+
+        describe('will restrict referrers and url lengths', () => {
+            const max: number = 128;
+            const reallyLongPath1: string =
+                '/some/really/long/path/which/will/be/longer/than/the/maximum/path/we/want/to/store/becasue/it/may/contain?queryParameters=whichcancontainencodedinformation';
+            const reallyLongPath2: string =
+                '/other/really/long/path/which/will/be/longer/than/the/maximum/path/we/want/to/store/becasue/it/may/contain?queryParameters=whichcancontainencodedinformation';
+            expect(reallyLongPath1.length).toBeGreaterThan(max);
+            expect(reallyLongPath2.length).toBeGreaterThan(max);
+            it('does this for pageviews', async () => {
+                coveoua('init', 'MYTOKEN');
+                await coveoua('send', 'pageview', reallyLongPath1);
+                await coveoua('send', 'pageview', reallyLongPath2);
+                const body = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+                expect(body.dr.length).toBeLessThanOrEqual(max);
+                expect(body.dl.length).toBeLessThanOrEqual(max);
+                expect(body.dp.length).toBeLessThanOrEqual(max);
+            });
+            it('does this for generic events', async () => {
+                coveoua('init', 'MYTOKEN');
+                await coveoua('send', 'pageview', reallyLongPath1);
+                await coveoua('send', 'pageview', reallyLongPath2);
+                await coveoua('send', 'event');
+                const body = JSON.parse(fetchMock.lastCall()![1]!.body!.toString());
+                expect(body.dr.length).toBeLessThanOrEqual(max);
+                expect(body.dl.length).toBeLessThanOrEqual(max);
+            });
+        });
     });
 
     describe('set', () => {

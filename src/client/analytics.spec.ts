@@ -7,7 +7,6 @@ import {mockFetch} from '../../tests/fetchMock';
 import {BrowserRuntime} from './runtimeEnvironment';
 import * as doNotTrack from '../donottrack';
 import {Cookie} from '../cookieutils';
-import {v4 as uuidv4} from 'uuid';
 import {CoveoLinkParam} from '../plugins/link';
 
 const aVisitorId = '123';
@@ -142,6 +141,27 @@ describe('Analytics', () => {
             fine: 1,
             ok: 0,
         });
+    });
+
+    describe('should cap the maxlength for URL parameters at 128 characters for ua events', () => {
+        const desiredMax: number = 128;
+        const longUrl: string =
+            'http://somefakelocation.withalongurlnamewhichexceedsthemaximumnumberofcharactersbecauseiaddedarandomqueryparameterattheend.com?q=hi';
+        expect(longUrl.length).toBeGreaterThan(desiredMax);
+        async function testEventType(type: EventType) {
+            mockFetchRequestForEventType(type);
+            await client.sendEvent(type, {
+                location: type == EventType.view ? longUrl : undefined,
+                originLevel3: longUrl,
+            });
+            const [body] = getParsedBodyCalls();
+            if (type == EventType.view) expect(body.location.length).toBeLessThanOrEqual(desiredMax);
+            expect(body.originLevel3.length).toBeLessThanOrEqual(desiredMax);
+        }
+        it('- for view events', () => testEventType(EventType.view));
+        it('- for click events', () => testEventType(EventType.click));
+        it('- for search events', () => testEventType(EventType.search));
+        it('- for custom events', () => testEventType(EventType.custom));
     });
 
     it('should not remove #queryText for search events even if empty', async () => {

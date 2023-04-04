@@ -585,7 +585,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
             }
         }
 
-        const maxLength: number = 128;
+        const maxLength: number = 2048;
         if (
             eventType == EventType.view ||
             eventType == EventType.click ||
@@ -616,7 +616,9 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     }
 
     private limit(input: string, length: number): string | undefined | null {
-        if (input == undefined || input == null) return input;
+        if (typeof input !== 'string') {
+            return input;
+        }
         return input.substring(0, length);
     }
 

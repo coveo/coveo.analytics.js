@@ -144,8 +144,8 @@ describe('Analytics', () => {
     });
 
     describe('should truncate the maxlength for URL parameters at 128 characters for ua events', () => {
-        const desiredMax: number = 2048;
-        const longUrl: string = 'http://coveo.com/?q=' + 'a'.repeat(2048);
+        const desiredMax: number = 128;
+        const longUrl: string = 'http://coveo.com/?q=' + 'a'.repeat(desiredMax);
         expect(longUrl.length).toBeGreaterThan(desiredMax);
         async function testEventType(type: EventType, url: string) {
             mockFetchRequestForEventType(type);

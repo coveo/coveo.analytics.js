@@ -255,7 +255,7 @@ describe('EC plugin', () => {
                 expect(result).not.toHaveProperty(firstPositionProperty);
 
                 const secondPositionProperty = 'il1pi2ps';
-                expect(result).toHaveProperty(secondPositionProperty, undefinedPosition);
+                expect(result).not.toHaveProperty(secondPositionProperty);
             });
         });
     });

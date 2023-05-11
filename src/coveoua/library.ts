@@ -4,6 +4,7 @@ import * as history from '../history';
 import * as SimpleAnalytics from './simpleanalytics';
 import * as storage from '../storage';
 export {CoveoAnalyticsClient, AnalyticsClientSendEventHook} from '../client/analytics';
+export {ValidationClient} from '../client/analyticsvalidation';
 export {PreprocessAnalyticsRequest} from '../client/analyticsRequestClient';
 export {IRuntimeEnvironment} from '../client/runtimeEnvironment';
 export {CoveoUA, getCurrentClient, handleOneAnalyticsEvent} from './simpleanalytics';

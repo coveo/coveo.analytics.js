@@ -184,7 +184,7 @@ To test out your changes, add `coveoua` function calls in the `public/index.html
 
 ## Storage and persistence
 
-Coveo.analytics.js tracks interactions from the same browser client, through a client side provided uuid called a `clientId`. This clientId is initialized on first use and there are multiple options for persisting it's value:
+Coveo.analytics.js tracks interactions from the same browser client, through a client side provided uuid called a `clientId`. This clientId is initialized on first use and there are multiple options for persisting its value:
 
 -   Cookie storage, which supports top level domain storage. This means that the clientId for a.foo.com will be identical to the one on b.foo.com.
 -   Local storage, which allows to store much more information client side, but has the drawback of not being able to access data across multiple top level domains.

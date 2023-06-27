@@ -628,7 +628,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         const {trackingId, custom, ...rest} = payload;
         if (!trackingId && custom && isObject(custom) && 'context_website' in custom) {
             rest['trackingId'] = custom.context_website;
-            return {custom, ...rest};
+            return {custom: custom, ...rest};
         } else {
             return payload;
         }

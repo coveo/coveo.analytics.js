@@ -450,11 +450,13 @@ describe('Analytics', () => {
             });
             mockFetchRequestForEventType(EventType.view);
         });
+
         it('should set trackingId when trackingId is not specified', async () => {
             await client.sendEvent(EventType.view, {custom: {context_website: contextWebsite}});
             const [body] = getParsedBodyCalls();
             expect(body.trackingId).toBe(contextWebsite);
         });
+
         it('should not set trackingId when trackingId is specified', async () => {
             await client.sendEvent(EventType.view, {trackingId: trackingId, custom: {context_website: contextWebsite}});
             const [body] = getParsedBodyCalls();

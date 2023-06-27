@@ -555,7 +555,7 @@ describe('ec events', () => {
 
     it('context_website does not overwrite trackingId', async () => {
         const contextWebsite = 'tracksite';
-        const trackingId = 'tracksite';
+        const trackingId = 'trackingid';
         await coveoua('set', 'custom', {context_website: contextWebsite});
         await coveoua('set', 'trackingId', trackingId);
         await coveoua('send', 'pageview');

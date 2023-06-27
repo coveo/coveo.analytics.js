@@ -344,7 +344,8 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
     async resolvePayloadForParameters(eventType: EventType | string, parameters: any) {
         const {usesMeasurementProtocol = false} = this.eventTypeMapping[eventType] || {};
 
-        const addTrackingIdStep: ProcessPayloadStep = (currentPayload) => this.setTrackingId(currentPayload);
+        const addTrackingIdStep: ProcessPayloadStep = (currentPayload) =>
+            this.setTrackingIdFromContextWebsiteIfTrackingIdNotPresent(currentPayload);
         const cleanPayloadStep: ProcessPayloadStep = (currentPayload) =>
             this.removeEmptyPayloadValues(currentPayload, eventType);
         const validateParams: ProcessPayloadStep = (currentPayload) => this.validateParams(currentPayload, eventType);
@@ -624,7 +625,7 @@ export class CoveoAnalyticsClient implements AnalyticsClient, VisitorIdProvider 
         }
     }
 
-    private setTrackingId(payload: IRequestPayload): IRequestPayload {
+    private setTrackingIdFromContextWebsiteIfTrackingIdNotPresent(payload: IRequestPayload): IRequestPayload {
         const {trackingId, custom, ...rest} = payload;
         if (!trackingId && custom && isObject(custom) && 'context_website' in custom) {
             rest['trackingId'] = custom.context_website;

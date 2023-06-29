@@ -44,7 +44,6 @@ const coveoExtensionsKeys = [
     'searchUid',
     'permanentId',
     'contentLocale',
-    'trackingId',
 ];
 
 export const baseMeasurementProtocolKeysMapping: {[name: string]: string} = {

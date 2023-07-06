@@ -570,6 +570,38 @@ describe('ec events', () => {
         });
     });
 
+    it('should be able to set trackingId with siteName', async () => {
+        const website = 'tracksite';
+        await coveoua('set', 'custom', {siteName: website});
+        await coveoua('send', 'pageview');
+
+        const [event] = getParsedBody();
+
+        expect(event).toEqual({
+            ...defaultContextValues,
+            t: 'pageview',
+            trackingId: website,
+            sitename: website,
+        });
+    });
+
+    it('siteName does not overwrite trackingId', async () => {
+        const website = 'tracksite';
+        const trackingId = 'trackingid';
+        await coveoua('set', 'custom', {siteName: website});
+        await coveoua('set', 'trackingId', trackingId);
+        await coveoua('send', 'pageview');
+
+        const [event] = getParsedBody();
+
+        expect(event).toEqual({
+            ...defaultContextValues,
+            t: 'pageview',
+            trackingId: trackingId,
+            sitename: website,
+        });
+    });
+
     describe('with auto-detection of userId', () => {
         describe('with API key', () => {
             beforeEach(() => {

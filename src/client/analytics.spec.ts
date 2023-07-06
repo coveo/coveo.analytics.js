@@ -439,34 +439,9 @@ describe('Analytics', () => {
         });
     });
 
-    describe('with context_website is set in custom', () => {
-        const contextWebsite = 'yourbestfriend.com';
-        const trackingId = 'yourfavaritefood.ca ';
-        beforeEach(() => {
-            client = new CoveoAnalyticsClient({
-                token: 'xtoken',
-                endpoint: anEndpoint,
-                version: A_VERSION,
-            });
-            mockFetchRequestForEventType(EventType.view);
-        });
-
-        it('should set trackingId when trackingId is not specified', async () => {
-            await client.sendEvent(EventType.view, {custom: {context_website: contextWebsite}});
-            const [body] = getParsedBodyCalls();
-            expect(body.trackingId).toBe(contextWebsite);
-        });
-
-        it('should not overwrite trackingId when trackingId is specified', async () => {
-            await client.sendEvent(EventType.view, {trackingId: trackingId, custom: {context_website: contextWebsite}});
-            const [body] = getParsedBodyCalls();
-            expect(body.trackingId).toBe(trackingId);
-        });
-    });
-
     describe('with context_website is set in customData', () => {
         const contextWebsite = 'yourbestfriend.com';
-        const trackingId = 'yourfavaritefood.ca ';
+        const trackingId = 'yourfavoritefood.ca ';
         beforeEach(() => {
             client = new CoveoAnalyticsClient({
                 token: 'xtoken',
@@ -487,31 +462,6 @@ describe('Analytics', () => {
                 trackingId: trackingId,
                 customData: {context_website: contextWebsite},
             });
-            const [body] = getParsedBodyCalls();
-            expect(body.trackingId).toBe(trackingId);
-        });
-    });
-
-    describe('with siteName is set in custom', () => {
-        const website = 'yourbestfriend.com';
-        const trackingId = 'yourfavoritefood.ca ';
-        beforeEach(() => {
-            client = new CoveoAnalyticsClient({
-                token: 'xtoken',
-                endpoint: anEndpoint,
-                version: A_VERSION,
-            });
-            mockFetchRequestForEventType(EventType.view);
-        });
-
-        it('should set trackingId when trackingId is not specified', async () => {
-            await client.sendEvent(EventType.view, {custom: {siteName: website}});
-            const [body] = getParsedBodyCalls();
-            expect(body.trackingId).toBe(website);
-        });
-
-        it('should not overwrite trackingId when trackingId is specified', async () => {
-            await client.sendEvent(EventType.view, {trackingId: trackingId, custom: {siteName: website}});
             const [body] = getParsedBodyCalls();
             expect(body.trackingId).toBe(trackingId);
         });

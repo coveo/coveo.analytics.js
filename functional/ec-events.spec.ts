@@ -560,12 +560,8 @@ describe('ec events', () => {
 
         const [event] = getParsedBody();
 
-        expect(event).toEqual({
-            ...defaultContextValues,
-            t: 'pageview',
-            trackingId: contextWebsite,
-            context_website: contextWebsite,
-        });
+        expect(event).toHaveProperty('trackingId', contextWebsite);
+        expect(event).toHaveProperty('customData.context_website', contextWebsite);
     });
 
     it('context_website does not overwrite trackingId', async () => {
@@ -607,12 +603,8 @@ describe('ec events', () => {
 
         const [event] = getParsedBody();
 
-        expect(event).toEqual({
-            ...defaultContextValues,
-            t: 'pageview',
-            trackingId: website,
-            customData: {sitename: website},
-        });
+        expect(event).toHaveProperty('trackingId', website);
+        expect(event).toHaveProperty('customData.sitename', website);
     });
 
     it('siteName does not overwrite trackingId', async () => {

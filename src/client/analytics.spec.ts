@@ -448,6 +448,10 @@ describe('Analytics', () => {
                 endpoint: anEndpoint,
                 version: A_VERSION,
             });
+            client.addEventTypeMapping('pageview', {
+                newEventType: EventType.view,
+                usesMeasurementProtocol: true,
+            });
             mockFetchRequestForEventType(EventType.view);
         });
 
@@ -464,6 +468,12 @@ describe('Analytics', () => {
             });
             const [body] = getParsedBodyCalls();
             expect(body.trackingId).toBe(trackingId);
+        });
+
+        it('should set trackingId on pageview event', async () => {
+            await client.sendEvent('pageview', {context_website: contextWebsite});
+            const [body] = getParsedBodyCalls();
+            expect(body.trackingId).toBe(contextWebsite);
         });
     });
 

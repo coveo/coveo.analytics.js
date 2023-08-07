@@ -1,0 +1,10 @@
+{
+    "name": "modules",
+    "private": true,
+    "main": "../dist/library.js",
+    "browser": "../dist/library.es.js",
+    "types": "./../dist/definitions/coveoua/library.d.ts",
+    "files": [
+        "../dist"
+    ]
+}

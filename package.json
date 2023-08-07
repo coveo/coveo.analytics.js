@@ -64,6 +64,7 @@
         "plist": "3.0.5"
     },
     "files": [
+        "modules/",
         "dist/**/*.d.ts",
         "dist/**/*.js",
         "dist/**/*.js.map",

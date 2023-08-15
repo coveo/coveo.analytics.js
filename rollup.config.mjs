@@ -105,10 +105,10 @@ const nodeModulesConfig = {
  */
 const browserModulesConfig = {
     input: './src/coveoua/headless.ts',
-    output: /** @type {const} */ (['cjs', 'es']).map((format) => ({
-        file: `./dist/browser.${format === 'cjs' ? 'cjs' : 'mjs'}`,
+    output: {
+        file: `./dist/browser.mjs`,
         format,
-    })),
+    },
     plugins: [
         browserFetch(),
         nodeResolve({preferBuiltins: true}),

@@ -107,7 +107,7 @@ const browserModulesConfig = {
     input: './src/coveoua/headless.ts',
     output: {
         file: `./dist/browser.mjs`,
-        format,
+        format: 'es',
     },
     plugins: [
         browserFetch(),

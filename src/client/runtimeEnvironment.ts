@@ -37,7 +37,7 @@ export class BrowserRuntime implements IRuntimeEnvironment {
     }
 
     public getClientDependingOnEventType(eventType: EventType) {
-        return eventType === 'click' ? this.beaconClient : this.client;
+        return eventType === 'click' && this.beaconClient.isAvailable() ? this.beaconClient : this.client;
     }
 }
 

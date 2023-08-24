@@ -5,7 +5,7 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
     constructor(private opts: IAnalyticsClientOptions) {}
 
     public async sendEvent(eventType: EventType, payload: IRequestPayload): Promise<void> {
-        if (!navigator.sendBeacon) {
+        if (!this.isAvailable()) {
             throw new Error(
                 `navigator.sendBeacon is not supported in this browser. Consider adding a polyfill like "sendbeacon-polyfill".`
             );
@@ -28,6 +28,10 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
         // tslint:disable-next-line: no-console
         navigator.sendBeacon(url, body as any); // https://github.com/microsoft/TypeScript/issues/38715
         return;
+    }
+
+    public isAvailable() {
+        return typeof navigator.sendBeacon === 'function';
     }
 
     public deleteHttpCookieVisitorId() {

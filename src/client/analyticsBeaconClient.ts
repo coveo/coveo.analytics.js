@@ -26,7 +26,6 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
         };
 
         // tslint:disable-next-line: no-console
-        console.log(`Sending beacon for "${eventType}" with: `, JSON.stringify(payload));
         navigator.sendBeacon(url, body as any); // https://github.com/microsoft/TypeScript/issues/38715
         return;
     }

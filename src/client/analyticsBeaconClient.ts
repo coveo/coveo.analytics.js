@@ -25,13 +25,12 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
             ...(preprocessRequest ? await preprocessRequest(defaultOptions, 'analyticsBeacon') : {}),
         };
 
-        // tslint:disable-next-line: no-console
         navigator.sendBeacon(url, body as any); // https://github.com/microsoft/TypeScript/issues/38715
         return;
     }
 
     public isAvailable() {
-        return typeof navigator.sendBeacon === 'function';
+        return 'sendBeacon' in navigator;
     }
 
     public deleteHttpCookieVisitorId() {

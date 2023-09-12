@@ -5,7 +5,7 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
     constructor(private opts: IAnalyticsClientOptions) {}
 
     public async sendEvent(eventType: EventType, payload: IRequestPayload): Promise<void> {
-        if (!navigator.sendBeacon) {
+        if (!this.isAvailable()) {
             throw new Error(
                 `navigator.sendBeacon is not supported in this browser. Consider adding a polyfill like "sendbeacon-polyfill".`
             );
@@ -27,17 +27,17 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
 
         const parsedRequestData = this.encodeForEventType(eventType, payload);
 
-        const defaultOptions: IAnalyticsRequestOptions = {
-            url: `${baseUrl}/analytics/${eventType}?${paramsFragments}`,
-            body: new Blob([parsedRequestData], {
-                type: 'application/x-www-form-urlencoded',
-            }),
-        };
-        const {url, body} = defaultOptions;
-        // tslint:disable-next-line: no-console
-        console.log(`Sending beacon for "${eventType}" with: `, JSON.stringify(payload));
+        const url = `${baseUrl}/analytics/${eventType}?${paramsFragments}`;
+        const body = new Blob([parsedRequestData], {
+            type: 'application/x-www-form-urlencoded',
+        });
+
         navigator.sendBeacon(url, body as any); // https://github.com/microsoft/TypeScript/issues/38715
         return;
+    }
+
+    public isAvailable() {
+        return 'sendBeacon' in navigator;
     }
 
     public deleteHttpCookieVisitorId() {

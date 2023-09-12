@@ -12,19 +12,28 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
         }
 
         const {baseUrl, preprocessRequest} = this.opts;
-        const parsedRequestData = this.encodeForEventType(eventType, payload);
+
         const paramsFragments = await this.getQueryParamsForEventType(eventType);
+
+        if (preprocessRequest) {
+            payload = await preprocessRequest(
+                {
+                    url: `${baseUrl}/analytics/${eventType}?${paramsFragments}`,
+                    body: JSON.stringify(payload),
+                },
+                'analyticsBeacon'
+            );
+        }
+
+        const parsedRequestData = this.encodeForEventType(eventType, payload);
+
         const defaultOptions: IAnalyticsRequestOptions = {
             url: `${baseUrl}/analytics/${eventType}?${paramsFragments}`,
             body: new Blob([parsedRequestData], {
                 type: 'application/x-www-form-urlencoded',
             }),
         };
-        const {url, body}: IAnalyticsRequestOptions = {
-            ...defaultOptions,
-            ...(preprocessRequest ? await preprocessRequest(defaultOptions, 'analyticsBeacon') : {}),
-        };
-
+        const {url, body} = defaultOptions;
         // tslint:disable-next-line: no-console
         console.log(`Sending beacon for "${eventType}" with: `, JSON.stringify(payload));
         navigator.sendBeacon(url, body as any); // https://github.com/microsoft/TypeScript/issues/38715

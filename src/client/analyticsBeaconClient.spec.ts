@@ -162,6 +162,20 @@ describe('AnalyticsBeaconClient', () => {
             );
         });
 
+        it('to augment the request body as a JSON string for a click event', async () => {
+            const client = setupClient((request) => {
+                const bodyParsedAsJSON = JSON.parse(request.body as string);
+                bodyParsedAsJSON.aNewProperty = 'bar';
+                request.body = JSON.stringify(bodyParsedAsJSON);
+                return request;
+            });
+
+            await client.sendEvent(EventType.click, {actionCause: 'foo'});
+            expect(await getSendBeaconFirstCallBlobArgument()).toContain(
+                `clickEvent=${encodeURIComponent(`{"actionCause":"foo","aNewProperty":"bar"}`)}`
+            );
+        });
+
         it('should keep original request body if preprocessRequest returns an invalid JSON string', async () => {
             const client = setupClient((request) => {
                 request.body = 'invalid JSON string';

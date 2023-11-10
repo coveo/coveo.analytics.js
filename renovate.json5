@@ -1,13 +1,26 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "branchPrefix": "renovate/",
-  "extends": [
-    "config:base",
-    "github>coveo/renovate//presets/coveo-defaults.json5",
-    "schedule:earlyMondays",
-    "group:allNonMajor"
-  ],
-  "prConcurrentLimit": 3,
-  "prHeader": "DT-5590 <- Put your own jira issue here by setting the `prHeader` value in your renovate config",
-  "rebaseWhen": "auto"
+    $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+    branchPrefix: 'feat/UA-5791-',
+    labels: ['dependency update'],
+    baseBranches: ['master'],
+    repositories: ['coveo/coveo.analytics.js'],
+    packageRules: [
+        {
+            matchPackagePatterns: ['*'],
+            matchUpdateTypes: ['minor', 'patch'],
+            groupName: 'all non-major dependencies',
+            groupSlug: 'all-minor-patch',
+        },
+    ],
+    extends: [
+        'config:base',
+        'github>coveo/renovate//presets/coveo-defaults.json5',
+        'schedule:earlyMondays',
+        'group:allNonMajor',
+    ],
+    reviewersFromCodeOwners: true,
+    commitMessagePrefix: '[Renovate]',
+    commitMessageSuffix: '[Version Bump] UA-5791',
+    separateMinorPatch: false,
+    suppressNotifications: ['prIgnoreNotification'],
 }

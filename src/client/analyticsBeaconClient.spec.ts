@@ -41,7 +41,7 @@ describe('AnalyticsBeaconClient', () => {
             `${baseUrl}/analytics/custom?access_token=👛&visitorId=${currentVisitorId}&discardVisitInfo=true`,
             expect.anything()
         );
-        expect(await getSendBeaconFirstCallBlobArgument()).toBe(`customEvent=${encodeURIComponent(`{"wow":"ok"}`)}`);
+        expect(await getSendBeaconFirstCallBlobArgument()).toBe(`customEvent=${encodeURIComponent('{"wow":"ok"}')}`);
     });
 
     it('can send a collect event with the proper payload', async () => {
@@ -67,7 +67,7 @@ describe('AnalyticsBeaconClient', () => {
         );
         expect(await getSendBeaconFirstCallBlobArgument()).toBe(
             `access_token=${encodeURIComponent('👛')}&collectEvent=${encodeURIComponent(
-                `{"pr1a":"value","to encode":"to encode"}`
+                '{"pr1a":"value","to encode":"to encode"}'
             )}`
         );
     });
@@ -97,7 +97,7 @@ describe('AnalyticsBeaconClient', () => {
             expect.anything()
         );
         expect(await getSendBeaconFirstCallBlobArgument()).toBe(
-            `access_token=${encodeURIComponent('👛')}&collectEvent=${encodeURIComponent(`{"value":{"subvalue":"ok"}}`)}`
+            `access_token=${encodeURIComponent('👛')}&collectEvent=${encodeURIComponent('{"value":{"subvalue":"ok"}}')}`
         );
     });
 
@@ -162,7 +162,7 @@ describe('AnalyticsBeaconClient', () => {
 
             await client.sendEvent(EventType.click, {actionCause: 'foo'});
             expect(await getSendBeaconFirstCallBlobArgument()).toContain(
-                `clickEvent=${encodeURIComponent(`{"actionCause":"bar"}`)}`
+                `clickEvent=${encodeURIComponent('{"actionCause":"bar"}')}`
             );
         });
 
@@ -176,7 +176,7 @@ describe('AnalyticsBeaconClient', () => {
 
             await client.sendEvent(EventType.click, {actionCause: 'foo'});
             expect(await getSendBeaconFirstCallBlobArgument()).toContain(
-                `clickEvent=${encodeURIComponent(`{"actionCause":"foo","aNewProperty":"bar"}`)}`
+                `clickEvent=${encodeURIComponent('{"actionCause":"foo","aNewProperty":"bar"}')}`
             );
         });
 

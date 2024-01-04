@@ -66,7 +66,9 @@ describe('AnalyticsBeaconClient', () => {
             expect.anything()
         );
         expect(await getSendBeaconFirstCallBlobArgument()).toBe(
-            'access_token=%F0%9F%91%9B&pr1a=value&to%20encode=to%20encode'
+            `access_token=${encodeURIComponent('👛')}&collectEvent=${encodeURIComponent(
+                `{"pr1a":"value","to encode":"to encode"}`
+            )}`
         );
     });
 
@@ -95,7 +97,7 @@ describe('AnalyticsBeaconClient', () => {
             expect.anything()
         );
         expect(await getSendBeaconFirstCallBlobArgument()).toBe(
-            `access_token=%F0%9F%91%9B&value=${encodeURIComponent(JSON.stringify({subvalue: 'ok'}))}`
+            `access_token=${encodeURIComponent('👛')}&collectEvent=${encodeURIComponent(`{"value":{"subvalue":"ok"}}`)}`
         );
     });
 
@@ -131,7 +133,7 @@ describe('AnalyticsBeaconClient', () => {
 
             expect(clientOrigin!).toBe('analyticsBeacon');
             expect(sendBeaconMock).toHaveBeenCalledWith(processedRequest.url, expect.anything());
-            expect(await getSendBeaconFirstCallBlobArgument()).toContain('test=custom');
+            expect(await getSendBeaconFirstCallBlobArgument()).toContain('%22test%22%3A%22custom%22');
         });
 
         it('to modify the request body as a JSON string for a collect event', async () => {
@@ -144,7 +146,9 @@ describe('AnalyticsBeaconClient', () => {
             });
 
             await client.sendEvent(EventType.collect, {foo: 'bar'});
-            expect(await getSendBeaconFirstCallBlobArgument()).toContain(`foo=baz`);
+            expect(await getSendBeaconFirstCallBlobArgument()).toBe(
+                'access_token=%F0%9F%91%9B&collectEvent=%7B%22foo%22%3A%22baz%22%7D'
+            );
         });
 
         it('to modify the request body as a JSON string for a click event', async () => {

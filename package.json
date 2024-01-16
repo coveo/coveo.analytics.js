@@ -11,8 +11,8 @@
         "lint:fix": "prettier --write .",
         "build": "rollup -c",
         "start": "rollup -c -w --environment SERVE",
-        "test": "jest --clearCache && jest --coverage",
-        "test:watch": "jest --clearCache && jest --watch",
+        "test": "jest --clearCache && jest --coverage --silent",
+        "test:watch": "jest --clearCache && jest --watch --silent",
         "prepare-deploy": "mkdir -p deploy && cp dist/coveoua*.js dist/coveoua*.js.map deploy",
         "clean": "rimraf -rf dist dist_test coverage"
     },

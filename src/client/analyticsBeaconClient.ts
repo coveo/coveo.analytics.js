@@ -68,8 +68,8 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
 
     private encodeForEventType(eventType: EventType, payload: IRequestPayload): string {
         return this.isEventTypeLegacy(eventType)
-            ? this.encodeToJson(eventType, payload)
-            : this.encodeToJson(eventType, payload, this.opts.token);
+            ? this.encodeEventToJson(eventType, payload)
+            : this.encodeEventToJson(eventType, payload, this.opts.token);
     }
 
     private async getQueryParamsForEventType(eventType: EventType): Promise<string> {
@@ -88,13 +88,11 @@ export class AnalyticsBeaconClient implements AnalyticsRequestClient {
         return [EventType.click, EventType.custom, EventType.search, EventType.view].indexOf(eventType) !== -1;
     }
 
-    private encodeToJson(eventType: EventType, payload: IRequestPayload, access_token?: string): string {
+    private encodeEventToJson(eventType: EventType, payload: IRequestPayload, access_token?: string): string {
+        let encoded = `${eventType}Event=${encodeURIComponent(JSON.stringify(payload))}`;
         if (access_token) {
-            return `access_token=${encodeURIComponent(access_token)}&${eventType}Event=${encodeURIComponent(
-                JSON.stringify(payload)
-            )}`;
-        } else {
-            return `${eventType}Event=${encodeURIComponent(JSON.stringify(payload))}`;
+            encoded = `access_token=${encodeURIComponent(access_token)}&${encoded}`;
         }
+        return encoded;
     }
 }

@@ -4,13 +4,13 @@
 // gathering data of actions of an user as long as it is not associated to the
 // identity of that user, doNotTrack is not enabled here.
 
-import {hasNavigator} from './detector';
+import {hasNavigator, hasWindow} from './detector';
 
 const doNotTrackValues = ['1', 1, 'yes', true];
 
 export function doNotTrack(): boolean {
     return (
-        hasNavigator() &&
+        hasNavigator() && hasWindow() &&
         [
             (<any>navigator).globalPrivacyControl,
             (<any>navigator).doNotTrack,

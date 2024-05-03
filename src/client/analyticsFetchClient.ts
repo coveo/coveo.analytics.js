@@ -1,7 +1,8 @@
 import {AnalyticsRequestClient, IAnalyticsRequestOptions, IAnalyticsClientOptions} from './analyticsRequestClient';
 import {AnyEventResponse, EventType, IRequestPayload} from '../events';
-import {fetch} from 'cross-fetch';
+import {crossFetch} from 'cross-fetch';
 
+const isoFetch = fetch ?? crossFetch;
 export class AnalyticsFetchClient implements AnalyticsRequestClient {
     constructor(private opts: IAnalyticsClientOptions) {}
 
@@ -25,7 +26,7 @@ export class AnalyticsFetchClient implements AnalyticsRequestClient {
         let response: Response;
 
         try {
-            response = await fetch(url, fetchData);
+            response = await isoFetch(url, fetchData);
         } catch (error) {
             console.error('An error has occured when sending the event.', error);
             return;

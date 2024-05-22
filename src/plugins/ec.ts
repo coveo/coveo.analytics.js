@@ -135,31 +135,29 @@ export class ECPlugin extends BasePlugin {
     }
 
     private addECDataToPayload(eventType: string, payload: any) {
-        const isPageView = eventType === ECPluginEventTypes.pageview;
+        if (eventType === ECPluginEventTypes.pageview) {
+            return {
+                ...this.getLocationInformation(eventType, payload),
+                ...this.getDefaultContextInformation(eventType),
+                ...payload,
+            };
+        }
+
         const ecPayload = {
             ...this.getLocationInformation(eventType, payload),
             ...this.getDefaultContextInformation(eventType),
-            ...(isPageView
-                ? {}
-                : {
-                      ...(this.action ? {action: this.action} : {}),
-                      ...(this.actionData || {}),
-                  }),
+            ...(this.action ? {action: this.action} : {}),
+            ...(this.actionData || {}),
         };
 
-        const productAndImpressionPayload = isPageView
-            ? {}
-            : {
-                  ...this.getProductPayload(),
-                  ...this.getImpressionPayload(),
-              };
+        const productPayload = this.getProductPayload();
+        const impressionPayload = this.getImpressionPayload();
 
-        if (!isPageView) {
-            this.clearData();
-        }
+        this.clearData();
 
         return {
-            ...productAndImpressionPayload,
+            ...impressionPayload,
+            ...productPayload,
             ...ecPayload,
             ...payload,
         };

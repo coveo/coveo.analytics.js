@@ -115,24 +115,35 @@ describe('ec events', () => {
     it('will include the product and action only when sending a detail event', async () => {
         coveoua('ec:addProduct', {name: 'wow', id: 'something', brand: 'brand', unknown: 'ok'});
         coveoua('ec:setAction', 'detail', {storeid: 'amazing'});
-        await coveoua('send', 'pageview');
+        coveoua('send', 'pageview');
         await coveoua('send', 'event');
 
-        const [pageviewBody, eventBody] = getParsedBody();
+        coveoua('ec:addProduct', {name: 'wow2', id: 'something2', brand: 'brand2'});
+        coveoua('ec:setAction', 'detail', {storeid: 'amazing'});
+        coveoua('send', 'event');
+        await coveoua('send', 'pageview');
 
-        expect(pageviewBody).toEqual({
-            ...defaultContextValues,
-            t: 'pageview',
-        });
+        const [pageviewBody, eventBody, eventBody2, pageviewBody2] = getParsedBody();
 
-        expect(eventBody).toEqual({
-            ...defaultContextValues,
-            t: 'event',
-            pa: 'detail',
-            pr1nm: 'wow',
-            pr1id: 'something',
-            pr1br: 'brand',
-        });
+        expect(pageviewBody.pa).toBeUndefined();
+        expect(pageviewBody.pr1nm).toBeUndefined();
+        expect(pageviewBody.pr1id).toBeUndefined();
+        expect(pageviewBody.pr1br).toBeUndefined();
+
+        expect(eventBody.pa).toEqual('detail');
+        expect(eventBody.pr1nm).toEqual('wow');
+        expect(eventBody.pr1id).toEqual('something');
+        expect(eventBody.pr1br).toEqual('brand');
+
+        expect(eventBody2.pa).toEqual('detail');
+        expect(eventBody2.pr1nm).toEqual('wow2');
+        expect(eventBody2.pr1id).toEqual('something2');
+        expect(eventBody2.pr1br).toEqual('brand2');
+
+        expect(pageviewBody2.pa).toBeUndefined();
+        expect(pageviewBody2.pr1nm).toBeUndefined();
+        expect(pageviewBody2.pr1id).toBeUndefined();
+        expect(pageviewBody2.pr1br).toBeUndefined();
     });
 
     it('can send a product detail view event', async () => {

@@ -6,8 +6,9 @@ await octokit.rest.repos.createDispatchEvent({
   event_type: 'deploy',
   client_payload: {
     run_Id: context.runId,
+    FORCE_DEPLOY: false
   },
-  owner: 'coveo-platform',
+  owner: 'coveo',
   repo: 'coveo.analytics.js-infra',
 });
 

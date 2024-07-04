@@ -1,11 +1,13 @@
 name: Deployment
 on:
-  pull_request:
+  push:
     branches: [ "master" ]
   workflow_dispatch:
     inputs:
       FORCE_DEPLOY:
         description: Force the deploy, even if the last commit is a version bump? (true or false)
+      DRY_RUN:
+        description: Dry run? (true or false)
 
 jobs:
   jenkins:
@@ -31,4 +33,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CD_DISPATCHER }}
           FORCE_DEPLOY: ${{ inputs.FORCE_DEPLOY || false }}
+          DRY_RUN: ${{ inputs.DRY_RUN || github.base_ref == 'master'}}
 

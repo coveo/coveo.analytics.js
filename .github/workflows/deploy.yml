@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       FORCE_DEPLOY:
-        description: Forces the deploy, even if the last commit is a version bump
+        description: Force the deploy, even if the last commit is a version bump? (true or false)
 
 jobs:
   jenkins:
@@ -30,4 +30,5 @@ jobs:
         run: node ./scripts/trigger-cd.mjs
         env:
           GH_TOKEN: ${{ secrets.CD_DISPATCHER }}
+          FORCE_DEPLOY: ${{ inputs.FORCE_DEPLOY || false }}
 

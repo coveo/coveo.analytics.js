@@ -7,9 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       FORCE_DEPLOY:
-        description: Force the deploy, even if the last commit is a version bump? (true or false)
+        type: boolean
+        description: Force the deploy, even if the last commit is a version bump?
       DRY_RUN:
-        description: Dry run? (true or false)
+        type: boolean
+        description: Dry run?
 
 jobs:
   jenkins:

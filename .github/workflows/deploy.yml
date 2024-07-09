@@ -2,8 +2,6 @@ name: Deployment
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_dispatch:
     inputs:
       FORCE_DEPLOY:
@@ -37,5 +35,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CD_DISPATCHER }}
           FORCE_DEPLOY: ${{ inputs.FORCE_DEPLOY || false }}
-          DRY_RUN: ${{ inputs.DRY_RUN || github.base_ref == 'master'}}
+          DRY_RUN: ${{ inputs.DRY_RUN || github.base_ref == 'master' || false }}
 

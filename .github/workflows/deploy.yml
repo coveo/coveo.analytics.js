@@ -12,7 +12,7 @@ on:
         description: Dry run?
 
 jobs:
-  jenkins:
+  deploy:
     name: Trigger Deployment
     runs-on: ubuntu-latest
     steps:
@@ -25,8 +25,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Build
-        run: |
-          npm install
+        run: npm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

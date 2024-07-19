@@ -1,0 +1,61 @@
+name: Functional Tests
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment in which to run the job
+        type: choice
+        options:
+          - dev
+          - prd
+        default: dev
+      version:
+        description: The version to test
+        type: string
+        default: 2
+      api-key:
+        description: The API key used to push analytics
+        type: string
+        default: coveo-analytics-send-to-dev-commercestore-api-key
+      endpoint:
+        description: The endpoint on which to send the analytics
+        type: string
+        default: https://analyticsdev.cloud.coveo.com/rest/ua
+      only-send-slack-on-failure:
+        description: Whether to only send a slack message on failure
+        type: boolean
+        default: true
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Analytics.js
+        uses: actions/checkout@v4
+        with:
+          repository: coveo/coveo.analytics.js
+          token: ${{ secrets.COMMIT_TOKEN }}
+
+      - name: Checkout Infra Analytics.js
+        uses: actions/checkout@v4
+        with:
+          path: infra
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5
+
+      - name: Upload Artifact
+        if: failure()
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - uses: actions/checkout@v4

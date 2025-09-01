@@ -8,7 +8,7 @@ import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import copy from 'rollup-plugin-copy';
 import {parse, resolve} from 'path';
-import packageJson from './package.json' assert {type: 'json'};
+import packageJson from './package.json' with {type: 'json'};
 import * as url from 'url';
 
 /**

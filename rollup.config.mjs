@@ -35,7 +35,9 @@ const tsPlugin = () =>
 const versionReplace = () =>
     replace({
         preventAssignment: true,
-        'process.env.PKG_VERSION': JSON.stringify(packageJson.version),
+        include: 'src/version.ts',
+        delimiters: ["'", "'"],
+        local: JSON.stringify(packageJson.version), // replaces 'local' in src/version.ts
     });
 
 /**

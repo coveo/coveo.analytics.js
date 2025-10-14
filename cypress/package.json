@@ -16,7 +16,7 @@
     "license": "MIT",
     "devDependencies": {
         "concurrently": "^9.2.1",
-        "cypress": "^15.4.0",
+        "cypress": "^15.3.0",
         "eslint-plugin-cypress": "^5.2.0",
         "http-server": "^14.1.1",
         "typescript": "^5.0.4"

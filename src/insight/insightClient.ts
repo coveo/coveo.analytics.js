@@ -380,6 +380,25 @@ export class CoveoInsightClient {
         );
     }
 
+    public logCitationDocumentAttach(
+        info: PartialDocumentInformation,
+        identifier: DocumentIdentifier,
+        caseMetadata?: CaseMetadata,
+    ) {
+        const metadata = {
+            documentTitle: info.documentTitle,
+            documentURL: info.documentUrl,
+            resultUriHash: info.documentUriHash,
+        };
+
+        return this.logClickEvent(
+            SearchPageEvents.citationDocumentAttach,
+            info,
+            identifier,
+            caseMetadata ? {...generateMetadataToSend(caseMetadata, false), ...metadata} : metadata,
+        );
+    }
+
     public logLikeSmartSnippet(metadata?: CaseMetadata) {
         return this.logCustomEvent(
             SearchPageEvents.likeSmartSnippet,

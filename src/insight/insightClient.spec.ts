@@ -137,6 +137,19 @@ describe('InsightClient', () => {
         sourceName: 'source',
     };
 
+    const fakeCitationInfo = {
+        documentPosition: 1,
+        documentTitle: 'title',
+        documentUri: 'uri',
+        documentUriHash: 'hash',
+        sourceName: 'source',
+    };
+
+    const fakeCitationID = {
+        contentIDKey: 'permanentID',
+        contentIDValue: 'the-permanent-id',
+    };
+
     const fakeDocID = {
         contentIDKey: 'permanentID',
         contentIDValue: 'the-permanent-id',
@@ -388,6 +401,16 @@ describe('InsightClient', () => {
             };
             await client.logCaseDetach(fakeDocInfo.documentUriHash);
             expectMatchCustomEventPayload(SearchPageEvents.caseDetach, expectedMetadata);
+        });
+
+        it('should send proper payload for #citationDocumentAttach', async () => {
+            const expectedMetadata = {
+                ...fakeCitationID,
+                documentTitle: fakeCitationInfo.documentTitle,
+                resultUriHash: fakeCitationInfo.documentUriHash,
+            };
+            await client.logCitationDocumentAttach(fakeCitationInfo, fakeCitationID);
+            expectMatchDocumentPayload(SearchPageEvents.citationDocumentAttach, fakeCitationInfo, expectedMetadata);
         });
 
         it('should send proper payload for #likeSmartSnippet', async () => {
@@ -1180,6 +1203,19 @@ describe('InsightClient', () => {
             };
             await client.logCaseDetach(fakeDocInfo.documentUriHash, metadata);
             expectMatchCustomEventPayload(SearchPageEvents.caseDetach, expectedMetadata);
+        });
+
+        it('should send proper payload for #citationDocumentAttach', async () => {
+            const metadata = baseCaseMetadata;
+
+            const expectedMetadata = {
+                ...fakeCitationID,
+                ...expectedBaseCaseMetadata,
+                documentTitle: fakeCitationInfo.documentTitle,
+                resultUriHash: fakeCitationInfo.documentUriHash,
+            };
+            await client.logCitationDocumentAttach(fakeCitationInfo, fakeCitationID, metadata);
+            expectMatchDocumentPayload(SearchPageEvents.citationDocumentAttach, fakeCitationInfo, expectedMetadata);
         });
 
         it('should send proper payload for #likeSmartSnippet', async () => {

@@ -137,19 +137,6 @@ describe('InsightClient', () => {
         sourceName: 'source',
     };
 
-    const fakeCitationInfo = {
-        documentPosition: 1,
-        documentTitle: 'title',
-        documentUri: 'uri',
-        documentUriHash: 'hash',
-        sourceName: 'source',
-    };
-
-    const fakeCitationID = {
-        contentIDKey: 'permanentID',
-        contentIDValue: 'the-permanent-id',
-    };
-
     const fakeDocID = {
         contentIDKey: 'permanentID',
         contentIDValue: 'the-permanent-id',

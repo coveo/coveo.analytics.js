@@ -403,16 +403,6 @@ describe('InsightClient', () => {
             expectMatchCustomEventPayload(SearchPageEvents.caseDetach, expectedMetadata);
         });
 
-        it('should send proper payload for #citationDocumentAttach', async () => {
-            const expectedMetadata = {
-                ...fakeCitationID,
-                documentTitle: fakeCitationInfo.documentTitle,
-                resultUriHash: fakeCitationInfo.documentUriHash,
-            };
-            await client.logCitationDocumentAttach(fakeCitationInfo, fakeCitationID);
-            expectMatchDocumentPayload(SearchPageEvents.citationDocumentAttach, fakeCitationInfo, expectedMetadata);
-        });
-
         it('should send proper payload for #likeSmartSnippet', async () => {
             await client.logLikeSmartSnippet();
             expectMatchCustomEventPayload(SearchPageEvents.likeSmartSnippet);
@@ -692,6 +682,27 @@ describe('InsightClient', () => {
 
             await client.logGeneratedAnswerStreamEnd(exampleGeneratedAnswerMetadata);
             expectMatchCustomEventPayload(SearchPageEvents.generatedAnswerStreamEnd, exampleGeneratedAnswerMetadata);
+        });
+
+        it('should send proper payload for #generatedAnswerCitationDocumentAttach', async () => {
+            const meta = {
+                generativeQuestionAnsweringId: '123',
+                citationId: 'bar',
+                documentId: {contentIdKey: 'permanentid', contentIdValue: 'foo'},
+            };
+
+            const expectedMetadata = {
+                ...meta,
+                contentIDKey: meta.documentId.contentIdKey,
+                contentIDValue: meta.documentId.contentIdValue,
+            };
+
+            await client.logGeneratedAnswerCitationDocumentAttach(fakeDocInfo, meta);
+            expectMatchDocumentPayload(
+                SearchPageEvents.generatedAnswerCitationDocumentAttach,
+                fakeDocInfo,
+                expectedMetadata,
+            );
         });
 
         it('should send proper payload for #createArticle', async () => {
@@ -1205,19 +1216,6 @@ describe('InsightClient', () => {
             expectMatchCustomEventPayload(SearchPageEvents.caseDetach, expectedMetadata);
         });
 
-        it('should send proper payload for #citationDocumentAttach', async () => {
-            const metadata = baseCaseMetadata;
-
-            const expectedMetadata = {
-                ...fakeCitationID,
-                ...expectedBaseCaseMetadata,
-                documentTitle: fakeCitationInfo.documentTitle,
-                resultUriHash: fakeCitationInfo.documentUriHash,
-            };
-            await client.logCitationDocumentAttach(fakeCitationInfo, fakeCitationID, metadata);
-            expectMatchDocumentPayload(SearchPageEvents.citationDocumentAttach, fakeCitationInfo, expectedMetadata);
-        });
-
         it('should send proper payload for #likeSmartSnippet', async () => {
             await client.logLikeSmartSnippet(baseCaseMetadata);
             expectMatchCustomEventPayload(SearchPageEvents.likeSmartSnippet, expectedBaseCaseMetadata);
@@ -1587,6 +1585,28 @@ describe('InsightClient', () => {
 
             await client.logGeneratedAnswerStreamEnd(exampleGeneratedAnswerMetadata, baseCaseMetadata);
             expectMatchCustomEventPayload(SearchPageEvents.generatedAnswerStreamEnd, expectedMetadata);
+        });
+
+        it('should send proper payload for #generatedAnswerCitationDocumentAttach', async () => {
+            const meta = {
+                generativeQuestionAnsweringId: '123',
+                citationId: 'bar',
+                documentId: {contentIdKey: 'permanentid', contentIdValue: 'foo'},
+            };
+
+            const expectedMetadata = {
+                ...meta,
+                ...expectedBaseCaseMetadata,
+                contentIDKey: meta.documentId.contentIdKey,
+                contentIDValue: meta.documentId.contentIdValue,
+            };
+
+            await client.logGeneratedAnswerCitationDocumentAttach(fakeDocInfo, meta, baseCaseMetadata);
+            expectMatchDocumentPayload(
+                SearchPageEvents.generatedAnswerCitationDocumentAttach,
+                fakeDocInfo,
+                expectedMetadata,
+            );
         });
 
         it('should send proper payload for #createArticle', async () => {

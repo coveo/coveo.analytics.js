@@ -380,25 +380,6 @@ export class CoveoInsightClient {
         );
     }
 
-    public logCitationDocumentAttach(
-        info: PartialDocumentInformation,
-        identifier: DocumentIdentifier,
-        caseMetadata?: CaseMetadata,
-    ) {
-        const metadata = {
-            documentTitle: info.documentTitle,
-            documentURL: info.documentUrl,
-            resultUriHash: info.documentUriHash,
-        };
-
-        return this.logClickEvent(
-            SearchPageEvents.citationDocumentAttach,
-            info,
-            identifier,
-            caseMetadata ? {...generateMetadataToSend(caseMetadata, false), ...metadata} : metadata,
-        );
-    }
-
     public logLikeSmartSnippet(metadata?: CaseMetadata) {
         return this.logCustomEvent(
             SearchPageEvents.likeSmartSnippet,
@@ -684,6 +665,19 @@ export class CoveoInsightClient {
             metadata
                 ? {...generateMetadataToSend(metadata, false), ...generatedAnswerStreamEndMetadata}
                 : generatedAnswerStreamEndMetadata,
+        );
+    }
+
+    public logGeneratedAnswerCitationDocumentAttach(
+        info: PartialDocumentInformation,
+        citation: GeneratedAnswerCitationClickMeta,
+        metadata?: CaseMetadata,
+    ) {
+        return this.logClickEvent(
+            SearchPageEvents.generatedAnswerCitationDocumentAttach,
+            {...info, documentPosition: 1},
+            {contentIDKey: citation.documentId.contentIdKey, contentIDValue: citation.documentId.contentIdValue},
+            metadata ? {...generateMetadataToSend(metadata, false), ...citation} : citation,
         );
     }
 

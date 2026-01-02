@@ -1,4 +1,4 @@
-# ![coveo.analytics](./assets/coveo.analytics.js.png)
+https://github.com/coveo/coveo.analytics.js.git# ![coveo.analytics](./assets/coveo.analytics.js.png)
 
 [![Build Status](https://travis-ci.org/coveo/coveo.analytics.js.svg?branch=master)](https://travis-ci.org/coveo/coveo.analytics.js)
 [![Coverage Status](https://coveralls.io/repos/github/coveo/coveo.analytics.js/badge.svg?branch=master)](https://coveralls.io/github/coveo/coveo.analytics.js?branch=master)

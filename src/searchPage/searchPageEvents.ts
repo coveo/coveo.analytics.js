@@ -359,6 +359,10 @@ export enum SearchPageEvents {
      */
     generatedAnswerCitationClick = 'generatedAnswerCitationClick',
     /**
+     * Identifies the click event that gets logged when the user clicks on a generated answer citation.
+     */
+    followupGeneratedAnswerOpenSource = 'followupGeneratedAnswerOpenSource',
+    /**
      * Identifies the click event that gets logged when a user clicks the Attach Citation action.
      */
     generatedAnswerCitationDocumentAttach = 'generatedAnswerCitationDocumentAttach',
@@ -403,6 +407,7 @@ export const CustomEventsTypes: Partial<Record<SearchPageEvents | InsightEvents,
     [SearchPageEvents.dislikeGeneratedAnswer]: 'generatedAnswer',
     [SearchPageEvents.openGeneratedAnswerSource]: 'generatedAnswer',
     [SearchPageEvents.generatedAnswerOpenInlineLink]: 'generatedAnswer',
+    [SearchPageEvents.followupGeneratedAnswerOpenSource]: 'generatedAnswer',
     [SearchPageEvents.generatedAnswerStreamEnd]: 'generatedAnswer',
     [SearchPageEvents.generatedAnswerSourceHover]: 'generatedAnswer',
     [SearchPageEvents.generatedAnswerCopyToClipboard]: 'generatedAnswer',
@@ -555,6 +560,11 @@ export interface SmartSnippetDocumentIdentifier {
 
 export type PartialDocumentInformation = Omit<DocumentInformation, 'actionCause' | 'searchQueryUid'>;
 
+export type PartialCitationInformation = Omit<
+    DocumentInformation,
+    'actionCause' | 'searchQueryUid' | 'documentPosition'
+>;
+
 interface AnswerGeneratedWithAnswerAPI {
     answerAPIStreamId: string;
     generativeQuestionAnsweringId?: never;
@@ -607,6 +617,12 @@ export type GeneratedAnswerRephraseFormat = 'step' | 'bullet' | 'concise' | 'def
 export type GeneratedAnswerSourceHoverMeta = GeneratedAnswerCitationMeta & {
     citationHoverTimeMs: number;
 };
+
+export type GeneratedAnswerFollowupOpenSourceMeta = PartialCitationInformation &
+    AnswerGeneratedWithAgent & {
+        citationId: string;
+        permanentId: string;
+    };
 
 export type GeneratedAnswerRephraseMeta = GeneratedAnswerBaseMeta & {
     rephraseFormat: GeneratedAnswerRephraseFormat;

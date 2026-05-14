@@ -1587,6 +1587,34 @@ describe('SearchPageClient', () => {
         expectMatchDescription(built.description, SearchPageEvents.generatedAnswerCitationClick, meta);
     });
 
+    it('should send proper payload for #logGeneratedAnswerFollowupOpenSource', async () => {
+        const meta = {
+            ...fakeDocInfo,
+            citationId: 'some-document-id',
+            permanentId: 'perm-id',
+            generativeQuestionAnsweringId: fakeStreamId,
+            conversationId: fakeConversationId,
+        };
+
+        await client.logGeneratedAnswerFollowupOpenSource(meta);
+        expectMatchCustomEventPayload(SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
+    });
+
+    it('should send proper payload for #makeGeneratedAnswerFollowupOpenSource', async () => {
+        const meta = {
+            ...fakeDocInfo,
+            citationId: 'some-document-id',
+            permanentId: 'perm-id',
+            generativeQuestionAnsweringId: fakeStreamId,
+            conversationId: fakeConversationId,
+        };
+
+        const built = await client.makeGeneratedAnswerFollowupOpenSource(meta);
+        await built.log({searchUID: provider.getSearchUID()});
+        expectMatchCustomEventPayload(SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
+        expectMatchDescription(built.description, SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
+    });
+
     it('should send proper payload for #logGeneratedAnswerStreamEnd', async () => {
         const meta = {generativeQuestionAnsweringId: fakeStreamId, answerGenerated: true, answerTextIsEmpty: false};
         await client.logGeneratedAnswerStreamEnd(meta);

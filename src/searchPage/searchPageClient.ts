@@ -45,6 +45,7 @@ import {
     GeneratedAnswerFeedbackMetaV2,
     GeneratedAnswerCitationClickMeta,
     GeneratedAnswerInlineLinkMeta,
+    GeneratedAnswerFollowupOpenSourceMeta,
 } from './searchPageEvents';
 import {NoopAnalytics} from '../client/noopAnalytics';
 import {formatOmniboxMetadata} from '../formatting/format-omnibox-metadata';
@@ -944,6 +945,16 @@ export class CoveoSearchPageClient {
         citation: GeneratedAnswerCitationClickMeta,
     ) {
         return (await this.makeGeneratedAnswerCitationClick(info, citation)).log({
+            searchUID: this.provider.getSearchUID(),
+        });
+    }
+
+    public makeGeneratedAnswerFollowupOpenSource(metadata: GeneratedAnswerFollowupOpenSourceMeta) {
+        return this.makeCustomEvent(SearchPageEvents.generatedAnswerFollowupOpenSource, metadata);
+    }
+
+    public async logGeneratedAnswerFollowupOpenSource(metadata: GeneratedAnswerFollowupOpenSourceMeta) {
+        return (await this.makeGeneratedAnswerFollowupOpenSource(metadata)).log({
             searchUID: this.provider.getSearchUID(),
         });
     }

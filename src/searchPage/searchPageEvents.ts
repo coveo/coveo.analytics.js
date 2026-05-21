@@ -361,7 +361,7 @@ export enum SearchPageEvents {
     /**
      * Identifies the custom event that gets logged when the user clicks on a generated answer citation.
      */
-    followupGeneratedAnswerOpenSource = 'followupGeneratedAnswerOpenSource',
+    generatedAnswerFollowupOpenSource = 'generatedAnswerFollowupOpenSource',
     /**
      * Identifies the click event that gets logged when a user clicks the Attach Citation action.
      */

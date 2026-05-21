@@ -1597,7 +1597,7 @@ describe('SearchPageClient', () => {
         };
 
         await client.logGeneratedAnswerFollowupOpenSource(meta);
-        expectMatchCustomEventPayload(SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
+        expectMatchCustomEventPayload(SearchPageEvents.generatedAnswerFollowupOpenSource, meta);
     });
 
     it('should send proper payload for #makeGeneratedAnswerFollowupOpenSource', async () => {
@@ -1611,8 +1611,8 @@ describe('SearchPageClient', () => {
 
         const built = await client.makeGeneratedAnswerFollowupOpenSource(meta);
         await built.log({searchUID: provider.getSearchUID()});
-        expectMatchCustomEventPayload(SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
-        expectMatchDescription(built.description, SearchPageEvents.followupGeneratedAnswerOpenSource, meta);
+        expectMatchCustomEventPayload(SearchPageEvents.generatedAnswerFollowupOpenSource, meta);
+        expectMatchDescription(built.description, SearchPageEvents.generatedAnswerFollowupOpenSource, meta);
     });
 
     it('should send proper payload for #logGeneratedAnswerStreamEnd', async () => {

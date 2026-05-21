@@ -950,7 +950,7 @@ export class CoveoSearchPageClient {
     }
 
     public makeGeneratedAnswerFollowupOpenSource(metadata: GeneratedAnswerFollowupOpenSourceMeta) {
-        return this.makeCustomEvent(SearchPageEvents.followupGeneratedAnswerOpenSource, metadata);
+        return this.makeCustomEvent(SearchPageEvents.generatedAnswerFollowupOpenSource, metadata);
     }
 
     public async logGeneratedAnswerFollowupOpenSource(metadata: GeneratedAnswerFollowupOpenSourceMeta) {
